@@ -134,33 +134,65 @@ const services = [
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Background circle */}
+          {/* Base circle that traces itself */}
           <circle
             cx="32"
             cy="32"
-            r="30"
-            className="stroke-black/10"
-            strokeWidth="0.5"
+            r="28"
+            stroke="black"
+            strokeWidth="1"
+            strokeDasharray="360"
+            style={{
+              animation: 'trace-circle 2s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+            }}
           />
 
-          {/* Rotating container */}
-          <g className="origin-center animate-[rotate_12s_linear_infinite]">
-            {/* Wave patterns */}
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+          {/* Rotating triangles */}
+          <g className="origin-center animate-[gentle-rotate_12s_linear_infinite]">
+            {[...Array(3)].map((_, i) => (
+              <g
+                key={i}
+                style={{
+                  transform: `rotate(${i * 120}deg)`,
+                  transformOrigin: 'center',
+                  animation: `fade-transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards ${i * 0.2}s`
+                }}
+              >
+                <path
+                  d="M32 8L36 16H28L32 8Z"
+                  fill="black"
+                  className="origin-bottom animate-[subtle-pulse_3s_ease-in-out_infinite]"
+                  style={{ animationDelay: `${i * 1}s` }}
+                />
+              </g>
+            ))}
+          </g>
+
+          {/* Inner connecting lines */}
+          <g className="origin-center animate-[gentle-rotate_30s_linear_infinite]">
+            {[...Array(3)].map((_, i) => (
               <path
                 key={i}
-                className={`animate-[wave_2s_ease-in-out_infinite] animate-[fade-wave_4s_ease-in-out_infinite]`}
-                style={{
-                  animationDelay: `${i * -0.3}s`,
-                  transform: `rotate(${i * 30}deg)`,
-                  transformOrigin: 'center'
-                }}
+                d={`M32 32L${32 + 14 * Math.cos(i * 2 * Math.PI / 3)} ${32 + 14 * Math.sin(i * 2 * Math.PI / 3)}`}
                 stroke="black"
                 strokeWidth="1"
-                fill="none"
-                d="M0,32 C8,24 24,40 32,32 C40,24 56,40 64,32"
+                strokeDasharray="100"
+                style={{
+                  animation: `trace-line 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards ${1 + i * 0.2}s`
+                }}
               />
             ))}
+
+            {/* Center dot */}
+            <circle
+              cx="32"
+              cy="32"
+              r="3"
+              fill="black"
+              style={{
+                animation: 'fade-transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+              }}
+            />
           </g>
         </svg>
       </div>
