@@ -38,7 +38,7 @@ const StillIcon = () => (
     {[...Array(3)].map((_, i) => (
       <path
         key={i}
-        d={`M32 32L${32 + 14 * Math.cos(i * 2 * Math.PI / 3)} ${32 + 14 * Math.sin(i * 2 * Math.PI / 3)}`}
+        d={`M32 32L${32 + 14 * Math.cos((i * 2 * Math.PI / 3) + Math.PI + Math.PI/6)} ${32 + 14 * Math.sin((i * 2 * Math.PI / 3) + Math.PI + Math.PI/6)}`}
         stroke="black"
         strokeWidth="1"
         className="opacity-90"
