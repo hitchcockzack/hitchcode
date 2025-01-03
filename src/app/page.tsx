@@ -6,12 +6,130 @@ import { useEffect, useState, useRef } from 'react'
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
 
+const StillIcon = () => (
+  <svg
+    className="w-20 h-20 relative"
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Base circle */}
+    <circle
+      cx="32"
+      cy="32"
+      r="28"
+      stroke="black"
+      strokeWidth="1"
+      className="opacity-90"
+    />
+
+    {/* Static triangles */}
+    {[...Array(3)].map((_, i) => (
+      <g key={i} style={{ transform: `rotate(${i * 120}deg)`, transformOrigin: 'center' }}>
+        <path
+          d="M32 8L36 16H28L32 8Z"
+          fill="black"
+          className="opacity-90"
+        />
+      </g>
+    ))}
+
+    {/* Static connecting lines */}
+    {[...Array(3)].map((_, i) => (
+      <path
+        key={i}
+        d={`M32 32L${32 + 14 * Math.cos(i * 2 * Math.PI / 3)} ${32 + 14 * Math.sin(i * 2 * Math.PI / 3)}`}
+        stroke="black"
+        strokeWidth="1"
+        className="opacity-90"
+      />
+    ))}
+
+    {/* Center dot */}
+    <circle
+      cx="32"
+      cy="32"
+      r="3"
+      fill="black"
+      className="opacity-90"
+    />
+  </svg>
+)
+
+const AnimatedIcon = () => (
+  <svg
+    className="w-20 h-20 relative"
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Base circle that traces itself */}
+    <circle
+      cx="32"
+      cy="32"
+      r="28"
+      stroke="black"
+      strokeWidth="1"
+      strokeDasharray="360"
+      style={{
+        animation: 'trace-circle 2s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+      }}
+    />
+
+    {/* Rotating triangles */}
+    <g className="origin-center animate-[gentle-rotate_12s_linear_infinite]">
+      {[...Array(3)].map((_, i) => (
+        <g
+          key={i}
+          style={{
+            transform: `rotate(${i * 120}deg)`,
+            transformOrigin: 'center',
+            animation: `fade-transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards ${i * 0.2}s`
+          }}
+        >
+          <path
+            d="M32 8L36 16H28L32 8Z"
+            fill="black"
+            className="origin-bottom animate-[subtle-pulse_3s_ease-in-out_infinite]"
+            style={{ animationDelay: `${i * 1}s` }}
+          />
+        </g>
+      ))}
+    </g>
+
+    {/* Inner connecting lines */}
+    <g className="origin-center animate-[gentle-rotate_30s_linear_infinite]">
+      {[...Array(3)].map((_, i) => (
+        <path
+          key={i}
+          d={`M32 32L${32 + 14 * Math.cos(i * 2 * Math.PI / 3)} ${32 + 14 * Math.sin(i * 2 * Math.PI / 3)}`}
+          stroke="black"
+          strokeWidth="1"
+          strokeDasharray="100"
+          style={{
+            animation: `trace-line 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards ${1 + i * 0.2}s`
+          }}
+        />
+      ))}
+
+      {/* Center dot */}
+      <circle
+        cx="32"
+        cy="32"
+        r="3"
+        fill="black"
+        style={{
+          animation: 'fade-transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+        }}
+      />
+    </g>
+  </svg>
+)
+
 export default function Home() {
-  const [isMounted, setIsMounted] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
   useEffect(() => {
-    setIsMounted(true)
-
     document.querySelectorAll('.reveal-on-scroll').forEach(el => {
       el.classList.add('will-animate')
     })
@@ -36,8 +154,6 @@ export default function Home() {
 
     return () => observer.disconnect()
   }, [])
-
-  if (!isMounted) return null
 
   return (
     <main className="flex min-h-screen flex-col bg-white">
@@ -78,96 +194,29 @@ export default function Home() {
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`group p-10 bg-white rounded-xl border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-black reveal-on-scroll stagger-reveal
-                  ${index === 0 ? 'hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:scale-[1.01] hover:border-black/10' : ''}`}
-                style={{
-                  "--stagger-index": index,
-                  transition: "transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out"
-                } as any}
+                className={`group p-10 bg-white rounded-xl border border-black/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-black reveal-on-scroll stagger-reveal will-change-transform`}
+                style={{"--stagger-index": index} as any}
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
               >
-                <div className="mb-8 relative w-20 h-20">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/[0.08] to-black/[0.01] blur-2xl rounded-full"></div>
-                  <svg
-                    className="w-20 h-20 relative"
-                    viewBox="0 0 64 64"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    {/* Base circle that traces itself */}
-                    <circle
-                      cx="32"
-                      cy="32"
-                      r="28"
-                      stroke="black"
-                      strokeWidth="1"
-                      strokeDasharray="360"
-                      className="opacity-90"
-                      style={{
-                        animation: 'trace-circle 2s cubic-bezier(0.4, 0, 0.2, 1) forwards'
-                      }}
-                    />
-
-                    {/* Rotating triangles */}
-                    <g className="origin-center animate-[gentle-rotate_12s_linear_infinite]">
-                      {[...Array(3)].map((_, i) => (
-                        <g
-                          key={i}
-                          style={{
-                            transform: `rotate(${i * 120}deg)`,
-                            transformOrigin: 'center',
-                            animation: `fade-transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards ${i * 0.2}s`
-                          }}
-                        >
-                          <path
-                            d="M32 8L36 16H28L32 8Z"
-                            fill="black"
-                            className="origin-bottom animate-[subtle-pulse_3s_ease-in-out_infinite] opacity-90"
-                            style={{ animationDelay: `${i * 1}s` }}
-                          />
-                        </g>
-                      ))}
-                    </g>
-
-                    {/* Inner connecting lines */}
-                    <g className="origin-center animate-[gentle-rotate_30s_linear_infinite]">
-                      {[...Array(3)].map((_, i) => (
-                        <path
-                          key={i}
-                          d={`M32 32L${32 + 14 * Math.cos(i * 2 * Math.PI / 3)} ${32 + 14 * Math.sin(i * 2 * Math.PI / 3)}`}
-                          stroke="black"
-                          strokeWidth="1"
-                          strokeDasharray="100"
-                          className="opacity-90"
-                          style={{
-                            animation: `trace-line 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards ${1 + i * 0.2}s`
-                          }}
-                        />
-                      ))}
-
-                      {/* Center dot */}
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="3"
-                        fill="black"
-                        className="opacity-90"
-                        style={{
-                          animation: 'fade-transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards'
-                        }}
-                      />
-                    </g>
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-4 tracking-tight">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{service.description}</p>
-                {index === 0 && (
-                  <div className="mt-8 flex items-center text-sm font-medium text-black/80 tracking-wide">
-                    <span>Learn more</span>
-                    <svg className="w-4 h-4 ml-2 transition-transform duration-500 group-hover:translate-x-1.5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                <div
+                  className={`relative ${index === 0 ? 'transition-[transform,box-shadow] duration-200 ease-out group-hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group-hover:scale-[1.01] group-hover:border-black/10' : ''}`}
+                >
+                  <div className="mb-8 relative w-20 h-20">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/[0.08] to-black/[0.01] blur-2xl rounded-full"></div>
+                    {hoveredCard === index ? <AnimatedIcon /> : <StillIcon />}
                   </div>
-                )}
+                  <h3 className="text-xl font-semibold mb-4 tracking-tight">{service.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                  {index === 0 && (
+                    <div className="mt-8 flex items-center text-sm font-medium text-black/80 tracking-wide">
+                      <span>Learn more</span>
+                      <svg className="w-4 h-4 ml-2 transition-transform duration-500 group-hover:translate-x-1.5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>

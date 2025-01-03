@@ -75,6 +75,42 @@ body {
   }
 }
 
+/* Animation States */
+.svg-icon circle,
+.svg-icon path {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.group:hover .svg-icon circle,
+.group:hover .svg-icon path {
+  opacity: 0.9;
+}
+
+.group:hover .animate-on-hover {
+  animation: trace-circle 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.group:hover .rotate-on-hover {
+  animation: gentle-rotate 12s linear infinite;
+}
+
+.group:hover .rotate-slow-on-hover {
+  animation: gentle-rotate 30s linear infinite;
+}
+
+.group:hover .fade-in-on-hover {
+  animation: fade-transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.group:hover .trace-on-hover {
+  animation: trace-line 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.group:hover .pulse-on-hover {
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
 /* Initial hero reveal */
 .hero-reveal {
   animation: subtleReveal var(--reveal-duration) var(--reveal-easing) backwards;
