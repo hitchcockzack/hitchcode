@@ -18,20 +18,27 @@ send_notification() {
 
 echo "🚀 Starting deployment..."
 
+# Check for changes
+if [ -z "$(git status --porcelain)" ]; then
+    echo "No changes to deploy"
+    exit 0
+fi
+
+# Stage all changes
+git add .
+
+# Prompt for commit message
+echo "📝 Enter commit message:"
+read commit_msg
+
+# Commit with provided message
+git commit -m "$commit_msg"
+
 # Push to git
 if git push; then
-    send_notification "🎯 Git push successful, deploying to Netlify..." "https://app.netlify.com/sites/hitchcode/overview"
+    send_notification "🎯 Git push successful. Netlify auto-deploy started..." "https://app.netlify.com/sites/hitchcode/overview"
+    echo "✨ Check deploy status at: https://app.netlify.com/sites/hitchcode/overview"
 else
     send_notification "❌ Git push failed!" "https://app.netlify.com/sites/hitchcode/overview"
     exit 1
-fi
-
-# Wait a moment for Netlify to register the push
-sleep 3
-
-# Watch Netlify deploy status and capture output
-if netlify watch; then
-    send_notification "✅ Deploy successful! Site is live." "https://hitchcode.net"
-else
-    send_notification "❌ Deploy failed! Check Netlify logs." "https://app.netlify.com/sites/hitchcode/overview"
 fi
