@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { Phone, Mail, Globe, Linkedin, Download, Share2 } from 'lucide-react';
+import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown } from 'lucide-react';
 import styles from './greeting.module.css';
 
 // Set to true to disable notifications during development
@@ -10,11 +10,28 @@ const TESTING_MODE = false;
 
 export default function Greeting() {
   const [isMobile, setIsMobile] = useState(false);
+  const [photoData, setPhotoData] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMobile('share' in navigator);
     sendNotification('📱 Page visited');
+    loadPhoto();
   }, []);
+
+  const loadPhoto = async () => {
+    try {
+      const response = await fetch('/zack.png');
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        setPhotoData(base64data.split(',')[1]);
+      };
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error('Error loading photo:', error);
+    }
+  };
 
   const sendNotification = async (message: string) => {
     if (TESTING_MODE) {
@@ -36,11 +53,14 @@ export default function Greeting() {
   };
 
   const handleSaveContact = async () => {
+    const photoString = photoData ? `
+PHOTO;ENCODING=b;TYPE=JPEG:${photoData}` : '';
+
     const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:Zack Hitchcock
 N:Hitchcock;Zack;;;
-TITLE:Software Engineer
+TITLE:Software Engineer${photoString}
 TEL:+16175865962
 EMAIL:zack@hitchcode.net
 URL:https://hitchcode.com
@@ -100,18 +120,24 @@ END:VCARD`;
           </div>
           <div className={styles.headerContent}>
             <h1 className={styles.name}>Zack Hitchcock</h1>
-            <p className={styles.title}>Software Engineer</p>
+            <div className={styles.titleWrapper}>
+              <p className={styles.title}>Software Engineer</p>
+              <div className={styles.company}>
+                <Crown className={styles.buildingIcon} />
+                <span>hitchcode</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className={styles.contactInfo}>
+        <div className={styles.contactGrid}>
           <a
             href="tel:+16175865962"
             className={styles.contactItem}
             onClick={() => handleContactClick('Phone')}
           >
             <Phone className={styles.icon} />
-            <span>(617) 586-5962</span>
+            <span>Call</span>
           </a>
           <a
             href="mailto:zack@hitchcode.net"
@@ -119,7 +145,7 @@ END:VCARD`;
             onClick={() => handleContactClick('Email')}
           >
             <Mail className={styles.icon} />
-            <span>zack@hitchcode.net</span>
+            <span>Email</span>
           </a>
           <a
             href="https://hitchcode.net"
@@ -129,7 +155,7 @@ END:VCARD`;
             onClick={() => handleContactClick('Website')}
           >
             <Globe className={styles.icon} />
-            <span>hitchcode.net</span>
+            <span>Website</span>
           </a>
           <a
             href="https://www.linkedin.com/in/zack-hitchcock-17841a219/"
