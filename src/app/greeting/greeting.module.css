@@ -94,9 +94,12 @@
 }
 
 .contactItem:hover {
-  background: rgba(0, 0, 0, 0.05);
-  transform: translateY(-2px);
-  border-width: 3px;
+  color: white;
+  background: #000;
+}
+
+.contactItem:hover .icon {
+  stroke: white;
 }
 
 .icon {
@@ -132,10 +135,12 @@
 }
 
 .primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  background: #000;
-  border-width: 3px;
+  background: white;
+  color: #000;
+}
+
+.primary:hover .buttonIcon {
+  stroke: #000;
 }
 
 .secondary {
@@ -144,8 +149,12 @@
 }
 
 .secondary:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-width: 3px;
+  color: white;
+  background: #000;
+}
+
+.secondary:hover .buttonIcon {
+  stroke: white;
 }
 
 .buttonIcon {
@@ -174,6 +183,121 @@
 
   .contactItem {
     padding: 0.875rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .card {
+    padding: 1.5rem;
+  }
+
+  .contactGrid {
+    gap: 0.75rem;
+    padding: 0.25rem;
+  }
+
+  .contactItem {
+    padding: 0.75rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .name {
+    font-size: 1.75rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .imageWrapper {
+    width: 150px;
+    height: 150px;
+  }
+
+  .button {
+    padding: 0.75rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+
+  .buttonIcon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 350px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .contactGrid {
+    gap: 0.5rem;
+  }
+
+  .contactItem {
+    padding: 0.625rem;
+    font-size: 0.9rem;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .imageWrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 288px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .contactItem {
+    width: 100%;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .card {
+    padding: 0.75rem;
+    gap: 1.5rem;
+  }
+
+  .name {
+    font-size: 1.25rem;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .company {
+    font-size: 0.9rem;
   }
 }
 
