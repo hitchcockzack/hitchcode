@@ -2,15 +2,16 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown } from 'lucide-react';
+import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown, CreditCard, DollarSign } from 'lucide-react';
 import styles from './greeting.module.css';
 
 // Set to true to disable notifications during development
-const TESTING_MODE = false;
+const TESTING_MODE = true;
 
 export default function Greeting() {
   const [isMobile, setIsMobile] = useState(false);
   const [photoData, setPhotoData] = useState<string | null>(null);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
 
   useEffect(() => {
     setIsMobile('share' in navigator);
@@ -104,6 +105,52 @@ END:VCARD`;
     await sendNotification(messages[type as keyof typeof messages]);
   };
 
+  const handlePayment = async (method: string) => {
+    setShowPaymentOptions(false);
+
+    switch (method) {
+      case 'venmo':
+        // Deep link to Venmo with your username
+        // Format: venmo://users/USERNAME/pay?amount=&note=
+        window.location.href = 'venmo://users/ballzack3/pay?amount=&note=Payment%20from%20hitchcode';
+        // Fallback if app not installed
+        setTimeout(() => {
+          window.location.href = 'https://venmo.com/ballzack3';
+        }, 1000);
+        await sendNotification('💸 Venmo payment initiated');
+        break;
+      case 'apple-pay':
+        // Deep link to Apple Wallet
+        window.location.href = 'shoebox://';
+        // Fallback for iOS devices without Wallet app
+        setTimeout(() => {
+          window.location.href = 'https://support.apple.com/en-us/HT204003';
+        }, 1000);
+        await sendNotification('🍎 Apple Pay initiated');
+        break;
+      case 'google-pay':
+        // Deep link to Google Pay
+        // Format: gpay://pay?recipient=EMAIL&amount=
+        window.location.href = 'gpay://pay?recipient=zack@hitchcode.net';
+        // Fallback if app not installed
+        setTimeout(() => {
+          window.location.href = 'https://pay.google.com/payments/u/0/send?recipient=zack@hitchcode.net';
+        }, 1000);
+        await sendNotification('🤖 Google Pay initiated');
+        break;
+      case 'paypal':
+        // Deep link to PayPal
+        // Format: paypal://pay?recipient=USERNAME
+        window.location.href = 'paypal://pay?recipient=zackhitchcock';
+        // Fallback if app not installed
+        setTimeout(() => {
+          window.location.href = 'https://paypal.me/zackhitchcock';
+        }, 1000);
+        await sendNotification('💰 PayPal payment initiated');
+        break;
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -181,7 +228,66 @@ END:VCARD`;
               Share
             </button>
           )}
+
+          <button
+            onClick={() => setShowPaymentOptions(true)}
+            className={`${styles.button} ${styles.secondary}`}
+          >
+            <DollarSign className={styles.buttonIcon} />
+            Pay
+          </button>
         </div>
+
+        {showPaymentOptions && (
+          <div className={styles.paymentPopup}>
+            <div className={styles.paymentOptions}>
+              <button
+                onClick={() => handlePayment('venmo')}
+                className={styles.paymentOption}
+              >
+                <img src="/venmo.svg" alt="Venmo" className={styles.paymentIcon} />
+                Venmo
+              </button>
+              <button
+                onClick={() => handlePayment('apple-pay')}
+                className={styles.paymentOption}
+              >
+                <img src="/apple-pay.svg" alt="Apple Pay" className={styles.paymentIcon} />
+                Apple Pay
+              </button>
+              <button
+                onClick={() => handlePayment('google-pay')}
+                className={styles.paymentOption}
+              >
+                <img src="/google-pay.svg" alt="Google Pay" className={styles.paymentIcon} />
+                Google Pay
+              </button>
+              <button
+                onClick={() => handlePayment('paypal')}
+                className={styles.paymentOption}
+              >
+                <img src="/paypal.svg" alt="PayPal" className={styles.paymentIcon} />
+                PayPal
+              </button>
+              <button
+                className={`${styles.paymentOption} ${styles.disabled}`}
+                disabled
+              >
+                <CreditCard className={styles.paymentIcon} />
+                <div className={styles.disabledText}>
+                  <span>Card</span>
+                  <span className={styles.comingSoon}>coming soon</span>
+                </div>
+              </button>
+            </div>
+            <button
+              onClick={() => setShowPaymentOptions(false)}
+              className={styles.closeButton}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

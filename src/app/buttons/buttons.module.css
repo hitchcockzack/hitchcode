@@ -1,10 +1,85 @@
-.container {
-  min-height: 100vh;
+.pageContainer {
+  display: flex;
   width: 100vw;
+  height: 100vh;
+  background: white;
+}
+
+.controlPanel {
+  width: 200px;
+  height: 100vh;
+  background: #f8f8f8;
+  border-right: 1px solid black;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scoreBoard {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid black;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.scoreBoard h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  margin-bottom: 1rem;
+
+}
+
+.resetButton {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.resetButton:hover {
+  opacity: 0.9;
+}
+
+.modeButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid black;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: black;
+}
+
+.modeButton:hover {
+  background: #f0f0f0;
+}
+
+.modeButton.active {
+  background: black;
+  color: white;
+}
+
+.modeButton.active svg {
+  stroke: white;
+}
+
+.container {
+  flex: 1;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -18,20 +93,20 @@
   padding: 0;
   margin: 0;
   border: 1px solid black;
+  background: white;
+  position: relative;
+  overflow: hidden;
 }
 
 .button {
   width: 8px;
   height: 8px;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
-  border-top: 0;
-  border-left: 0;
   background: white;
   padding: 0;
   margin: 0;
   cursor: pointer;
-  transition: background-color 0.8s ease;
+  border: none;
+  position: relative;
 }
 
 .button.hovered {
@@ -44,11 +119,62 @@
   animation: trailFade 1.2s ease-out forwards;
 }
 
+.snake {
+  background: black;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform-origin: center;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  will-change: transform;
+}
+
+.snakeHead {
+  background: #333;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform-origin: center;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+  will-change: transform;
+}
+
+.food {
+  background: black;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: 3;
+  animation: foodPulse 1s ease-in-out infinite;
+  will-change: transform;
+  border: 1px solid black;
+}
+
 @keyframes trailFade {
   0%, 30% {
     background: black;
   }
   100% {
     background: white;
+  }
+}
+
+@keyframes foodPulse {
+  0% {
+    transform: scale(0.8);
+    background: black;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  50% {
+    transform: scale(1.2);
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  100% {
+    transform: scale(0.8);
+    background: black;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
   }
 }

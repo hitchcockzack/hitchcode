@@ -160,6 +160,7 @@
 .buttonIcon {
   width: 20px;
   height: 20px;
+  stroke: currentColor;
 }
 
 @media (max-width: 600px) {
@@ -332,4 +333,119 @@
   width: 18px;
   height: 18px;
   stroke-width: 2.5;
+}
+
+.paymentPopup {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  backdrop-filter: blur(4px);
+}
+
+.paymentOptions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid #000;
+  border-radius: 12px;
+  background: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #000;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.paymentOption.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.paymentOption.disabled:hover {
+  background: white;
+  color: #000;
+}
+
+.paymentOption.disabled .paymentIcon {
+  opacity: 0.7;
+}
+
+.disabledText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.comingSoon {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.paymentOption:hover {
+  background: #000;
+  color: white;
+}
+
+.paymentOption:hover .paymentIcon {
+  filter: brightness(0) invert(1);
+}
+
+.paymentIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.closeButton {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  background: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #000;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.closeButton:hover {
+  opacity: 1;
+}
+
+@media (max-width: 450px) {
+  .paymentOption {
+    padding: 0.75rem;
+    font-size: 1rem;
+    gap: 0.75rem;
+  }
+
+  .paymentIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .closeButton {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
 }
