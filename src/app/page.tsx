@@ -269,7 +269,7 @@ const services = [
   },
   {
     title: "System Refinement",
-    description: "Elevating existing systems to peak performance. Modernizing architecture, optimizing speed, and enhancing reliability while maintaining business continuity.",
+    description: "Elevating existing systems to peak performance. Modernizing architecture, optimizing speed, and enhancing reliability of what exists already.",
     href: "/services/system-refinement"
   }
 ]

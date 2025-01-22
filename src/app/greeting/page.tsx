@@ -6,7 +6,7 @@ import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown, CreditCard, Doll
 import styles from './greeting.module.css';
 
 // Set to true to disable notifications during development
-const TESTING_MODE = true;
+const TESTING_MODE = false;
 
 export default function Greeting() {
   const [isMobile, setIsMobile] = useState(false);
@@ -112,7 +112,7 @@ END:VCARD`;
       case 'venmo':
         // Deep link to Venmo with your username
         // Format: venmo://users/USERNAME/pay?amount=&note=
-        window.location.href = 'venmo://users/ballzack3/pay?amount=&note=Payment%20from%20hitchcode';
+        window.location.href = 'venmo://users/ballzack3/pay';
         // Fallback if app not installed
         setTimeout(() => {
           window.location.href = 'https://venmo.com/ballzack3';
