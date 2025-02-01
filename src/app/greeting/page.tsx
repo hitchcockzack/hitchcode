@@ -6,7 +6,7 @@ import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown, CreditCard, Doll
 import styles from './greeting.module.css';
 
 // Set to true to disable notifications during development
-const TESTING_MODE = false;
+const TESTING_MODE = true;
 
 export default function Greeting() {
   const [isMobile, setIsMobile] = useState(false);
@@ -110,42 +110,17 @@ END:VCARD`;
 
     switch (method) {
       case 'venmo':
-        // Deep link to Venmo with your username
-        // Format: venmo://users/USERNAME/pay?amount=&note=
-        window.location.href = 'venmo://users/ballzack3/pay';
-        // Fallback if app not installed
-        setTimeout(() => {
-          window.location.href = 'https://venmo.com/ballzack3';
-        }, 1000);
+        window.location.href = 'https://venmo.com/code?user_id=2307831361437696227&created=1738446665.6013&printed=1';
         await sendNotification('💸 Venmo payment initiated');
         break;
-      case 'apple-pay':
-        // Deep link to Apple Wallet
-        window.location.href = 'shoebox://';
-        // Fallback for iOS devices without Wallet app
-        setTimeout(() => {
-          window.location.href = 'https://support.apple.com/en-us/HT204003';
-        }, 1000);
-        await sendNotification('🍎 Apple Pay initiated');
-        break;
-      case 'google-pay':
-        // Deep link to Google Pay
-        // Format: gpay://pay?recipient=EMAIL&amount=
-        window.location.href = 'gpay://pay?recipient=zack@hitchcode.net';
-        // Fallback if app not installed
-        setTimeout(() => {
-          window.location.href = 'https://pay.google.com/payments/u/0/send?recipient=zack@hitchcode.net';
-        }, 1000);
-        await sendNotification('🤖 Google Pay initiated');
-        break;
       case 'paypal':
-        // Deep link to PayPal
-        // Format: paypal://pay?recipient=USERNAME
-        window.location.href = 'paypal://pay?recipient=zackhitchcock';
-        // Fallback if app not installed
-        setTimeout(() => {
-          window.location.href = 'https://paypal.me/zackhitchcock';
-        }, 1000);
+        // Check if user is on mobile
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobileDevice) {
+          window.location.href = 'https://www.paypal.com/qrcodes/p2pqrc/9A93YHT7DDLFY';
+        } else {
+          window.location.href = 'https://paypal.me/hitchcockzack';
+        }
         await sendNotification('💰 PayPal payment initiated');
         break;
     }
@@ -247,20 +222,6 @@ END:VCARD`;
               >
                 <img src="/venmo.svg" alt="Venmo" className={styles.paymentIcon} />
                 Venmo
-              </button>
-              <button
-                onClick={() => handlePayment('apple-pay')}
-                className={styles.paymentOption}
-              >
-                <img src="/apple-pay.svg" alt="Apple Pay" className={styles.paymentIcon} />
-                Apple Pay
-              </button>
-              <button
-                onClick={() => handlePayment('google-pay')}
-                className={styles.paymentOption}
-              >
-                <img src="/google-pay.svg" alt="Google Pay" className={styles.paymentIcon} />
-                Google Pay
               </button>
               <button
                 onClick={() => handlePayment('paypal')}
