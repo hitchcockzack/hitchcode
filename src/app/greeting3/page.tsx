@@ -19,10 +19,10 @@ const TESTING_MODE = false;
 // Define the profile data structure
 const PROFILE_DATA = {
   name: 'Zack Hitchcock',
-  title: 'Software Engineer',
-  company: 'Hitch Code',
+  title: 'Orchestrator',
+  company: 'Hitchcode',
   photo: '/zack.png',
-  location: 'San Francisco, CA',
+  location: 'Boston, MA',
   contact: {
     phone: '+1 (707) 656-4252',
     email: 'zackhitchcock@gmail.com',
