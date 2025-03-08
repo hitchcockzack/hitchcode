@@ -6,7 +6,7 @@ import { Phone, Mail, Globe, Linkedin, Download, Share2, Crown, CreditCard, Doll
 import styles from './greeting.module.css';
 
 // Set to true to disable notifications during development
-const TESTING_MODE = true;
+const TESTING_MODE = false;
 
 export default function Greeting() {
   const [isMobile, setIsMobile] = useState(false);

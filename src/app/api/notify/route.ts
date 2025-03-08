@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 const PUSHOVER_TOKEN = process.env.PUSHOVER_TOKEN;
 const PUSHOVER_USER = process.env.PUSHOVER_USER;
-const TESTING_MODE = process.env.TESTING_MODE === 'false';
+const TESTING_MODE = process.env.TESTING_MODE === 'true';
 
 export async function POST(request: Request) {
   try {
