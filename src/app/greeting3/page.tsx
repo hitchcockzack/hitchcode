@@ -8,10 +8,13 @@ import {
   Moon, Sun, Smartphone, ArrowLeft, Coffee, Github,
   Copy, CheckCircle, Box, Code, Zap, Star, Award,
   Briefcase, Flame, Users, Music, Heart, Sparkles,
-  Layers, Terminal, Database, Layout
+  Layers, Terminal, Database, Layout, Camera
 } from 'lucide-react';
 import styles from './greeting3.module.css';
 import { QRCodeCanvas } from 'qrcode.react';
+import { Toaster, toast } from 'sonner';
+// Import the AR component
+import ARView from './components/ARView';
 
 // Set to true to disable notifications during development
 const TESTING_MODE = false;
@@ -25,14 +28,14 @@ const PROFILE_DATA = {
   location: 'Boston, MA',
   contact: {
     phone: '+1 (707) 656-4252',
-    email: 'zackhitchcock@gmail.com',
-    website: 'https://www.hitchcode.com',
-    linkedin: 'https://www.linkedin.com/in/zack-hitchcock',
+    email: 'zack@hitchcode.net',
+    website: 'https://www.hitchcode.net',
+    linkedin: 'www.linkedin.com/in/zack-hitchcock-17841a219/',
     github: 'https://github.com/zhitchcock',
   },
   payment: {
-    venmo: '@zackhitchco',
-    paypal: 'ZackHitchcock',
+    venmo: 'ballzack3',
+    paypal: 'hitchcockzack',
     applePay: true,
     googlePay: true,
     crypto: 'ETH: 0x1234...'
@@ -55,12 +58,13 @@ const PROFILE_DATA = {
     '📚 Speaker at React Summit 2023',
     '🌟 Open source contributor'
   ],
-  // Color theme options
+  // Refined color theme options with more subtle combinations
   themes: [
-    { id: 'cyberpunk', name: 'Cyberpunk', primary: '#f637ec', secondary: '#08f7fe' },
-    { id: 'neon', name: 'Neon Glow', primary: '#39ff14', secondary: '#fe53bb' },
-    { id: 'synthwave', name: 'Synthwave', primary: '#ff79c6', secondary: '#8be9fd' },
-    { id: 'midnight', name: 'Midnight', primary: '#7579E7', secondary: '#9AB3F5' },
+    { id: 'darkness', name: 'Darkness', primary: '#000000', secondary: '#111111' },
+    { id: 'elegant', name: 'Elegant', primary: '#7367f0', secondary: '#8e9aaf' },
+    { id: 'forest', name: 'Forest', primary: '#38a169', secondary: '#68d391' },
+    { id: 'ocean', name: 'Ocean', primary: '#0EA5E9', secondary: '#7DD3FC' },
+    { id: 'midnight', name: 'Midnight', primary: '#4B5563', secondary: '#9CA3AF' },
   ]
 };
 
@@ -69,22 +73,21 @@ export default function EnhancedGreeting() {
   const [isMobile, setIsMobile] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
   const [activeTab, setActiveTab] = useState('contact');
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
   const [qrValue, setQrValue] = useState('');
   const [qrTitle, setQrTitle] = useState('');
-  const [showARView, setShowARView] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [photoData, setPhotoData] = useState<string | null>(null);
   const [isAvailable, setIsAvailable] = useState(true);
-  const [selectedTheme, setSelectedTheme] = useState('cyberpunk');
+  const [selectedTheme, setSelectedTheme] = useState('elegant');
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showSkills, setShowSkills] = useState(false);
   const [isExploding, setIsExploding] = useState(false);
+  // Add AR state
+  const [showARView, setShowARView] = useState(false);
 
   // Refs
   const cardRef = useRef<HTMLDivElement>(null);
@@ -117,8 +120,8 @@ export default function EnhancedGreeting() {
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top) / rect.height;
 
-        // Calculate tilt rotation (max 10 degrees)
-        const maxTilt = 10;
+        // Calculate tilt rotation (max 7 degrees - reduced from 10 for subtlety)
+        const maxTilt = 7;
         const rotateY = maxTilt * (0.5 - x) * 2;
         const rotateX = maxTilt * (y - 0.5) * 2;
 
@@ -148,7 +151,7 @@ export default function EnhancedGreeting() {
       };
     }
 
-    sendNotification('✨ Welcome to the next-gen digital card');
+    sendNotification('✨ Welcome to the digital card');
     loadPhoto();
 
     return () => {
@@ -179,15 +182,15 @@ export default function EnhancedGreeting() {
       particlesRef.current = [];
       const theme = PROFILE_DATA.themes.find(t => t.id === selectedTheme) || PROFILE_DATA.themes[0];
 
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 40; i++) { // Reduced from 50 for subtlety
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 0.5,
+          radius: Math.random() * 1.5 + 0.2, // Smaller particles
           color: Math.random() > 0.5 ? theme.primary : theme.secondary,
-          speedX: Math.random() * 0.5 - 0.25,
-          speedY: Math.random() * 0.5 - 0.25,
-          opacity: Math.random() * 0.5 + 0.5
+          speedX: Math.random() * 0.3 - 0.15, // Slower movement
+          speedY: Math.random() * 0.3 - 0.15,
+          opacity: Math.random() * 0.4 + 0.2 // More transparent
         });
       }
     };
@@ -242,15 +245,15 @@ export default function EnhancedGreeting() {
       particlesRef.current = [];
       const theme = PROFILE_DATA.themes.find(t => t.id === selectedTheme) || PROFILE_DATA.themes[0];
 
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 40; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 0.5,
+          radius: Math.random() * 1.5 + 0.2,
           color: Math.random() > 0.5 ? theme.primary : theme.secondary,
-          speedX: Math.random() * 0.5 - 0.25,
-          speedY: Math.random() * 0.5 - 0.25,
-          opacity: Math.random() * 0.5 + 0.5
+          speedX: Math.random() * 0.3 - 0.15,
+          speedY: Math.random() * 0.3 - 0.15,
+          opacity: Math.random() * 0.4 + 0.2
         });
       }
     }
@@ -302,12 +305,8 @@ export default function EnhancedGreeting() {
       return;
     }
 
-    setNotificationMessage(message);
-    setShowNotification(true);
-
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
+    // Use sonner toast instead of custom notification
+    toast(message);
   };
 
   const saveContact = () => {
@@ -391,7 +390,7 @@ END:VCARD`;
         sendNotification('💳 PayPal payment initiated');
         break;
       case 'buy-coffee':
-        window.open('https://www.buymeacoffee.com/zackhitchcock', '_blank');
+        window.open('https://www.buymeacoffee.com/hitchcockzack', '_blank');
         sendNotification('☕ Coffee payment initiated');
         break;
       case 'crypto':
@@ -458,20 +457,6 @@ END:VCARD`;
     }
   };
 
-  const activateARMode = () => {
-    setShowARView(true);
-    sendNotification('🔮 AR mode activated');
-
-    if ('vibrate' in navigator) {
-      navigator.vibrate([30, 30, 30, 30, 100]);
-    }
-
-    // In a real implementation, this would initialize AR.js or another AR library
-    setTimeout(() => {
-      setShowARView(false);
-    }, 5000);
-  };
-
   const getRealTimeAvailability = () => {
     // In a real app, this could check an API for real-time availability
     setIsAvailable(!isAvailable);
@@ -503,12 +488,42 @@ END:VCARD`;
 
     return {
       background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px,
-                   ${theme.primary}10 0%, transparent 50%)`,
+                   ${theme.primary}08 0%, transparent 50%)`, // Reduced opacity
     };
+  };
+
+  // Toggle AR view
+  const toggleARView = () => {
+    console.log("AR button clicked, current state:", showARView);
+    setShowARView(!showARView);
+    sendNotification(showARView ? '🔙 Exiting AR Mode' : '🎥 Entering AR Mode');
+
+    if ('vibrate' in navigator) {
+      navigator.vibrate([20, 40, 20]);
+    }
+
+    // Log after state update
+    setTimeout(() => {
+      console.log("AR state updated to:", !showARView);
+    }, 100);
   };
 
   return (
     <div ref={containerRef} className={`${styles.container} ${styles.darkMode} ${styles[selectedTheme]}`}>
+      {/* Sonner Toaster */}
+      <Toaster position="bottom-center" theme="dark" closeButton richColors />
+
+      {/* AR View overlay */}
+      {showARView && (
+        <ARView
+          profile={PROFILE_DATA}
+          onClose={() => {
+            setShowARView(false);
+            sendNotification('🔙 Exited AR Mode');
+          }}
+        />
+      )}
+
       {/* Animated background canvas for desktop */}
       {!isMobile && (
         <canvas
@@ -526,7 +541,7 @@ END:VCARD`;
       {/* Main card */}
       <div
         ref={cardRef}
-        className={`${styles.card} ${(showPaymentOptions || showQrCode || showARView || showThemePicker) ? styles.blurred : ''} ${isExploding ? styles.exploding : ''}`}
+        className={`${styles.card} ${(showPaymentOptions || showQrCode || showThemePicker) ? styles.blurred : ''} ${isExploding ? styles.exploding : ''}`}
       >
         {/* Theme selector button */}
         <button
@@ -698,7 +713,7 @@ END:VCARD`;
               onClick={() => copyToClipboard(PROFILE_DATA.contact.email, 'Email')}
             >
               <Copy className={styles.icon} />
-              <span>{copied ? 'Copied!' : 'Copy'}</span>
+              <span>{copied ? 'Copied!' : 'Copy Email'}</span>
             </div>
           </div>
         )}
@@ -781,19 +796,6 @@ END:VCARD`;
                 <span className={styles.scheduleSubtitle}>45 min · In Person</span>
               </div>
             </button>
-
-            {isMobile && (
-              <button
-                className={`${styles.scheduleButton} ${styles.arButton}`}
-                onClick={activateARMode}
-              >
-                <Box className={styles.calendarIcon} />
-                <div>
-                  <span className={styles.scheduleTitle}>View in AR</span>
-                  <span className={styles.scheduleSubtitle}>See card in your space</span>
-                </div>
-              </button>
-            )}
           </div>
         )}
 
@@ -823,13 +825,17 @@ END:VCARD`;
             Pay
           </button>
         </div>
-
-        {/* Mobile Badge */}
-        <div className={styles.mobileBadge}>
-          <Smartphone size={12} />
-          Premium Digital Card
-        </div>
       </div>
+
+      {/* AR View floating button */}
+      <button
+        className={styles.arControlsButton}
+        onClick={toggleARView}
+        aria-label="AR View"
+      >
+        <Camera size={32} />
+        <span className={styles.arButtonLabel}>AR View</span>
+      </button>
 
       {/* Payment Popup */}
       {showPaymentOptions && (
@@ -951,64 +957,24 @@ END:VCARD`;
         </div>
       )}
 
-      {/* AR View Overlay */}
-      {showARView && (
-        <div className={styles.popup} onClick={() => setShowARView(false)}>
-          <div className={styles.popupContent} onClick={(e) => e.stopPropagation()}>
-            <h3>AR Business Card</h3>
-            <p>Experience your digital business card in augmented reality</p>
-
-            <div className={styles.arCardPreview}>
-              <div className={styles.arProfileImage}>
-                <Image
-                  src={PROFILE_DATA.photo}
-                  alt={PROFILE_DATA.name}
-                  width={60}
-                  height={60}
-                  className={styles.arProfileImg}
-                />
-              </div>
-              <div className={styles.arInfo}>
-                <h4>{PROFILE_DATA.name}</h4>
-                <p>{PROFILE_DATA.title}</p>
-              </div>
-            </div>
-
-            <p>Point your camera at a flat surface to place your business card in the real world</p>
-            <button
-              className={styles.closeButton}
-              onClick={() => setShowARView(false)}
-            >
-              Close AR View
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Explosion Effect SVG */}
       {isExploding && (
         <div className={styles.explosionContainer}>
-          {Array.from({ length: 20 }).map((_, i) => (
+          {Array.from({ length: 15 }).map((_, i) => ( // Reduced from 20 particles
             <div
               key={i}
               className={styles.particle}
               style={{
                 '--angle': `${Math.random() * 360}deg`,
-                '--distance': `${Math.random() * 100 + 50}px`,
-                '--size': `${Math.random() * 10 + 5}px`,
-                '--speed': `${Math.random() * 1 + 0.5}s`,
+                '--distance': `${Math.random() * 80 + 40}px`, // Reduced distance
+                '--size': `${Math.random() * 8 + 3}px`, // Reduced size
+                '--speed': `${Math.random() * 0.8 + 0.4}s`, // Faster animation
                 '--color': getThemeColors().primary
               } as any}
             />
           ))}
         </div>
       )}
-
-      {/* Toast Notification */}
-      <div className={`${styles.notification} ${showNotification ? styles.showNotification : ''}`}>
-        <CheckCircle size={18} />
-        {notificationMessage}
-      </div>
     </div>
   );
 }
