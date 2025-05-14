@@ -63,7 +63,7 @@ FN:Zack Hitchcock
 N:Hitchcock;Zack;;;
 TITLE:Software Engineer${photoString}
 TEL:+16175865962
-EMAIL:zack@hitchcode.net
+EMAIL:hitchcockzack@gmail.com
 URL:https://hitchcode.com
 URL;type=LinkedIn:www.linkedin.com/in/zack-hitchcock-17841a219/
 END:VCARD`;
@@ -162,7 +162,7 @@ END:VCARD`;
             <span>Call</span>
           </a>
           <a
-            href="mailto:zack@hitchcode.net"
+            href="mailto:hitchcockzack@gmail.com"
             className={styles.contactItem}
             onClick={() => handleContactClick('Email')}
           >

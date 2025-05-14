@@ -284,8 +284,8 @@ export default function ContactPage() {
                     </div>
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-300">Email</p>
-                      <a href="mailto:zack@hitchcode.net" className="text-sm text-gray-400 hover:text-white transition-colors">
-                        zack@hitchcode.net
+                      <a href="mailto:hitchcockzack@gmail.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                        hitchcockzack@gmail.com
                       </a>
                     </div>
                   </div>

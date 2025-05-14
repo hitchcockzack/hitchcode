@@ -28,7 +28,7 @@ const PROFILE_DATA = {
   location: 'Boston, MA',
   contact: {
     phone: '+1 (707) 656-4252',
-    email: 'zack@hitchcode.net',
+    email: 'hitchcockzack@gmail.com',
     website: 'https://www.hitchcode.net',
     linkedin: 'www.linkedin.com/in/zack-hitchcock-17841a219/',
     github: 'https://github.com/zhitchcock',
