@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink } from 'lucide-react'
+import SmartSchedulerDemo from "./SmartSchedulerDemo";
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
@@ -261,17 +262,14 @@ export default function Home() {
                 </span>
               </Link>
             </div>
-          </div>
 
-          <div className="hidden md:block pt-12">
-            <div className={`relative h-20 w-full backdrop-blur-sm ${playedHero ? 'opacity-60' : 'opacity-0'} transition-opacity duration-1000 delay-500`}>
-              <svg className="max-w-full h-full mx-auto" width="480" height="48" viewBox="0 0 480 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 24H479M358 1L479 24L358 47M122 1L1 24L122 47" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-                <rect x="204" y="14" width="72" height="20" rx="4" fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeOpacity="0.25" strokeWidth="1"/>
-                <text x="240" y="28" textAnchor="middle" className="text-xs fill-current" fillOpacity="0.7" fontFamily="monospace">CODE</text>
-              </svg>
+            {/* Animated Code Editor Typewriter */}
+            <div className="flex justify-center pt-4">
+              <SmartSchedulerDemo />
             </div>
           </div>
+
+
         </div>
       </section>
 
