@@ -1,78 +1,182 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import CodeEditorTypewriter from "./CodeEditorTypewriter";
 
 const initialMeetings = [
-  { start: 10, end: 11 },
-  { start: 13, end: 14 },
-  { start: 15, end: 16 }
+  { start: 10, end: 11, name: "Vendor Call" },
+  { start: 13, end: 14, name: "Team Lunch" },
+  { start: 15, end: 16, name: "Client Check-in" }
 ];
+
+// 9am-6pm, 9 slots, 3 meetings = 3 slots taken, 6 left. Add 7 tasks so 1 will be bumped.
 const initialTasks = [
-  "Call supplier",
-  "Send invoices",
-  "Plan marketing campaign",
-  "Order inventory",
-  "Schedule staff meeting"
+  { name: "Call supplier", urgency: 4, scheduledFor: null },
+  { name: "Send invoices", urgency: 5, scheduledFor: null },
+  { name: "Plan marketing campaign", urgency: 3, scheduledFor: null },
+  { name: "Order inventory", urgency: 2, scheduledFor: null },
+  { name: "Schedule staff meeting", urgency: 1, scheduledFor: null },
+  { name: "Prepare payroll", urgency: 3, scheduledFor: null },
+  { name: "Check inventory levels", urgency: 2, scheduledFor: null }
+];
+
+const URGENCY_COLORS = [
+  "bg-blue-400/80 text-blue-900", // 1
+  "bg-cyan-400/80 text-cyan-900", // 2
+  "bg-yellow-300/80 text-yellow-900", // 3
+  "bg-orange-400/80 text-orange-900", // 4
+  "bg-red-500/80 text-red-50" // 5
 ];
 
 export default function SmartSchedulerDemo() {
-  const [output, setOutput] = useState<string | null>(null);
-  const [highlightBlock, setHighlightBlock] = useState<{start: number, end: number} | null>(null);
-  const [highlightTask, setHighlightTask] = useState<string | null>(null);
-
-  // This function mimics the logic in the code editor
-  function getSmartScheduleSuggestion(meetings: {start: number, end: number}[], tasks: string[]) {
-    const workStart = 9, workEnd = 18;
-    let freeBlocks: {start: number, end: number}[] = [];
-    let lastEnd = workStart;
-    meetings = meetings.slice().sort((a, b) => a.start - b.start);
-    for (const m of meetings) {
-      if (m.start > lastEnd) {
-        freeBlocks.push({ start: lastEnd, end: m.start });
+  // On initial render, show meetings on the calendar, no tasks scheduled
+  const initialCalendarBlocks = (() => {
+    const slots = Array(9).fill(null);
+    initialMeetings.forEach(m => {
+      for (let h = m.start; h < m.end; h++) {
+        const idx = h - 9;
+        if (idx >= 0 && idx < 9) slots[idx] = { type: 'meeting', label: m.name };
       }
-      lastEnd = Math.max(lastEnd, m.end);
+    });
+    return slots;
+  })();
+
+  const [output, setOutput] = useState<string | null>(null);
+  const [calendarBlocks, setCalendarBlocks] = useState<(null | { type: 'meeting' | 'task', label: string, urgency?: number })[]>(initialCalendarBlocks);
+  const [todayTasks, setTodayTasks] = useState(initialTasks);
+  const [tomorrowTasks, setTomorrowTasks] = useState<any[]>([]); // allow fromYesterday
+  const [animating, setAnimating] = useState(false);
+  const [urgencyPulse, setUrgencyPulse] = useState<{ [taskName: string]: boolean }>({});
+  const [step, setStep] = useState(0);
+  const animationRef = useRef<NodeJS.Timeout | null>(null);
+  const calendarTodoRef = useRef<HTMLDivElement>(null);
+  const [highlight, setHighlight] = useState(false);
+
+  // Helper: get color for urgency
+  const getUrgencyColor = (urgency: number) => URGENCY_COLORS[Math.max(0, Math.min(urgency - 1, 4))];
+
+  // Scheduling logic
+  function scheduleDay(meetings: { start: number, end: number, name: string }[], tasks: typeof initialTasks | any[]) {
+    // 9am-6pm, 9 slots
+    const slots = Array(9).fill(null) as (null | { type: 'meeting' | 'task', label: string, urgency?: number })[];
+    // Place meetings
+    meetings.forEach(m => {
+      for (let h = m.start; h < m.end; h++) {
+        const idx = h - 9;
+        if (idx >= 0 && idx < 9) slots[idx] = { type: 'meeting', label: m.name };
+      }
+    });
+    // Place tasks by urgency
+    const sortedTasks = [...tasks].sort((a, b) => b.urgency - a.urgency);
+    let slotIdx = 0;
+    let scheduledTasks: typeof initialTasks = [];
+    let overflowTasks: any[] = [];
+    for (const task of sortedTasks) {
+      // Find next free slot
+      while (slotIdx < 9 && slots[slotIdx]) slotIdx++;
+      if (slotIdx < 9) {
+        slots[slotIdx] = { type: 'task', label: task.name, urgency: task.urgency };
+        scheduledTasks.push({ ...task, scheduledFor: 'today' });
+        slotIdx++;
+      } else {
+        // If task was already from yesterday, keep that property
+        overflowTasks.push({ ...task, urgency: Math.min(5, task.urgency + 1), scheduledFor: 'tomorrow', fromYesterday: task.fromYesterday || false });
+      }
     }
-    if (lastEnd < workEnd) freeBlocks.push({ start: lastEnd, end: workEnd });
-    const bestBlock = freeBlocks.reduce((a, b) => (b.end-b.start > a.end-a.start ? b : a), {start:0,end:0});
-    if (bestBlock.end - bestBlock.start >= 1) {
-      const topTask = tasks[0] || "your most important task";
-      return {
-        suggestion: `You have a ${bestBlock.end-bestBlock.start} hour window at ${bestBlock.start}:00. Block it for: ${topTask}`,
-        block: bestBlock,
-        task: topTask
-      };
-    }
-    return {
-      suggestion: "No large free blocks today. Try batching meetings or delegating tasks.",
-      block: null,
-      task: null
-    };
+    return { slots, scheduledTasks, overflowTasks };
   }
 
+  // Animation sequence
   const handleRun = () => {
-    const result = getSmartScheduleSuggestion(initialMeetings, initialTasks);
-    setOutput(result.suggestion);
-    setHighlightBlock(result.block);
-    setHighlightTask(result.task);
+    // Scroll and highlight immediately on mobile
+    if (window.innerWidth < 768 && calendarTodoRef.current) {
+      calendarTodoRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setHighlight(true);
+      setTimeout(() => setHighlight(false), 1200);
+    }
+    setAnimating(true);
+    setOutput(null);
+    setStep(0);
+    // Start with meetings already populated
+    const slots = initialCalendarBlocks.slice();
+    setCalendarBlocks(slots);
+    setTodayTasks(initialTasks.map(t => ({ ...t, scheduledFor: null })));
+    // Mark all current tomorrowTasks as fromYesterday
+    setTomorrowTasks(tomorrowTasks.map(t => ({ ...t, fromYesterday: true })));
+    setUrgencyPulse({});
+    // Step 2: Animate tasks in order of urgency
+    const { slots: finalSlots, scheduledTasks, overflowTasks } = scheduleDay(initialMeetings, initialTasks);
+    let taskIdx = 0;
+    function animateTasks() {
+      let tempSlots = [...slots];
+      let tempTodayTasks = initialTasks.map(t => ({ ...t, scheduledFor: null }));
+      let tempTomorrowTasks: any[] = tomorrowTasks.map(t => ({ ...t, fromYesterday: true }));
+      let tempUrgencyPulse: { [taskName: string]: boolean } = {};
+      function placeNextTask() {
+        if (taskIdx < scheduledTasks.length + overflowTasks.length) {
+          if (taskIdx < scheduledTasks.length) {
+            // Place scheduled task
+            const task = scheduledTasks[taskIdx];
+            // Find its slot
+            const slot = finalSlots.findIndex(s => s && s.type === 'task' && s.label === task.name);
+            if (slot !== -1) {
+              tempSlots[slot] = { type: 'task', label: task.name, urgency: task.urgency };
+              tempTodayTasks = tempTodayTasks.map(t => t.name === task.name ? { ...t, scheduledFor: 'today' } : t);
+              setCalendarBlocks([...tempSlots]);
+              setTodayTasks([...tempTodayTasks]);
+            }
+          } else {
+            // Overflow task
+            const overflowTask = overflowTasks[taskIdx - scheduledTasks.length];
+            // If this is the last overflow task, mark as fromYesterday
+            const isLast = (taskIdx === scheduledTasks.length + overflowTasks.length - 1);
+            tempTomorrowTasks.push({ ...overflowTask, fromYesterday: isLast });
+            tempUrgencyPulse[overflowTask.name] = true;
+            setTomorrowTasks([...tempTomorrowTasks]);
+            setUrgencyPulse({ ...tempUrgencyPulse });
+          }
+          taskIdx++;
+          animationRef.current = setTimeout(placeNextTask, 320);
+        } else {
+          setAnimating(false);
+          setOutput(
+            overflowTasks.length
+              ? `Some tasks couldn't fit today and will be prioritized tomorrow!`
+              : `All tasks scheduled for today!`
+          );
+        }
+      }
+      placeNextTask();
+    }
+    animateTasks();
   };
+
+  // Clean up animation timeout
+  React.useEffect(() => {
+    return () => {
+      if (animationRef.current) clearTimeout(animationRef.current);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full items-start justify-center mt-8">
       {/* Code Editor */}
-      <div className="flex-1 min-w-[320px]">
-        <CodeEditorTypewriter onRun={handleRun} output={output} />
+      <div className="flex-1 min-w-0 w-full max-w-full md:min-w-[320px] md:max-w-xl">
+        <CodeEditorTypewriter onRun={handleRun} output={output} disabled={animating} />
       </div>
       {/* Calendar and To-Do List */}
-      <div className="flex flex-col gap-6 flex-1 min-w-[320px]">
-        <DayCalendar meetings={initialMeetings} highlightBlock={highlightBlock} />
-        <TodoList tasks={initialTasks} highlightTask={highlightTask} />
+      <div
+        ref={calendarTodoRef}
+        className={`flex flex-col gap-6 flex-1 min-w-0 w-full max-w-full md:min-w-[340px] md:max-w-xl transition-shadow duration-500 ${highlight ? 'ring-4 ring-cyan-400/60 shadow-2xl' : ''}`}
+      >
+        <DayCalendar calendarBlocks={calendarBlocks} animating={animating} />
+        <TodoList todayTasks={todayTasks} tomorrowTasks={tomorrowTasks} urgencyPulse={urgencyPulse} getUrgencyColor={getUrgencyColor} animating={animating} />
       </div>
     </div>
   );
 }
 
 // Calendar visualization
-function DayCalendar({ meetings, highlightBlock }: { meetings: {start: number, end: number}[], highlightBlock: {start: number, end: number} | null }) {
-  const hours = Array.from({length: 10}, (_, i) => 9 + i); // 9am-6pm
+function DayCalendar({ calendarBlocks, animating }: { calendarBlocks: (null | { type: 'meeting' | 'task', label: string, urgency?: number })[], animating: boolean }) {
+  const hours = Array.from({length: 9}, (_, i) => 9 + i); // 9am-5pm
   return (
     <div className="bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-400/30 rounded-xl shadow-lg p-4 w-full relative overflow-hidden">
       <div className="text-cyan-200 text-sm font-bold mb-3 flex items-center gap-2">
@@ -93,9 +197,8 @@ function DayCalendar({ meetings, highlightBlock }: { meetings: {start: number, e
         </div>
         {/* Hour labels and rows */}
         <div className="flex flex-col relative z-10">
-          {hours.map(hour => {
-            const meeting = meetings.find(m => hour >= m.start && hour < m.end);
-            const isHighlight = highlightBlock && hour >= highlightBlock.start && hour < highlightBlock.end;
+          {hours.map((hour, idx) => {
+            const block = calendarBlocks[idx];
             return (
               <div key={hour} className="flex items-stretch h-10 group">
                 <div className="w-14 flex items-center justify-end pr-2 text-xs text-cyan-300 select-none">
@@ -103,15 +206,18 @@ function DayCalendar({ meetings, highlightBlock }: { meetings: {start: number, e
                 </div>
                 <div className="flex-1 relative flex items-center">
                   {/* Meeting block */}
-                  {meeting && (
+                  {block && block.type === 'meeting' && (
                     <div className="absolute left-0 right-0 top-1 bottom-1 bg-blue-500/70 border border-blue-300/30 rounded-md shadow-md flex items-center px-3 text-xs text-blue-50 font-semibold z-10 animate-fade-in">
-                      Meeting
+                      {block.label}
                     </div>
                   )}
-                  {/* Focus block */}
-                  {isHighlight && !meeting && (
+                  {/* Task block */}
+                  {block && block.type === 'task' && (
                     <div className="absolute left-0 right-0 top-1 bottom-1 bg-cyan-400/30 border border-cyan-300/40 rounded-md shadow-md flex items-center px-3 text-xs text-cyan-100 font-semibold z-10 animate-fade-in">
-                      Focus Block
+                      <span>{block.label}</span>
+                      {block.urgency && (
+                        <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-bold shadow-sm ${URGENCY_COLORS[Math.max(0, Math.min(block.urgency - 1, 4))]}`}>Urgency {block.urgency}</span>
+                      )}
                     </div>
                   )}
                   <div className="h-8 w-full border-b border-cyan-400/10 group-last:border-0" />
@@ -135,21 +241,63 @@ function DayCalendar({ meetings, highlightBlock }: { meetings: {start: number, e
 }
 
 // To-Do List visualization
-function TodoList({ tasks, highlightTask }: { tasks: string[], highlightTask: string | null }) {
+function TodoList({ todayTasks, tomorrowTasks, urgencyPulse, getUrgencyColor, animating }: {
+  todayTasks: typeof initialTasks,
+  tomorrowTasks: any[],
+  urgencyPulse: { [taskName: string]: boolean },
+  getUrgencyColor: (urgency: number) => string,
+  animating: boolean
+}) {
   return (
     <div className="bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-400/30 rounded-xl shadow-lg p-4 w-full">
       <div className="text-cyan-200 text-sm font-bold mb-3 flex items-center gap-2">
         <svg width="20" height="20" fill="none" className="inline-block mr-1"><rect x="2" y="2" width="16" height="16" rx="4" stroke="#22d3ee" strokeWidth="2" fill="#0e172a" /></svg>
         To-Do List
       </div>
-      <ul className="flex flex-col gap-2">
-        {tasks.map(task => (
-          <li key={task} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all shadow-sm border border-transparent bg-slate-900/60 hover:bg-slate-800/80 ${highlightTask === task ? 'border-cyan-400/60 bg-cyan-900/40 text-cyan-100 font-semibold ring-2 ring-cyan-400/40' : 'text-cyan-300'}`}>
-            <input type="checkbox" className="accent-cyan-400 w-4 h-4 rounded" checked={highlightTask === task} readOnly />
-            <span className="flex-1 select-none">{task}</span>
+      <div className="mb-2 text-xs text-cyan-400/80">Today</div>
+      <ul className="flex flex-col gap-2 mb-4">
+        {todayTasks.map(task => (
+          <li key={task.name} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all shadow-sm border border-transparent bg-slate-900/60 hover:bg-slate-800/80 ${task.scheduledFor === 'today' ? 'border-cyan-400/60 bg-cyan-900/40 text-cyan-100 font-semibold ring-2 ring-cyan-400/40' : 'text-cyan-300'}`}>
+            <input type="checkbox" className="accent-cyan-400 w-4 h-4 rounded" checked={task.scheduledFor === 'today'} readOnly />
+            <span className="flex-1 select-none flex items-center">
+              {task.name}
+              <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-bold shadow-sm ${getUrgencyColor(task.urgency)} ${urgencyPulse[task.name] ? 'animate-pulse-urgency' : ''}`}>Urgency {task.urgency}</span>
+              {task.scheduledFor === 'today' && (
+                <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-yellow-400/80 text-yellow-900 font-bold shadow-sm animate-fade-in">Scheduled</span>
+              )}
+            </span>
           </li>
         ))}
       </ul>
+      <div className="mb-2 text-xs text-cyan-400/80">Tomorrow</div>
+      <ul className="flex flex-col gap-2">
+        {tomorrowTasks.map(task => (
+          <li key={task.name} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all shadow-sm border border-transparent bg-slate-900/60 hover:bg-slate-800/80 text-cyan-300`}>
+            <input type="checkbox" className="accent-cyan-400 w-4 h-4 rounded" checked={false} readOnly />
+            <span className="flex-1 select-none flex items-center">
+              {task.name}
+              <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-bold shadow-sm ${getUrgencyColor(task.urgency)} ${urgencyPulse[task.name] ? 'animate-pulse-urgency' : ''}`}>Urgency {task.urgency}</span>
+              <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-bold shadow-sm animate-fade-in ${task.fromYesterday ? 'bg-green-400/80 text-green-900' : 'bg-red-400/80 text-red-900'}`}>{task.fromYesterday ? 'Moved from Yesterday' : 'Moved to Tomorrow'}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <style jsx>{`
+        .animate-fade-in {
+          animation: fadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-pulse-urgency {
+          animation: pulseUrgency 1.2s cubic-bezier(0.4, 0, 0.2, 1) 2;
+        }
+        @keyframes pulseUrgency {
+          0%, 100% { box-shadow: 0 0 0 0 #f87171; }
+          50% { box-shadow: 0 0 0 6px #f87171aa; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -5,45 +5,45 @@ import { Copy } from "lucide-react";
 interface CodeEditorTypewriterProps {
   onRun?: () => void;
   output?: string | null;
+  disabled?: boolean;
 }
 
-const codeSnippet = `function getSmartScheduleSuggestion(meetings, tasks) {
-  // Find all free 1+ hour blocks between 9am-6pm
-  const workStart = 9, workEnd = 18;
-  let freeBlocks = [];
-  let lastEnd = workStart;
-  meetings.sort((a, b) => a.start - b.start);
-  for (const m of meetings) {
-    if (m.start > lastEnd) {
-      freeBlocks.push({ start: lastEnd, end: m.start });
+const codeSnippet = `function smartScheduleDay(meetings, tasks) {
+  // 9am-6pm, 9 slots
+  const slots = Array(9).fill(null);
+  // Place meetings
+  meetings.forEach(m => {
+    for (let h = m.start; h < m.end; h++) {
+      const idx = h - 9;
+      if (idx >= 0 && idx < 9) slots[idx] = { type: 'meeting', label: 'Meeting' };
     }
-    lastEnd = Math.max(lastEnd, m.end);
+  });
+  // Sort tasks by urgency (highest first)
+  const sortedTasks = [...tasks].sort((a, b) => b.urgency - a.urgency);
+  let slotIdx = 0;
+  let scheduled = [];
+  let overflow = [];
+  for (const task of sortedTasks) {
+    // Find next free slot
+    while (slotIdx < 9 && slots[slotIdx]) slotIdx++;
+    if (slotIdx < 9) {
+      slots[slotIdx] = { type: 'task', label: task.name, urgency: task.urgency };
+      scheduled.push({ ...task, scheduledFor: 'today' });
+      slotIdx++;
+    } else {
+      // Increase urgency for tomorrow
+      overflow.push({ ...task, urgency: Math.min(5, task.urgency + 1), scheduledFor: 'tomorrow' });
+    }
   }
-  if (lastEnd < workEnd) freeBlocks.push({ start: lastEnd, end: workEnd });
-  // Find the largest free block
-  const bestBlock = freeBlocks.reduce((a, b) => (b.end-b.start > a.end-a.start ? b : a), {start:0,end:0});
-  if (bestBlock.end - bestBlock.start >= 1) {
-    var topTask = tasks[0] || "your most important task";
-    return "You have a " + (bestBlock.end-bestBlock.start) + " hour window at " + bestBlock.start + ":00. Block it for: " + topTask;
-  }
-  return "No large free blocks today. Try batching meetings or delegating tasks.";
-}
-
-const meetings = [
-  { start: 10, end: 11 },
-  { start: 13, end: 14 },
-  { start: 15, end: 16 }
-];
-const tasks = ["Prepare Q3 report", "Email clients", "Review pull requests"];
-
-console.log(getSmartScheduleSuggestion(meetings, tasks));`;
+  return { slots, scheduled, overflow };
+}`;
 
 const editorBg = "bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-400/60 shadow-2xl";
 const editorHeader = "flex items-center px-4 py-2 bg-slate-900/80 border-b border-cyan-400/20 rounded-t-lg relative z-10";
 const dot = "w-3 h-3 rounded-full mr-2";
 const statusBar = "flex items-center justify-between px-4 py-1 bg-slate-900/80 border-t border-cyan-400/20 text-xs text-cyan-300 font-mono rounded-b-lg";
 
-export default function CodeEditorTypewriter({ onRun, output }: CodeEditorTypewriterProps) {
+export default function CodeEditorTypewriter({ onRun, output, disabled }: CodeEditorTypewriterProps) {
   const [displayedLines, setDisplayedLines] = useState<string[]>([""]);
   const [done, setDone] = useState(false);
   const [localOutput, setLocalOutput] = useState<string | null>(null);
@@ -82,7 +82,7 @@ export default function CodeEditorTypewriter({ onRun, output }: CodeEditorTypewr
         setDone(true);
         if (intervalRef.current) clearInterval(intervalRef.current);
       }
-    }, 16);
+    }, 5); // Faster typewriter effect
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -139,14 +139,14 @@ export default function CodeEditorTypewriter({ onRun, output }: CodeEditorTypewr
           <button className="ml-2 text-cyan-400/60 hover:text-cyan-200 text-lg font-bold px-2 rounded transition-colors" title="New File (disabled)" disabled>+</button>
         </div>
         {/* Code block */}
-        <div className="p-4 text-left whitespace-pre min-h-[320px] bg-transparent relative z-20">
+        <div className="p-4 text-left whitespace-pre min-h-[320px] bg-transparent relative z-20 overflow-x-auto max-w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
           <Highlight theme={themes.duotoneDark} code={displayedLines.join("\n")} language="javascript">
             {({ className, style, tokens, getLineProps, getTokenProps }: any) => (
-              <pre className={className} style={{ ...style, background: "none", margin: 0, padding: 0 }}>
+              <pre className={className + ' min-w-[340px] md:min-w-0'} style={{ ...style, background: "none", margin: 0, padding: 0 }}>
                 {tokens.map((line: any, i: number) => (
-                  <div key={i} {...getLineProps({ line, key: i })} style={{ position: 'relative' }}>
+                  <div key={i} {...getLineProps({ line })} style={{ position: 'relative' }}>
                     {line.map((token: any, key: number) => (
-                      <span key={key} {...getTokenProps({ token, key })} />
+                      <span key={key} {...getTokenProps({ token })} />
                     ))}
                     {/* Blinking cursor at the end of the current line */}
                     {i === cursor.line && !done && (
@@ -159,7 +159,7 @@ export default function CodeEditorTypewriter({ onRun, output }: CodeEditorTypewr
           </Highlight>
         </div>
         {/* Status bar */}
-        <div className={statusBar + " relative z-20"}>
+        <div className={statusBar + " relative z-20 flex-wrap md:flex-nowrap overflow-x-auto max-w-full"}>
           <span>Ln {lastLine + 1}, Col {lastCol + 1}</span>
           <span>Spaces: 2</span>
           <span>UTF-8</span>
@@ -168,14 +168,14 @@ export default function CodeEditorTypewriter({ onRun, output }: CodeEditorTypewr
         </div>
       </div>
       <button
-        className="mt-4 px-5 py-2 bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-white rounded-md font-medium transition-all duration-300 shadow-lg disabled:opacity-50"
+        className="mt-4 px-5 py-2 bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-white rounded-md font-medium transition-all duration-300 shadow-lg disabled:opacity-50 w-full max-w-xl"
         onClick={handleRun}
-        disabled={!done}
+        disabled={!done || disabled}
       >
         Run Code
       </button>
       {(output || localOutput) && (
-        <div className="mt-4 w-full max-w-xl bg-black/80 border border-cyan-400/30 rounded-lg p-4 text-cyan-200 text-lg text-center animate-fade-in">
+        <div className="mt-4 w-full max-w-xl bg-black/80 border border-cyan-400/30 rounded-lg p-4 text-cyan-200 text-lg text-center animate-fade-in overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           <span className="font-mono">{output || localOutput}</span>
         </div>
       )}

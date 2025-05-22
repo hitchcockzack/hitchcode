@@ -1,1 +1,2 @@
 1. never suggest I run 'npm run dev'. I already have a server running.
+2. ensure all components that you build and implement are compatible equally as well and display equally as clean and nicely on mobile AND desktop.

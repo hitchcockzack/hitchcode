@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink } from 'lucide-react'
 import SmartSchedulerDemo from "./SmartSchedulerDemo";
+import AutomatedInvoiceDemo from "./AutomatedInvoiceDemo";
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
@@ -202,7 +203,36 @@ export default function Home() {
       <header className="relative z-10 py-6 px-8 md:px-12 border-b border-white/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-md bg-gradient-to-br from-blue-600 to-purple-600"></div>
+            {/* Home button with H */}
+            <svg
+              className="h-8 w-8 rounded-md"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ display: 'block', background: 'linear-gradient(135deg, #2563eb 0%, #a21caf 100%)', borderRadius: '0.375rem' }}
+            >
+              <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
+              <defs>
+                <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#2563eb" />
+                  <stop offset="1" stopColor="#a21caf" />
+                </linearGradient>
+              </defs>
+              <text
+                x="16"
+                y="16.5"
+                textAnchor="middle"
+                fontFamily="JetBrains Mono, Inter, sans-serif"
+                fontWeight="bold"
+                fontSize="20"
+                fill="white"
+                letterSpacing="1"
+                alignmentBaseline="middle"
+                dominantBaseline="middle"
+              >
+                H
+              </text>
+            </svg>
             <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
           </div>
 
@@ -263,10 +293,36 @@ export default function Home() {
               </Link>
             </div>
 
+            {/* Client Concern Section */}
+            <div className="flex justify-center w-full mb-8">
+              <div className="max-w-lg w-full bg-gradient-to-br from-blue-900/80 to-purple-900/80 border border-blue-400/30 shadow-xl rounded-2xl px-6 py-5 flex flex-col items-start sm:items-center gap-2 relative overflow-hidden">
+                <span className="text-xs uppercase tracking-wider font-semibold text-blue-300 mb-1 select-none">Real Client Concern</span>
+                <div className="flex items-start w-full">
+                  <div className="mr-3 mt-1 hidden sm:block">
+                    {/* Chat bubble icon */}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-blue-400"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4c-.5.6-.7 1.3-.6 2.1.1.7.3 1.4.5 2.1.1.3-.2.7-.5.6-2.2-.5-4.2-1.2-5.7-2.2A8.38 8.38 0 0 1 3 11.5C3 6.8 7.5 3 12 3s9 3.8 9 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                  <p className="text-base md:text-lg text-blue-100 font-medium leading-relaxed bg-blue-800/40 rounded-xl px-4 py-3 shadow-inner w-full">
+                    "I have no time, way too much to do, there's no way I can grow without hiring an assistant."
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Animated Code Editor Typewriter */}
             <div className="flex justify-center pt-4">
               <SmartSchedulerDemo />
             </div>
+
+            {/* Automated Invoicing Demo Section */}
+            <section className="mt-16 w-full flex flex-col items-center px-0 md:px-8">
+              <div className="w-full max-w-6xl bg-gradient-to-br from-blue-900/80 to-purple-900/80 border border-blue-400/30 shadow-xl rounded-2xl px-2 md:px-10 py-8 mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Automate Your Invoicing</h2>
+                <p className="text-gray-300 text-base md:text-lg text-center mb-6">See how you can automate invoicing in seconds. Click below to watch invoices generate and send themselves, using your job data.</p>
+                {/* Spreadsheet Table */}
+                <AutomatedInvoiceDemo />
+              </div>
+            </section>
           </div>
 
 
