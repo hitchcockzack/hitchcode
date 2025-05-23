@@ -1,0 +1,134 @@
+.trendCard {
+  background: linear-gradient(135deg, #1e293b 60%, #312e81 100%);
+  border-radius: 1.25rem;
+  border: 1.5px solid #60a5fa33;
+  box-shadow: 0 4px 24px 0 #312e8140;
+  padding: 1.5rem;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.trendCard:hover {
+  transform: scale(1.035) translateY(-2px);
+  box-shadow: 0 8px 32px 0 #6366f140;
+  border-color: #a5b4fc99;
+}
+.trendCardExpanded {
+  box-shadow: 0 12px 40px 0 #a5b4fc33;
+  border-color: #a5b4fc;
+}
+.trendCard .platformIcon {
+  margin-right: 0.25rem;
+}
+.trendCard .trendTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+.trendCard .trendDesc {
+  color: #dbeafe;
+  font-size: 0.98rem;
+  margin-bottom: 0.5rem;
+}
+.trendCard .expandBtn {
+  color: #60a5fa;
+  font-size: 0.92rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  transition: color 0.2s;
+}
+.trendCard .expandBtn:hover {
+  color: #fff;
+}
+.trendCard .expandContent {
+  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  background: #1e293b99;
+  border-radius: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #60a5fa22;
+  color: #dbeafe;
+  font-size: 0.95rem;
+}
+
+.plannerTable {
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1e293b 60%, #312e81 100%);
+  box-shadow: 0 2px 16px 0 #312e8140;
+}
+.plannerTable th, .plannerTable td {
+  padding: 1rem 0.75rem;
+  text-align: left;
+  font-size: 0.98rem;
+}
+.plannerTable th {
+  background: linear-gradient(90deg, #1e40af 60%, #a21caf 100%);
+  color: #dbeafe;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-bottom: 1.5px solid #60a5fa33;
+}
+.plannerTable tr {
+  transition: background 0.3s;
+}
+.plannerTable tr:hover {
+  background: #1e293b99;
+}
+
+.expandRow {
+  transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+  background: #1e293b99;
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #60a5fa22;
+  color: #dbeafe;
+  font-size: 0.95rem;
+}
+
+.tiktokIcon {
+  filter: drop-shadow(0 1px 4px #25f4ee88) drop-shadow(0 1px 4px #fe2c5588);
+  transition: transform 0.2s cubic-bezier(.4,0,.2,1);
+}
+.trendCard:hover .tiktokIcon,
+.plannerTable tr:hover .tiktokIcon {
+  transform: scale(1.12);
+}
+
+@media (max-width: 900px) {
+  .trendCard {
+    padding: 1.1rem;
+  }
+  .plannerTable th, .plannerTable td {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.93rem;
+  }
+}
+@media (max-width: 600px) {
+  .trendCard {
+    padding: 0.9rem;
+    font-size: 0.97rem;
+  }
+  .plannerTable {
+    font-size: 0.93rem;
+  }
+  .plannerTable th, .plannerTable td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.91rem;
+  }
+  .expandRow {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.91rem;
+  }
+}

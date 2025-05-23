@@ -60,12 +60,15 @@ export default function EnhancedGreeting() {
   const [showAR, setShowAR] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
   const [orientation, setOrientation] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Effect for mobile detection
+  // Effect for mobile detection - fixed hydration error
   useEffect(() => {
+    setIsClient(true);
+
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -116,16 +119,18 @@ export default function EnhancedGreeting() {
 
   // Update document class when dark mode changes
   useEffect(() => {
+    if (!isClient) return;
+
     if (isDarkMode) {
       document.documentElement.classList.add('dark-mode');
     } else {
       document.documentElement.classList.remove('dark-mode');
     }
-  }, [isDarkMode]);
+  }, [isDarkMode, isClient]);
 
-  // Effect for 3D tilt effect
+  // Effect for 3D tilt effect - only run on client
   useEffect(() => {
-    if (!isMobile || !tiltWrapperRef.current) return;
+    if (!isClient || !isMobile || !tiltWrapperRef.current) return;
 
     const handleTilt = (e: DeviceOrientationEvent) => {
       if (e.beta && e.gamma) {
@@ -139,11 +144,11 @@ export default function EnhancedGreeting() {
     window.addEventListener('deviceorientation', handleTilt);
 
     return () => window.removeEventListener('deviceorientation', handleTilt);
-  }, [isMobile]);
+  }, [isMobile, isClient]);
 
-  // Effect for haptic feedback on supported devices
+  // Effect for haptic feedback on supported devices - only run on client
   useEffect(() => {
-    if (!isMobile) return;
+    if (!isClient || !isMobile) return;
 
     const buttons = document.querySelectorAll(`.${styles.button}, .${styles.contactItem}, .${styles.tabButton}`);
 
@@ -162,7 +167,7 @@ export default function EnhancedGreeting() {
         button.removeEventListener('touchstart', handleTouch);
       });
     };
-  }, [isMobile, activeTab]);
+  }, [isMobile, activeTab, isClient]);
 
   // Effect for loading profile photo with animation
   useEffect(() => {

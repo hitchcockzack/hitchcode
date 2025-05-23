@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react'
 import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink } from 'lucide-react'
 import SmartSchedulerDemo from "./SmartSchedulerDemo";
 import AutomatedInvoiceDemo from "./AutomatedInvoiceDemo";
+import SocialMediaContentStudio from "./SocialMediaPlannerDemo";
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
@@ -323,6 +324,11 @@ export default function Home() {
                 <AutomatedInvoiceDemo />
               </div>
             </section>
+
+            {/* Social Media Planner Demo Section */}
+            <section className="w-full flex flex-col items-center px-0 md:px-8 reveal-item opacity-0 translate-y-8" style={{ transitionDelay: '120ms' }}>
+              <SocialMediaContentStudio />
+            </section>
           </div>
 
 
@@ -510,6 +516,78 @@ export default function Home() {
           }
           50% {
             opacity: 1;
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out forwards;
+          opacity: 0;
+        }
+
+        .line-clamp-2 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+
+        @keyframes gentle-rotate {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes trace-circle {
+          from {
+            stroke-dashoffset: 360;
+          }
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+
+        @keyframes trace-line {
+          from {
+            stroke-dashoffset: 100;
+          }
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+
+        @keyframes fade-transform {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes subtle-pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.05);
           }
         }
       `}</style>

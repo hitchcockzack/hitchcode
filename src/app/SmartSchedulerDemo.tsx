@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+'use client';
+import React, { useState, useRef, useEffect } from "react";
 import CodeEditorTypewriter from "./CodeEditorTypewriter";
 
 const initialMeetings = [
@@ -9,13 +10,13 @@ const initialMeetings = [
 
 // 9am-6pm, 9 slots, 3 meetings = 3 slots taken, 6 left. Add 7 tasks so 1 will be bumped.
 const initialTasks = [
-  { name: "Call supplier", urgency: 4, scheduledFor: null },
-  { name: "Send invoices", urgency: 5, scheduledFor: null },
-  { name: "Plan marketing campaign", urgency: 3, scheduledFor: null },
-  { name: "Order inventory", urgency: 2, scheduledFor: null },
-  { name: "Schedule staff meeting", urgency: 1, scheduledFor: null },
-  { name: "Prepare payroll", urgency: 3, scheduledFor: null },
-  { name: "Check inventory levels", urgency: 2, scheduledFor: null }
+  { name: "Call supplier", urgency: 4, scheduledFor: null as string | null },
+  { name: "Send invoices", urgency: 5, scheduledFor: null as string | null },
+  { name: "Plan marketing campaign", urgency: 3, scheduledFor: null as string | null },
+  { name: "Order inventory", urgency: 2, scheduledFor: null as string | null },
+  { name: "Schedule staff meeting", urgency: 1, scheduledFor: null as string | null },
+  { name: "Prepare payroll", urgency: 3, scheduledFor: null as string | null },
+  { name: "Check inventory levels", urgency: 2, scheduledFor: null as string | null }
 ];
 
 const URGENCY_COLORS = [
@@ -27,7 +28,8 @@ const URGENCY_COLORS = [
 ];
 
 export default function SmartSchedulerDemo() {
-  // On initial render, show meetings on the calendar, no tasks scheduled
+  console.log('SmartSchedulerDemo mounted');
+  // Log initial calendar blocks
   const initialCalendarBlocks = (() => {
     const slots = Array(9).fill(null);
     initialMeetings.forEach(m => {
@@ -38,6 +40,7 @@ export default function SmartSchedulerDemo() {
     });
     return slots;
   })();
+  console.log('initialCalendarBlocks:', initialCalendarBlocks);
 
   const [output, setOutput] = useState<string | null>(null);
   const [calendarBlocks, setCalendarBlocks] = useState<(null | { type: 'meeting' | 'task', label: string, urgency?: number })[]>(initialCalendarBlocks);
@@ -86,75 +89,109 @@ export default function SmartSchedulerDemo() {
 
   // Animation sequence
   const handleRun = () => {
-    // Scroll and highlight immediately on mobile
-    if (window.innerWidth < 768 && calendarTodoRef.current) {
-      calendarTodoRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setHighlight(true);
-      setTimeout(() => setHighlight(false), 1200);
-    }
+    console.log('handleRun called');
     setAnimating(true);
     setOutput(null);
     setStep(0);
-    // Start with meetings already populated
-    const slots = initialCalendarBlocks.slice();
-    setCalendarBlocks(slots);
-    setTodayTasks(initialTasks.map(t => ({ ...t, scheduledFor: null })));
-    // Mark all current tomorrowTasks as fromYesterday
-    setTomorrowTasks(tomorrowTasks.map(t => ({ ...t, fromYesterday: true })));
     setUrgencyPulse({});
-    // Step 2: Animate tasks in order of urgency
-    const { slots: finalSlots, scheduledTasks, overflowTasks } = scheduleDay(initialMeetings, initialTasks);
+
+    // Clear any existing timeouts
+    if (animationRef.current) {
+      clearTimeout(animationRef.current);
+    }
+
+    // Use the current state of tasks for scheduling
+    const currentTasks = todayTasks.map(t => ({ ...t, scheduledFor: null }));
+    setCalendarBlocks(initialCalendarBlocks.slice()); // Start with meetings only
+    setTodayTasks(currentTasks);
+    setTomorrowTasks([]); // Clear tomorrow tasks for fresh start
+
+    // Calculate final scheduling using current tasks
+    const { slots: finalSlots, scheduledTasks, overflowTasks } = scheduleDay(initialMeetings, currentTasks);
+
+    // Animation: place tasks one by one
     let taskIdx = 0;
-    function animateTasks() {
-      let tempSlots = [...slots];
-      let tempTodayTasks = initialTasks.map(t => ({ ...t, scheduledFor: null }));
-      let tempTomorrowTasks: any[] = tomorrowTasks.map(t => ({ ...t, fromYesterday: true }));
-      let tempUrgencyPulse: { [taskName: string]: boolean } = {};
-      function placeNextTask() {
-        if (taskIdx < scheduledTasks.length + overflowTasks.length) {
-          if (taskIdx < scheduledTasks.length) {
-            // Place scheduled task
-            const task = scheduledTasks[taskIdx];
-            // Find its slot
-            const slot = finalSlots.findIndex(s => s && s.type === 'task' && s.label === task.name);
-            if (slot !== -1) {
-              tempSlots[slot] = { type: 'task', label: task.name, urgency: task.urgency };
-              tempTodayTasks = tempTodayTasks.map(t => t.name === task.name ? { ...t, scheduledFor: 'today' } : t);
-              setCalendarBlocks([...tempSlots]);
-              setTodayTasks([...tempTodayTasks]);
-            }
-          } else {
-            // Overflow task
-            const overflowTask = overflowTasks[taskIdx - scheduledTasks.length];
-            // If this is the last overflow task, mark as fromYesterday
-            const isLast = (taskIdx === scheduledTasks.length + overflowTasks.length - 1);
-            tempTomorrowTasks.push({ ...overflowTask, fromYesterday: isLast });
-            tempUrgencyPulse[overflowTask.name] = true;
-            setTomorrowTasks([...tempTomorrowTasks]);
-            setUrgencyPulse({ ...tempUrgencyPulse });
-          }
-          taskIdx++;
-          animationRef.current = setTimeout(placeNextTask, 320);
-        } else {
-          setAnimating(false);
-          setOutput(
-            overflowTasks.length
-              ? `Some tasks couldn't fit today and will be prioritized tomorrow!`
-              : `All tasks scheduled for today!`
+
+    const placeNextTask = () => {
+      if (taskIdx < scheduledTasks.length) {
+        // Place a scheduled task
+        const task = scheduledTasks[taskIdx];
+
+        // Find where this task should go in the final layout
+        const targetSlot = finalSlots.findIndex(s =>
+          s && s.type === 'task' && s.label === task.name
+        );
+
+        if (targetSlot !== -1) {
+          // Update calendar to show this task
+          setCalendarBlocks(current => {
+            const updated = [...current];
+            updated[targetSlot] = {
+              type: 'task',
+              label: task.name,
+              urgency: task.urgency
+            };
+            return updated;
+          });
+
+          // Update task status
+          setTodayTasks(current =>
+            current.map(t =>
+              t.name === task.name
+                ? { ...t, scheduledFor: 'today' }
+                : t
+            )
           );
         }
+
+        taskIdx++;
+        animationRef.current = setTimeout(placeNextTask, 320);
+
+      } else if (taskIdx < scheduledTasks.length + overflowTasks.length) {
+        // Handle overflow tasks
+        const overflowIdx = taskIdx - scheduledTasks.length;
+        const overflowTask = overflowTasks[overflowIdx];
+
+        setTomorrowTasks(current => [
+          ...current,
+          { ...overflowTask, fromYesterday: false }
+        ]);
+
+        setUrgencyPulse(current => ({
+          ...current,
+          [overflowTask.name]: true
+        }));
+
+        taskIdx++;
+        animationRef.current = setTimeout(placeNextTask, 320);
+
+      } else {
+        // Animation complete
+        setAnimating(false);
+        setOutput(
+          overflowTasks.length > 0
+            ? `Some tasks couldn't fit today and will be prioritized tomorrow!`
+            : `All tasks scheduled for today!`
+        );
       }
-      placeNextTask();
-    }
-    animateTasks();
+    };
+
+    // Start animation after a short delay to ensure state has settled
+    setTimeout(placeNextTask, 100);
+    console.log('Animation started');
   };
 
   // Clean up animation timeout
   React.useEffect(() => {
     return () => {
       if (animationRef.current) clearTimeout(animationRef.current);
+      console.log('SmartSchedulerDemo unmounted');
     };
   }, []);
+
+  useEffect(() => {
+    console.log('calendarBlocks updated:', calendarBlocks);
+  }, [calendarBlocks]);
 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full items-start justify-center mt-8">
@@ -199,6 +236,7 @@ function DayCalendar({ calendarBlocks, animating }: { calendarBlocks: (null | { 
         <div className="flex flex-col relative z-10">
           {hours.map((hour, idx) => {
             const block = calendarBlocks[idx];
+            console.log(`Hour ${hour}:`, block);
             return (
               <div key={hour} className="flex items-stretch h-10 group">
                 <div className="w-14 flex items-center justify-end pr-2 text-xs text-cyan-300 select-none">
@@ -207,13 +245,13 @@ function DayCalendar({ calendarBlocks, animating }: { calendarBlocks: (null | { 
                 <div className="flex-1 relative flex items-center">
                   {/* Meeting block */}
                   {block && block.type === 'meeting' && (
-                    <div className="absolute left-0 right-0 top-1 bottom-1 bg-blue-500/70 border border-blue-300/30 rounded-md shadow-md flex items-center px-3 text-xs text-blue-50 font-semibold z-10 animate-fade-in">
+                    <div style={{ border: '2px solid red' }} className="absolute left-0 right-0 top-1 bottom-1 bg-blue-500/70 border border-blue-300/30 rounded-md shadow-md flex items-center px-3 text-xs text-blue-50 font-semibold z-10 animate-fade-in">
                       {block.label}
                     </div>
                   )}
                   {/* Task block */}
                   {block && block.type === 'task' && (
-                    <div className="absolute left-0 right-0 top-1 bottom-1 bg-cyan-400/30 border border-cyan-300/40 rounded-md shadow-md flex items-center px-3 text-xs text-cyan-100 font-semibold z-10 animate-fade-in">
+                    <div style={{ border: '2px solid red' }} className="absolute left-0 right-0 top-1 bottom-1 bg-cyan-400/30 border border-cyan-300/40 rounded-md shadow-md flex items-center px-3 text-xs text-cyan-100 font-semibold z-10 animate-fade-in">
                       <span>{block.label}</span>
                       {block.urgency && (
                         <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-bold shadow-sm ${URGENCY_COLORS[Math.max(0, Math.min(block.urgency - 1, 4))]}`}>Urgency {block.urgency}</span>
