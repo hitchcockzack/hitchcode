@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import type { JSX } from 'react';
 import { Instagram, Youtube, Sparkles, TrendingUp, Zap, Clock, Target, Brain, MousePointer, Copy, ExternalLink, ChevronRight } from 'lucide-react';
 
 // Enhanced trend data with real metrics
