@@ -27,7 +27,7 @@ const URGENCY_COLORS = [
   "bg-red-500/80 text-red-50" // 5
 ];
 
-export default function SmartSchedulerDemo() {
+function SmartSchedulerDemo() {
   console.log('SmartSchedulerDemo mounted');
   // Log initial calendar blocks
   const initialCalendarBlocks = (() => {
@@ -339,3 +339,7 @@ function TodoList({ todayTasks, tomorrowTasks, urgencyPulse, getUrgencyColor, an
     </div>
   );
 }
+
+// Memoize and export only the memoized version as default:
+const MemoizedSmartSchedulerDemo = React.memo(SmartSchedulerDemo);
+export default MemoizedSmartSchedulerDemo;

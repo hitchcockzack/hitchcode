@@ -660,12 +660,17 @@ export default function SocialMediaContentStudio() {
   const [generatedContent, setGeneratedContent] = useState<any[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [expandedContent, setExpandedContent] = useState<number | null>(null);
+  const [generationStatus, setGenerationStatus] = useState<'idle' | 'generating' | 'complete'>('idle');
+  const [completedTrend, setCompletedTrend] = useState<number | null>(null);
+  const generatedContentRef = useRef<HTMLDivElement>(null);
 
   const handleTrendSelect = (trendId: number) => {
-    if (selectedTrend === trendId) return;
+    if (selectedTrend === trendId && generationStatus === 'generating') return;
 
     setSelectedTrend(trendId);
     setIsGenerating(true);
+    setGenerationStatus('generating');
+    setCompletedTrend(null);
 
     // Simulate AI content generation with real content
     setTimeout(() => {
@@ -673,8 +678,18 @@ export default function SocialMediaContentStudio() {
       setGeneratedContent(strategies);
       setIsGenerating(false);
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }, 1500);
+      setGenerationStatus('complete');
+      setCompletedTrend(trendId);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setGenerationStatus('idle');
+        setCompletedTrend(null);
+      }, 3000);
+      // Scroll to generated content on mobile
+      if (window.innerWidth < 768 && generatedContentRef.current) {
+        generatedContentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 1200);
   };
 
   const toggleContentExpansion = (index: number) => {
@@ -801,10 +816,16 @@ export default function SocialMediaContentStudio() {
                         </div>
                       )}
 
-                      {selectedTrend === trend.id && (
+                      {selectedTrend === trend.id && generationStatus === 'generating' && (
                         <div className="flex items-center gap-2 text-purple-300 animate-pulse bg-black/30 backdrop-blur-sm rounded-lg p-3">
                           <Zap className="w-4 h-4 animate-spin" />
                           <span className="text-sm font-semibold">Generating strategies...</span>
+                        </div>
+                      )}
+                      {selectedTrend === trend.id && generationStatus === 'complete' && completedTrend === trend.id && (
+                        <div className="flex items-center gap-2 text-green-300 bg-black/30 backdrop-blur-sm rounded-lg p-3 animate-fade-in">
+                          <Sparkles className="w-4 h-4 animate-bounce" />
+                          <span className="text-sm font-semibold">Complete!</span>
                         </div>
                       )}
                     </div>
@@ -815,14 +836,20 @@ export default function SocialMediaContentStudio() {
           </div>
 
           {(isGenerating || generatedContent.length > 0) && (
-            <div className="mb-8">
+            <div className="mb-8" ref={generatedContentRef}>
               <div className="flex items-center gap-3 mb-6">
                 <Target className="w-6 h-6 text-blue-400" />
                 <h3 className="text-2xl font-bold text-white">Multi-Niche Content Strategies</h3>
-                {showSuccess && (
-                  <div className="ml-auto flex items-center gap-2 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold animate-bounce">
+                {generationStatus === 'generating' && (
+                  <div className="ml-auto flex items-center gap-2 bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm font-semibold animate-pulse">
+                    <Zap className="w-4 h-4 animate-spin" />
+                    Generating...
+                  </div>
+                )}
+                {generationStatus === 'complete' && (
+                  <div className="ml-auto flex items-center gap-2 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">
                     <Sparkles className="w-4 h-4" />
-                    Strategies Ready!
+                    Complete!
                   </div>
                 )}
               </div>

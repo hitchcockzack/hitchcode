@@ -312,7 +312,7 @@ export default function Home() {
 
             {/* Animated Code Editor Typewriter */}
             <div className="flex justify-center pt-4">
-              <SmartSchedulerDemo />
+              {/* <SmartSchedulerDemo /> */}
             </div>
 
             {/* Automated Invoicing Demo Section */}
