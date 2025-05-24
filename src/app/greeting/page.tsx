@@ -88,7 +88,7 @@ END:VCARD`;
           text: 'Connect with Zack Hitchcock - Software Engineer',
           url: window.location.href,
         });
-        await sendNotification('✨ Contact shared');
+        await sendNotification('🌍 Contact shared');
       } catch (error) {
         // Silently ignore share cancellations
       }
