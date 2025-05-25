@@ -112,3 +112,16 @@ export default function SystemRefinement() {
     </main>
   )
 }
+
+export const metadata = {
+  title: 'HitchCode | System Refinement',
+  description: 'Make your systems faster, stronger, and ready for more.',
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon.svg',
+      type: 'image/svg+xml',
+      sizes: 'any',
+    },
+  ],
+};

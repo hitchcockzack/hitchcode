@@ -114,3 +114,16 @@ export default function TechnologyConsulting() {
     </main>
   )
 }
+
+export const metadata = {
+  title: 'HitchCode | Technology Consulting',
+  description: 'Practical tech advice for real results.',
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon.svg',
+      type: 'image/svg+xml',
+      sizes: 'any',
+    },
+  ],
+};

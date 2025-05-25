@@ -29,8 +29,8 @@ const faviconSvg = `
 const faviconDataUrl = `data:image/svg+xml;base64,${Buffer.from(faviconSvg).toString('base64')}`
 
 export const metadata: Metadata = {
-  title: "HitchCode",
-  description: "Crafting cutting-edge software solutions with precision and elegance.",
+  title: "hitchcode",
+  description: "The solution to all your problems.",
   icons: [
     {
       rel: 'icon',
