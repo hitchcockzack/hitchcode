@@ -200,59 +200,6 @@ export default function Home() {
       <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/30 via-purple-600/30 to-transparent z-0" />
       <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/30 to-blue-600/30 z-0" />
 
-      {/* Header/Navigation */}
-      <header className="relative z-10 py-6 px-8 md:px-12 border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            {/* Home button with H */}
-            <svg
-              className="h-8 w-8 rounded-md"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ display: 'block', background: 'linear-gradient(135deg, #2563eb 0%, #a21caf 100%)', borderRadius: '0.375rem' }}
-            >
-              <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
-              <defs>
-                <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#2563eb" />
-                  <stop offset="1" stopColor="#a21caf" />
-                </linearGradient>
-              </defs>
-              <text
-                x="16"
-                y="16.5"
-                textAnchor="middle"
-                fontFamily="JetBrains Mono, Inter, sans-serif"
-                fontWeight="bold"
-                fontSize="20"
-                fill="white"
-                letterSpacing="1"
-                alignmentBaseline="middle"
-                dominantBaseline="middle"
-              >
-                H
-              </text>
-            </svg>
-            <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
-          </div>
-
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-sm text-white font-medium">Home</Link>
-            <Link href="/services/full-stack-development" className="text-sm text-gray-400 hover:text-white transition-colors">Services</Link>
-            <Link href="/about" className="text-sm text-gray-400 hover:text-white transition-colors">About</Link>
-            <Link href="/contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</Link>
-          </nav>
-
-          <Link
-            href="/contact"
-            className="px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-sm rounded-md backdrop-blur-sm transition-colors border border-white/10"
-          >
-            Get Started
-          </Link>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative min-h-[calc(100vh-74px)] flex items-center justify-center py-20 md:py-32 overflow-hidden">
         {/* Background pattern with improved mobile performance */}

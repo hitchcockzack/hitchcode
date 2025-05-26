@@ -98,17 +98,6 @@ export default function ContactPage() {
       <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/30 via-purple-600/30 to-transparent z-0" />
       <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/30 to-blue-600/30 z-0" />
 
-      {/* Header with breadcrumb navigation */}
-      <header className="relative z-10 py-6 px-8 md:px-12 border-b border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <nav className="flex items-center text-sm text-gray-400">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white font-medium">Contact</span>
-          </nav>
-        </div>
-      </header>
-
       {/* Main content */}
       <main className="flex-1 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

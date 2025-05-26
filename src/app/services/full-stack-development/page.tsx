@@ -68,30 +68,6 @@ export default function FullStackDevelopment() {
       <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/30 via-purple-600/30 to-transparent z-0" />
       <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/30 to-blue-600/30 z-0" />
 
-      {/* Header/Navigation */}
-      <header className="relative z-10 py-6 px-8 md:px-12 border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-md bg-gradient-to-br from-blue-600 to-purple-600"></div>
-            <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Home</Link>
-            <Link href="/services/full-stack-development" className="text-sm text-white font-medium">Services</Link>
-            <Link href="/about" className="text-sm text-gray-400 hover:text-white transition-colors">About</Link>
-            <Link href="/contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</Link>
-          </nav>
-
-          <Link
-            href="/contact"
-            className="px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-sm rounded-md backdrop-blur-sm transition-colors border border-white/10"
-          >
-            Get Started
-          </Link>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
         {/* Background effects */}
