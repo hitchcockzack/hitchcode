@@ -182,8 +182,12 @@ export default function AboutPage() {
               {/* Profile Image Placeholder */}
               <div className="w-32 h-32 mx-auto mb-8 relative">
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1">
-                  <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                    <Code className="w-12 h-12 text-blue-400" />
+                  <div className="w-full h-full rounded-full bg-black overflow-hidden">
+                    <img
+                      src="/zack.png"
+                      alt="Zack Hitchcock"
+                      className="w-full h-full object-cover rounded-full"
+                    />
                   </div>
                 </div>
                 <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-xl animate-pulse" />
@@ -255,15 +259,15 @@ export default function AboutPage() {
                   <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12 mb-12">
                     <div className="flex items-start space-x-4 mb-6">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                        <Heart className="w-6 h-6 text-white" />
+                        <Settings className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-blue-400">The Spark</h3>
+                        <h3 className="text-xl font-semibold mb-4 text-blue-400">From Hands to Code</h3>
                         <p className="text-gray-300 leading-relaxed">
-                          My journey began not in a computer science classroom, but in a moment of pure frustration. Watching my
-                          mother struggle with outdated business software that made simple tasks unnecessarily complex, I knew there
-                          had to be a better way. That night, I wrote my first line of code—not for a grade or a job, but to solve
-                          a real problem for someone I cared about.
+                          My journey began with my hands and a toolbox. As a carpenter, I learned that every project starts with
+                          understanding the problem, choosing the right tools, and building something that lasts. Then came the Army—as
+                          an Airborne Infantryman, I discovered the power of precision, adaptability, and mission-critical thinking.
+                          These weren't just jobs; they were schools of problem-solving that would shape everything that followed.
                         </p>
                       </div>
                     </div>
@@ -272,15 +276,15 @@ export default function AboutPage() {
                   <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12 mb-12">
                     <div className="flex items-start space-x-4 mb-6">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                        <Brain className="w-6 h-6 text-white" />
+                        <Target className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-purple-400">The Evolution</h3>
+                        <h3 className="text-xl font-semibold mb-4 text-purple-400">The Pivotal Moment</h3>
                         <p className="text-gray-300 leading-relaxed">
-                          What started as a simple automation script grew into a passion for creating software that doesn't just
-                          work—it transforms how people interact with technology. I've spent thousands of hours not just learning
-                          programming languages, but understanding the psychology of user experience, the art of clean architecture,
-                          and the science of scalable systems.
+                          Returning to construction, I was promoted to project manager—suddenly thrust from the field into an office chair,
+                          surrounded by screens and spreadsheets. That's when it hit me: the computer wasn't just another tool—it was the
+                          most powerful tool I had never fully embraced. Every construction project had taught me that the right tool makes
+                          the impossible possible. It was time to master this one.
                         </p>
                       </div>
                     </div>
@@ -289,15 +293,15 @@ export default function AboutPage() {
                   <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12">
                     <div className="flex items-start space-x-4 mb-6">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                        <Rocket className="w-6 h-6 text-white" />
+                        <Zap className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-green-400">The Mission</h3>
+                        <h3 className="text-xl font-semibold mb-4 text-green-400">Tools for Impact</h3>
                         <p className="text-gray-300 leading-relaxed">
-                          Today, I wake up every morning with the same goal: to bridge the gap between complex technology and
-                          human needs. Every project I take on isn't just about code—it's about understanding your vision,
-                          anticipating challenges, and delivering solutions that exceed expectations. I believe that the best
-                          software is invisible to its users, powerful in its capabilities, and transformative in its impact.
+                          I dove headfirst into a software engineering bootcamp, bringing my problem-solver's mindset to code. While the
+                          job market for new developers has shifted dramatically, I've found my true calling: using technology as a force
+                          multiplier to solve problems for the community on a scale I never imagined possible. Every line of code is
+                          a tool, every application a solution, every project an opportunity to build something that makes life better.
                         </p>
                       </div>
                     </div>
