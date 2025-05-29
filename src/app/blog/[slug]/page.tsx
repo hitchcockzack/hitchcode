@@ -1,175 +1,129 @@
-import { client } from '@/lib/sanity'
-import { postQuery } from '@/lib/sanity.queries'
-import { Post } from '@/lib/sanity.types'
-import { PortableText } from '@portabletext/react'
-import Link from 'next/link'
-import { ArrowLeft, CalendarDays, Tag } from 'lucide-react'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { client } from '@/lib/sanity'
+import { Post } from '@/lib/sanity.types'
+import BlogPostClient from './BlogPostClient'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-// Custom components for Portable Text
-const components = {
-  block: {
-    h1: ({ children }: any) => (
-      <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight">
-        {children}
-      </h1>
-    ),
-    h2: ({ children }: any) => (
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 mt-12 leading-tight">
-        {children}
-      </h2>
-    ),
-    h3: ({ children }: any) => (
-      <h3 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4 mt-10 leading-tight">
-        {children}
-      </h3>
-    ),
-    normal: ({ children }: any) => (
-      <p className="text-lg leading-relaxed text-gray-700 mb-6">
-        {children}
-      </p>
-    ),
-    blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-gray-900 pl-6 py-4 my-8 italic text-xl text-gray-600 bg-gray-50 rounded-r-lg">
-        {children}
-      </blockquote>
-    ),
-  },
-  list: {
-    bullet: ({ children }: any) => (
-      <ul className="list-disc list-inside mb-6 space-y-2 text-lg text-gray-700">
-        {children}
-      </ul>
-    ),
-    number: ({ children }: any) => (
-      <ol className="list-decimal list-inside mb-6 space-y-2 text-lg text-gray-700">
-        {children}
-      </ol>
-    ),
-  },
-  listItem: {
-    bullet: ({ children }: any) => (
-      <li className="leading-relaxed">{children}</li>
-    ),
-    number: ({ children }: any) => (
-      <li className="leading-relaxed">{children}</li>
-    ),
-  },
-  marks: {
-    strong: ({ children }: any) => (
-      <strong className="font-semibold text-gray-900">{children}</strong>
-    ),
-    em: ({ children }: any) => (
-      <em className="italic">{children}</em>
-    ),
-    link: ({ children, value }: any) => (
-      <a
-        href={value.href}
-        className="text-gray-900 underline underline-offset-4 hover:text-gray-600 transition-colors duration-200"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {children}
-      </a>
-    ),
-  },
+async function getPost(slug: string): Promise<Post | null> {
+  const query = `*[_type == "post" && slug.current == $slug][0]{
+    _id,
+    title,
+    slug,
+    publishedAt,
+    excerpt,
+    body,
+    categories[]->{
+      _id,
+      title,
+      slug
+    }
+  }`
+
+  return await client.fetch(query, { slug })
 }
 
-export default async function BlogPostPage({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const post: Post = await client.fetch(postQuery, { slug })
+  const post = await getPost(slug)
+
+  if (!post) {
+    return {
+      title: 'Post Not Found - Zack Hitchcock'
+    }
+  }
+
+  const title = `${post.title} - Zack Hitchcock`
+  const description = post.excerpt || `Read "${post.title}" by Zack Hitchcock - Full-Stack Developer & Digital Architect`
+
+  // Use the current host (ngrok or production)
+  const baseUrl = process.env.NODE_ENV === 'production'
+    ? 'https://hitchcode.com'
+    : process.env.NGROK_URL || 'https://hitchcode.com'
+
+  const url = `${baseUrl}/blog/${post.slug.current}`
+  const imageUrl = `${baseUrl}/og-blog-default.png`
+
+  return {
+    title,
+    description,
+    authors: [{ name: 'Zack Hitchcock', url: 'https://hitchcode.com' }],
+    creator: 'Zack Hitchcock',
+    publisher: 'Zack Hitchcock',
+    category: 'Technology',
+    keywords: post.categories?.map(cat => cat.title).join(', ') || 'web development, programming, tech',
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'Zack Hitchcock - Full-Stack Developer',
+      locale: 'en_US',
+      type: 'article',
+      publishedTime: post.publishedAt,
+      modifiedTime: post.publishedAt,
+      authors: ['Zack Hitchcock'],
+      section: 'Technology',
+      tags: post.categories?.map(cat => cat.title) || [],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${post.title} - Blog post by Zack Hitchcock`,
+          type: 'image/png'
+        }
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@hitchcode',
+      creator: '@hitchcode',
+      title,
+      description,
+      images: {
+        url: imageUrl,
+        alt: `${post.title} - Blog post by Zack Hitchcock`,
+        width: 1200,
+        height: 630,
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    alternates: {
+      canonical: url,
+    },
+    other: {
+      // Additional Facebook-specific tags
+      'fb:app_id': '12345678', // Replace with your Facebook App ID if you have one
+      'article:author': 'https://www.facebook.com/hitchcode', // Replace with your Facebook profile
+      'article:published_time': post.publishedAt,
+      'article:section': 'Technology',
+      'article:tag': post.categories?.map(cat => cat.title).join(',') || '',
+      // LinkedIn specific
+      'linkedin:owner': 'Zack Hitchcock',
+    },
+  }
+}
+
+export default async function BlogPost({ params }: PageProps) {
+  const { slug } = await params
+  const post = await getPost(slug)
 
   if (!post) {
     notFound()
   }
 
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Back Button */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-8 group"
-        >
-          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform duration-200" />
-          Back to blog
-        </Link>
-
-        {/* Article Header */}
-        <header className="mb-12">
-          {/* Categories */}
-          {post.categories && post.categories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {post.categories.map((category) => (
-                <span
-                  key={category._id}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700"
-                >
-                  <Tag size={14} />
-                  {category.title}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Title */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            {post.title}
-          </h1>
-
-          {/* Excerpt */}
-          {post.excerpt && (
-            <p className="text-xl text-gray-600 leading-relaxed mb-8 max-w-3xl">
-              {post.excerpt}
-            </p>
-          )}
-
-          {/* Meta */}
-          <div className="flex items-center gap-4 text-gray-500 border-b border-gray-200 pb-8">
-            <div className="flex items-center gap-2">
-              <CalendarDays size={18} />
-              <time dateTime={post.publishedAt}>
-                {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-            </div>
-          </div>
-        </header>
-
-        {/* Article Content */}
-        <article className="prose prose-lg max-w-none">
-          <div className="text-content">
-            <PortableText value={post.body} components={components} />
-          </div>
-        </article>
-
-        {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-gray-200">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 transition-colors duration-200 font-medium group"
-          >
-            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform duration-200" />
-            Back to all posts
-          </Link>
-        </footer>
-      </div>
-    </div>
-  )
-}
-
-// Generate static params for dynamic routes
-export async function generateStaticParams() {
-  const posts: Post[] = await client.fetch(`*[_type == "post"]{ slug }`)
-
-  return posts.map((post) => ({
-    slug: post.slug.current,
-  }))
+  return <BlogPostClient post={post} />
 }

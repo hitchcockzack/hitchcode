@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create OG Image - Screenshot This</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .instructions {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+        .og-card {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px;
+            box-sizing: border-box;
+            border: 2px solid #333;
+        }
+
+        .og-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                linear-gradient(to right, #ffffff 1px, transparent 1px),
+                linear-gradient(to bottom, #ffffff 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .gradient-orb-1 {
+            position: absolute;
+            top: -200px;
+            left: -200px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+
+        .gradient-orb-2 {
+            position: absolute;
+            bottom: -200px;
+            right: -200px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+
+        .accent-line-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.5), rgba(147, 51, 234, 0.5), transparent);
+        }
+
+        .accent-line-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(147, 51, 234, 0.5), rgba(59, 130, 246, 0.5));
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            border-radius: 20px;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .title {
+            font-family: 'Courier New', monospace;
+            font-size: 72px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 32px;
+            color: #d1d5db;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .author {
+            font-size: 24px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .domain {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            font-size: 20px;
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 1300px) {
+            .og-card {
+                transform: scale(0.7);
+                transform-origin: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h3>📸 Screenshot Instructions:</h3>
+        <ol>
+            <li>Set your browser window to exactly <strong>1200px wide</strong></li>
+            <li>Use your browser's developer tools to set viewport to 1200x630</li>
+            <li>Take a screenshot of just the black card below</li>
+            <li>Save as <code>og-blog-default.png</code> in your <code>public/</code> folder</li>
+        </ol>
+        <p><strong>Or use this keyboard shortcut:</strong><br>
+        Mac: Cmd+Shift+4, then select the card area<br>
+        Windows: Windows+Shift+S</p>
+    </div>
+
+    <div class="og-card">
+        <div class="gradient-orb-1"></div>
+        <div class="gradient-orb-2"></div>
+        <div class="accent-line-left"></div>
+        <div class="accent-line-right"></div>
+
+        <div class="content">
+            <div class="logo">ZH</div>
+            <div class="title">Blog Post</div>
+            <div class="subtitle">Insights & Stories from a Full-Stack Developer</div>
+            <div class="author">by Zack Hitchcock</div>
+        </div>
+
+        <div class="domain">hitchcode.com</div>
+    </div>
+
+    <script>
+        // Log exact dimensions for verification
+        const card = document.querySelector('.og-card');
+        const rect = card.getBoundingClientRect();
+        console.log(`Card dimensions: ${rect.width}x${rect.height}`);
+
+        // Instructions
+        console.log(`
+🎯 TO CREATE THE OPEN GRAPH IMAGE:
+
+1. Use browser dev tools (F12)
+2. Set device to "Responsive"
+3. Set viewport to exactly 1200x630
+4. Take screenshot of the black card only
+5. Save as 'og-blog-default.png' in public/ folder
+
+Current card size: ${rect.width}px × ${rect.height}px
+        `);
+    </script>
+</body>
+</html>

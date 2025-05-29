@@ -1,11 +1,3 @@
-export interface Category {
-  _id: string
-  title: string
-  slug: {
-    current: string
-  }
-}
-
 export interface Post {
   _id: string
   title: string
@@ -14,6 +6,14 @@ export interface Post {
   }
   publishedAt: string
   excerpt?: string
-  body: any[] // Portable Text content
+  body: any[] // PortableText array
   categories?: Category[]
+}
+
+export interface Category {
+  _id: string
+  title: string
+  slug: {
+    current: string
+  }
 }
