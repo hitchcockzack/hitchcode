@@ -1,21 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const PUSHOVER_TOKEN = process.env.PUSHOVER_TOKEN;
-const PUSHOVER_USER = process.env.PUSHOVER_USER;
-const TESTING_MODE = process.env.TESTING_MODE === 'true';
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    if (TESTING_MODE) {
-      console.log('Testing mode - API notification suppressed');
-      return NextResponse.json({ success: true });
-    }
+    const { message } = await request.json();
 
-    const body = await request.json();
-    const { action } = body;
+    // Pushover API configuration
+    const PUSHOVER_TOKEN = process.env.PUSHOVER_TOKEN;
+    const PUSHOVER_USER = process.env.PUSHOVER_USER;
 
     if (!PUSHOVER_TOKEN || !PUSHOVER_USER) {
-      return NextResponse.json({ success: false });
+      console.warn('Pushover credentials not configured');
+      return NextResponse.json({ success: false, error: 'Pushover not configured' }, { status: 500 });
     }
 
     const response = await fetch('https://api.pushover.net/1/messages.json', {
@@ -26,17 +21,20 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         token: PUSHOVER_TOKEN,
         user: PUSHOVER_USER,
-        message: action,
-        priority: 0
+        message: message,
+        title: 'HitchCode Activity',
       }),
     });
 
-    if (!response.ok) {
-      return NextResponse.json({ success: false });
+    if (response.ok) {
+      return NextResponse.json({ success: true });
+    } else {
+      const error = await response.text();
+      console.error('Pushover API error:', error);
+      return NextResponse.json({ success: false, error }, { status: 500 });
     }
-
-    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ success: false });
+    console.error('Notification error:', error);
+    return NextResponse.json({ success: false, error: 'Failed to send notification' }, { status: 500 });
   }
 }

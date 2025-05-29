@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import InvoicePaper from './InvoicePaper';
+import { sendNotification } from '../lib/notifications';
 
 const sampleJobs = [
   {
@@ -151,6 +152,7 @@ export default function AutomatedInvoiceDemo() {
   const [activeIdx, setActiveIdx] = useState(0);
 
   const handleGenerate = () => {
+    sendNotification('📊 Invoice Demo triggered');
     setAnimating(true);
     setInvoiceStates(Array(sampleJobs.length).fill(null).map(() => ({ fields: [], sent: false })));
     setHighlighted(null);

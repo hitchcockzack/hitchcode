@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { JSX } from 'react';
 import { Instagram, Youtube, Sparkles, TrendingUp, Zap, Clock, Target, Brain, MousePointer, Copy, ExternalLink, ChevronRight } from 'lucide-react';
+import { sendNotification } from '../lib/notifications';
 
 // Enhanced trend data with real metrics
 const trendingTopics = [
@@ -667,6 +668,7 @@ export default function SocialMediaContentStudio() {
   const handleTrendSelect = (trendId: number) => {
     if (selectedTrend === trendId && generationStatus === 'generating') return;
 
+    sendNotification('📱 Social Media Demo triggered');
     setSelectedTrend(trendId);
     setIsGenerating(true);
     setGenerationStatus('generating');

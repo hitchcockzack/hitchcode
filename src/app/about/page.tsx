@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { JetBrains_Mono, Inter } from 'next/font/google';
+import { sendNotification } from '../../lib/notifications';
 import {
   Code,
   Lightbulb,
@@ -157,6 +158,11 @@ export default function AboutPage() {
       clearInterval(quoteInterval);
       observer.disconnect();
     };
+  }, []);
+
+  // Send notification when page is visited
+  useEffect(() => {
+    sendNotification('👤 About page visited');
   }, []);
 
   return (
@@ -491,21 +497,21 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  icon: Coffee,
-                  title: 'Coffee Connoisseur',
-                  description: 'I\'ve perfected the art of brewing the perfect cup to fuel late-night coding sessions.',
+                  icon: Settings,
+                  title: 'Tool Collector',
+                  description: 'From hammers to IDEs - I believe the right tool makes any job easier. My workshop and computer setup reflect this philosophy.',
                   color: 'from-amber-500 to-orange-500'
                 },
                 {
-                  icon: BookOpen,
-                  title: 'Lifelong Learner',
-                  description: 'Currently reading 3 books simultaneously about AI, design psychology, and business strategy.',
+                  icon: Target,
+                  title: 'Problem Hunter',
+                  description: 'Whether it\'s a wobbly table or a broken API, I get genuinely excited about finding elegant solutions to everyday problems.',
                   color: 'from-green-500 to-teal-500'
                 },
                 {
-                  icon: Globe,
-                  title: 'Digital Nomad',
-                  description: 'I\'ve coded from 15+ countries, bringing global perspectives to every project.',
+                  icon: Zap,
+                  title: 'Efficiency Obsessed',
+                  description: 'If something takes more than 3 clicks or can be automated, I\'m already thinking about how to streamline it.',
                   color: 'from-purple-500 to-pink-500'
                 }
               ].map((fact, index) => {
