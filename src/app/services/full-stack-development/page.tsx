@@ -381,7 +381,7 @@ export default function FullStackDevelopment() {
                 <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Featured Work</span>
               </h2>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Real solutions for real businesses. Here are some of the projects we've brought to life.
+                Real solutions for real businesses. Here are some of the most recent projects we've brought to life.
               </p>
             </div>
 
@@ -391,7 +391,87 @@ export default function FullStackDevelopment() {
                 <h3 className={`${jetbrains.className} text-2xl font-bold mb-3`}>
                   <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Single Page Applications</span>
                 </h3>
-                <p className="text-gray-400">Modern, responsive web applications built for optimal user experience</p>
+                <p className="text-gray-400 mb-4">Modern, responsive web applications built for optimal user experience</p>
+
+                {/* Lighthouse Performance Score */}
+                <div className="flex items-center justify-center mb-6">
+                  <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-lg border border-white/10 p-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="relative">
+                        <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
+                          {/* Background circle */}
+                          <path
+                            d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#1f2937"
+                            strokeWidth="2"
+                          />
+
+                          {/* Performance (25% - Green) */}
+                          <path
+                            d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#10b981"
+                            strokeWidth="2"
+                            strokeDasharray="25, 100"
+                            strokeDashoffset="0"
+                            className="lighthouse-performance"
+                          />
+
+                          {/* Accessibility (25% - Green) */}
+                          <path
+                            d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#10b981"
+                            strokeWidth="2"
+                            strokeDasharray="25, 100"
+                            strokeDashoffset="-25"
+                            className="lighthouse-accessibility"
+                          />
+
+                          {/* Best Practices (25% - Green) */}
+                          <path
+                            d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#10b981"
+                            strokeWidth="2"
+                            strokeDasharray="25, 100"
+                            strokeDashoffset="-50"
+                            className="lighthouse-practices"
+                          />
+
+                          {/* SEO (25% - Green) */}
+                          <path
+                            d="M18 2.0845
+                              a 15.9155 15.9155 0 0 1 0 31.831
+                              a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#10b981"
+                            strokeWidth="2"
+                            strokeDasharray="25, 100"
+                            strokeDashoffset="-75"
+                            className="lighthouse-seo"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold text-green-400 lighthouse-score">100</span>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-white mb-1">Lighthouse Performance Score</div>
+                        <div className="text-xs text-gray-400">All projects below achieve perfect scores</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -410,9 +490,34 @@ export default function FullStackDevelopment() {
                             </h4>
                             <p className="text-gray-400 text-sm mb-4">{project.description}</p>
                           </div>
-                          <div className="ml-4">
+                          <div className="ml-4 flex flex-col items-center space-y-2">
                             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
                               <Globe className="h-5 w-5 text-blue-400" />
+                            </div>
+                            {/* Lighthouse Badge */}
+                            <div className="relative">
+                              <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 36 36">
+                                <path
+                                  d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                  fill="none"
+                                  stroke="#374151"
+                                  strokeWidth="3"
+                                />
+                                <path
+                                  d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                  fill="none"
+                                  stroke="#10b981"
+                                  strokeWidth="3"
+                                  strokeDasharray="100, 100"
+                                />
+                              </svg>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-xs font-bold text-green-400">100</span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -486,6 +591,10 @@ export default function FullStackDevelopment() {
                       <div className="flex items-start">
                         <CheckCircle className="h-4 w-4 text-purple-400 mr-3 mt-0.5" />
                         <span className="text-sm text-gray-300">Comprehensive club management dashboard for directors</span>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-4 w-4 text-purple-400 mr-3 mt-0.5" />
+                        <span className="text-sm text-gray-300">Programmatic email communications with users for instant updates on time-sensitive requests and inquiries</span>
                       </div>
                     </div>
 
@@ -660,6 +769,74 @@ export default function FullStackDevelopment() {
         .revealed {
           opacity: 1 !important;
           transform: translateY(0) !important;
+        }
+
+        /* Lighthouse Animation Styles */
+        .lighthouse-performance,
+        .lighthouse-accessibility,
+        .lighthouse-practices,
+        .lighthouse-seo {
+          stroke-dasharray: 25, 100;
+          stroke-dashoffset: 100;
+          animation-duration: 0.6s;
+          animation-timing-function: ease-out;
+          animation-fill-mode: forwards;
+        }
+
+        .lighthouse-performance {
+          animation-name: lighthouse-fill-performance;
+          animation-delay: 0.5s;
+        }
+
+        .lighthouse-accessibility {
+          animation-name: lighthouse-fill-accessibility;
+          animation-delay: 0.8s;
+        }
+
+        .lighthouse-practices {
+          animation-name: lighthouse-fill-practices;
+          animation-delay: 1.1s;
+        }
+
+        .lighthouse-seo {
+          animation-name: lighthouse-fill-seo;
+          animation-delay: 1.4s;
+        }
+
+        .lighthouse-score {
+          opacity: 0;
+          animation: lighthouse-score-reveal 0.5s ease-out 1.7s forwards;
+        }
+
+        @keyframes lighthouse-fill-performance {
+          from { stroke-dashoffset: 100; }
+          to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes lighthouse-fill-accessibility {
+          from { stroke-dashoffset: 75; }
+          to { stroke-dashoffset: -25; }
+        }
+
+        @keyframes lighthouse-fill-practices {
+          from { stroke-dashoffset: 50; }
+          to { stroke-dashoffset: -50; }
+        }
+
+        @keyframes lighthouse-fill-seo {
+          from { stroke-dashoffset: 25; }
+          to { stroke-dashoffset: -75; }
+        }
+
+        @keyframes lighthouse-score-reveal {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
         }
       `}</style>
     </main>

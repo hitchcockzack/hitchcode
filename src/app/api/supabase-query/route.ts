@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '../../../lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,18 +13,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Here you would typically make the actual Supabase query
-    // For now, I'll return mock data based on the current counts
-    if (sql.includes('profiles')) {
-      return NextResponse.json([{ profile_count: "664" }]);
-    } else if (sql.includes('players')) {
-      return NextResponse.json([{ player_count: "815" }]);
+    // Execute the SQL query using Supabase's RPC or direct query
+    // For security, we'll only allow specific pre-defined queries
+    let result;
+
+    if (sql.includes('profiles') && sql.includes('COUNT(*)')) {
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      if (error) {
+        console.error('Supabase query error:', error);
+        return NextResponse.json(
+          { error: 'Database query failed' },
+          { status: 500 }
+        );
+      }
+
+      result = [{ profile_count: count || 0 }];
+    } else if (sql.includes('players') && sql.includes('COUNT(*)')) {
+      const { count, error } = await supabase
+        .from('players')
+        .select('*', { count: 'exact', head: true });
+
+      if (error) {
+        console.error('Supabase query error:', error);
+        return NextResponse.json(
+          { error: 'Database query failed' },
+          { status: 500 }
+        );
+      }
+
+      result = [{ player_count: count || 0 }];
+    } else {
+      return NextResponse.json(
+        { error: 'Query not supported. Only COUNT queries on profiles and players tables are allowed.' },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json(
-      { error: 'Query not recognized' },
-      { status: 400 }
-    );
+    return NextResponse.json(result);
 
   } catch (error) {
     console.error('Supabase query error:', error);
