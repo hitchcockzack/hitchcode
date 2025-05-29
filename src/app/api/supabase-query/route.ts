@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '../../../lib/supabase';
+import { supabaseAdmin } from '../../../lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     let result;
 
     if (sql.includes('profiles') && sql.includes('COUNT(*)')) {
-      const { count, error } = await supabase
+      const { count, error } = await supabaseAdmin
         .from('profiles')
         .select('*', { count: 'exact', head: true });
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
       result = [{ profile_count: count || 0 }];
     } else if (sql.includes('players') && sql.includes('COUNT(*)')) {
-      const { count, error } = await supabase
+      const { count, error } = await supabaseAdmin
         .from('players')
         .select('*', { count: 'exact', head: true });
 
