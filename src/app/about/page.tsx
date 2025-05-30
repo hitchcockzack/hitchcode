@@ -62,14 +62,14 @@ const achievements = [
   {
     year: '2022',
     title: 'Innovation Award',
-    description: 'Recognized for developing cutting-edge automation solutions that increased client productivity by 300%.',
+    description: 'Recognized for developing cutting-edge automation solutions that increased internal productivity by 300%.',
     icon: Lightbulb,
     gradient: 'from-orange-500 to-red-500'
   },
   {
     year: '2021',
-    title: 'Technical Leadership',
-    description: 'Led cross-functional teams in delivering complex software solutions, mentoring junior developers.',
+    title: 'Operations Project Manager',
+    description: 'Led $3M+ projects with 3-5 teams of 4 operating concurrently in different locations.',
     icon: Users,
     gradient: 'from-green-500 to-emerald-500'
   }
@@ -490,48 +490,218 @@ export default function AboutPage() {
                 <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Beyond the Code</span>
               </h2>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                A few fun facts about me that might surprise you
+                Life is about more than just coding - here's what keeps me grounded and motivated
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Settings,
-                  title: 'Tool Collector',
-                  description: 'From hammers to IDEs - I believe the right tool makes any job easier. My workshop and computer setup reflect this philosophy.',
-                  color: 'from-amber-500 to-orange-500'
-                },
-                {
-                  icon: Target,
-                  title: 'Problem Hunter',
-                  description: 'Whether it\'s a wobbly table or a broken API, I get genuinely excited about finding elegant solutions to everyday problems.',
-                  color: 'from-green-500 to-teal-500'
-                },
-                {
-                  icon: Zap,
-                  title: 'Efficiency Obsessed',
-                  description: 'If something takes more than 3 clicks or can be automated, I\'m already thinking about how to streamline it.',
-                  color: 'from-purple-500 to-pink-500'
-                }
-              ].map((fact, index) => {
-                const Icon = fact.icon;
-                return (
-                  <div
-                    key={index}
-                    className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
-                    style={{ transitionDelay: `${200 + index * 100}ms` }}
-                  >
-                    <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:translate-y-[-4px] shadow-xl text-center">
-                      <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r ${fact.color} flex items-center justify-center`}>
-                        <Icon className="w-8 h-8 text-white" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+              {/* Dog Dad Section */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '200ms' }}>
+                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center mr-4">
+                      <Heart className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-white">Dog Dad</h3>
+                  </div>
+
+                  <p className="text-gray-400 leading-relaxed mb-6">
+                    Meet Vito, my German Shepherd rescue and the best dog in the whole world. This guy is my adventure buddy,
+                    workout partner, and constant companion. Whether we're exploring new trails, going for bike rides,
+                    roller blading through the neighborhood, or just playing in the yard - he comes with me everywhere.
+                  </p>
+
+                  {/* Media Grid */}
+                  <div className="space-y-4 mb-6">
+                    {/* Full Width First Image */}
+                    <div className="w-full overflow-hidden rounded-lg group">
+                      <img
+                        src="/047B9985-47E4-457F-AE9A-E2F2910E8DBF.png"
+                        alt="Vito the German Shepherd"
+                        className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+
+                    {/* Second Row: Image and Video */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="aspect-square overflow-hidden rounded-lg group">
+                        <img
+                          src="/IMG_1691.png"
+                          alt="Adventures with Vito"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
                       </div>
-                      <h3 className="text-xl font-semibold mb-4 text-white">{fact.title}</h3>
-                      <p className="text-gray-400 leading-relaxed">{fact.description}</p>
+
+                      {/* Video Section */}
+                      <div className="flex flex-col space-y-4">
+                        <div className="aspect-square overflow-hidden rounded-lg relative group">
+                          <video
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                          >
+                            <source src="/IMG_1915.mov" type="video/quicktime" />
+                            <source src="/IMG_1915.mov" type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                              <div className="w-0 h-0 border-l-[6px] border-l-white border-y-[4px] border-y-transparent ml-1"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fun Callout */}
+                    <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20 p-4">
+                      <p className="text-sm text-amber-400 text-center font-medium">
+                        Life's better with a furry co-pilot! 🐕
+                      </p>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              </div>
+
+              {/* Firefighter Section */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '300ms' }}>
+                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center mr-4">
+                      <Target className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-white">Firefighter</h3>
+                  </div>
+
+                  <p className="text-gray-400 leading-relaxed mb-6">
+                    When I'm not coding, I serve my community as a firefighter. It's taught me the importance of
+                    teamwork, quick decision-making under pressure, and always being ready to help others.
+                    Plus, Vito gets to visit the station sometimes!
+                  </p>
+
+                  {/* Fire Department Image */}
+                  <div className="relative overflow-hidden rounded-lg group mb-6">
+                    <img
+                      src="/IMG_1360.png"
+                      alt="Zack and Vito at the fire station"
+                      className="w-full h-128 object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-sm font-medium">Vito checking out the fire truck</p>
+                    </div>
+                  </div>
+
+                  {/* <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-lg border border-red-500/20 p-4">
+                    <p className="text-sm text-red-400 text-center font-medium">
+                      Serving the community, one call at a time 🚒
+                    </p>
+                  </div> */}
+                </div>
+              </div>
+            </div>
+
+            {/* Army Veteran & World Traveler Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16">
+              {/* Army Veteran Section */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '500ms' }}>
+                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-500 flex items-center justify-center mr-4">
+                      <Star className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-white">Army Veteran</h3>
+                  </div>
+
+                  <p className="text-gray-400 leading-relaxed mb-6">
+                    Proud to have served as an Airborne Infantryman, stationed in Italy and North Carolina.
+                    Deployed to Iraq in 2019, where I learned the true meaning of teamwork, leadership under pressure,
+                    and the importance of mission accomplishment. The discipline and problem-solving skills from my
+                    military service continue to shape how I approach every challenge today.
+                  </p>
+
+                  {/* Military Images */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="aspect-square overflow-hidden rounded-lg group">
+                      <img
+                        src="/IMG_6325.png"
+                        alt="Military service - Army training"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="aspect-square overflow-hidden rounded-lg group">
+                      <img
+                        src="/3A28D7A4-D601-4B60-8B1B-ABF447146B9F.png"
+                        alt="Deployment memories"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="aspect-square overflow-hidden rounded-lg group col-span-2">
+                      <img
+                        src="/IMG_1157.png"
+                        alt="Army service memories"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  </div>
+
+                
+                </div>
+              </div>
+
+              {/* World Traveler Section */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '600ms' }}>
+                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 flex items-center justify-center mr-4">
+                      <Globe className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-white">World Traveler</h3>
+                  </div>
+
+                  <p className="text-gray-400 leading-relaxed mb-6">
+                    From military deployments to personal adventures, I've been fortunate to experience different
+                    cultures and perspectives around the world. These experiences have broadened my worldview and
+                    taught me that great solutions often come from understanding diverse approaches to problems.
+                    Travel keeps me curious and adaptable.
+                  </p>
+
+                  {/* Travel Images */}
+                  <div className="space-y-4 mb-6">
+                    <div className="relative overflow-hidden rounded-lg group">
+                      <img
+                        src="/IMG_1367.png"
+                        alt="Positive host review showing character"
+                        className="w-full h-64 object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                        style={{ objectPosition: 'center 70%' }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                      </div>
+                    </div>
+                    <div className="relative overflow-hidden rounded-lg group">
+                      <img
+                        src="/IMG_8133.png"
+                        alt="Travel adventures around the world"
+                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-teal-500/10 to-blue-500/10 rounded-lg border border-teal-500/20 p-4">
+                    <p className="text-sm text-teal-400 text-center font-medium">
+                      The world is my classroom 🌍
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
