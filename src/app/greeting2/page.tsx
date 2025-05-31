@@ -20,7 +20,7 @@ const PROFILE_DATA = {
   name: 'Zack Hitchcock',
   title: 'Software Engineer',
   company: 'Hitch Code',
-  photo: '/zack.png',
+  photo: '/optimized/zack.webp',
   location: 'San Francisco, CA',
   contact: {
     phone: '+1 (707) 656-4252',
@@ -181,7 +181,7 @@ export default function EnhancedGreeting() {
   // Handler functions
   const loadPhoto = async () => {
     try {
-      const response = await fetch('/zack.png');
+      const response = await fetch('/optimized/zack.webp');
       const blob = await response.blob();
       const reader = new FileReader();
       reader.onloadend = () => {

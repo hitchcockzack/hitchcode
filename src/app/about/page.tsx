@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { JetBrains_Mono, Inter } from 'next/font/google';
 import { sendNotification } from '../../lib/notifications';
 import {
@@ -30,8 +31,22 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
-const inter = Inter({ subsets: ['latin'] });
+// Lazy load heavy components with better granularity
+const TechStackSection = lazy(() => import('./components/TechStackSection'));
+const AchievementsSection = lazy(() => import('./components/AchievementsSection'));
+const BeyondCodeSection = lazy(() => import('./components/BeyondCodeSection'));
+
+const jetbrains = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
 
 const skills = [
   { name: 'React & Next.js', level: 98, category: 'Frontend' },
@@ -135,7 +150,7 @@ export default function AboutPage() {
     // Intersection Observer for reveal animations
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '50px',
       threshold: 0.1
     };
 
@@ -149,9 +164,18 @@ export default function AboutPage() {
     };
 
     const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    document.querySelectorAll('.reveal-item').forEach(item => {
-      observer.observe(item);
-    });
+
+    // Use requestIdleCallback for performance
+    const observeElements = () => {
+      const elements = document.querySelectorAll('.reveal-item');
+      elements.forEach(item => observer.observe(item));
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(observeElements);
+    } else {
+      setTimeout(observeElements, 0);
+    }
 
     return () => {
       clearTimeout(timer);
@@ -160,9 +184,12 @@ export default function AboutPage() {
     };
   }, []);
 
-  // Send notification when page is visited
+  // Send notification when page is visited - debounced
   useEffect(() => {
-    sendNotification('👤 About page visited');
+    const timeoutId = setTimeout(() => {
+      sendNotification('👤 About page visited');
+    }, 1000);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -172,27 +199,34 @@ export default function AboutPage() {
         <div className="h-full w-full bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:80px_80px]" />
       </div>
 
-      {/* Global accent lines */}
-      <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/30 via-purple-600/30 to-transparent z-0" />
-      <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/30 to-blue-600/30 z-0" />
+      {/* Global accent lines - simplified */}
+      <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/20 via-purple-600/20 to-transparent z-0" />
+      <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/20 to-blue-600/20 z-0" />
 
-      {/* Floating gradient orbs */}
-      <div className="fixed -top-40 -left-40 w-80 h-80 bg-blue-600/20 rounded-full filter blur-[100px] animate-pulse" />
-      <div className="fixed -bottom-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* Floating gradient orbs - reduced intensity */}
+      <div className="fixed -top-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full filter blur-[100px] animate-pulse" />
+      <div className="fixed -bottom-40 -right-40 w-80 h-80 bg-purple-600/10 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
 
       <main className="flex-1 relative z-10">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-center justify-center py-20 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className={`text-center transform transition-all duration-1000 ease-out ${playedIntro ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-              {/* Profile Image Placeholder */}
+              {/* Profile Image with optimization */}
               <div className="w-32 h-32 mx-auto mb-8 relative">
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1">
                   <div className="w-full h-full rounded-full bg-black overflow-hidden">
-                    <img
-                      src="/zack.png"
+                    <Image
+                      src="/optimized/zack.webp"
                       alt="Zack Hitchcock"
+                      width={128}
+                      height={128}
                       className="w-full h-full object-cover rounded-full"
+                      priority
+                      placeholder="blur"
+                      quality={85}
+                      sizes="128px"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                     />
                   </div>
                 </div>
@@ -218,12 +252,14 @@ export default function AboutPage() {
                 <Link
                   href="/contact"
                   className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[160px] text-center"
+                  prefetch={true}
                 >
                   Let's Work Together
                 </Link>
                 <Link
                   href="/services/full-stack-development"
                   className="px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md font-medium transition-colors min-w-[160px] text-center group"
+                  prefetch={true}
                 >
                   <span className="inline-flex items-center">
                     View My Work
@@ -369,36 +405,16 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Tech Stack Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {techStack.map((category, index) => {
-                const Icon = category.icon;
-                return (
-                  <div
-                    key={index}
-                    className="reveal-item opacity-0 transition-all duration-700 translate-y-8"
-                    style={{ transitionDelay: `${200 + index * 100}ms` }}
-                  >
-                    <div className="h-full p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 shadow-xl">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <Icon className="w-6 h-6 text-blue-400" />
-                        <h3 className="text-lg font-semibold">{category.name}</h3>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {category.tools.map((tool, toolIndex) => (
-                          <span
-                            key={toolIndex}
-                            className="px-3 py-1 text-xs bg-white/5 border border-white/10 rounded-full text-gray-300"
-                          >
-                            {tool}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            {/* Tech Stack Grid - Lazy loaded */}
+            <Suspense fallback={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-32 bg-gray-800/20 rounded-lg animate-pulse" />
+                ))}
+              </div>
+            }>
+              <TechStackSection techStack={techStack} />
+            </Suspense>
 
             {/* Skills Progress Bars */}
             <div className="max-w-4xl mx-auto">
@@ -435,276 +451,27 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Achievements Timeline */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Key Milestones</span>
-              </h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Major achievements that have shaped my professional journey
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="space-y-8">
-                {achievements.map((achievement, index) => {
-                  const Icon = achievement.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
-                      style={{ transitionDelay: `${200 + index * 150}ms` }}
-                    >
-                      <div className="flex items-start space-x-6 p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:translate-y-[-2px] shadow-xl">
-                        <div className="flex-shrink-0">
-                          <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${achievement.gradient} flex items-center justify-center`}>
-                            <Icon className="w-8 h-8 text-white" />
-                          </div>
-                        </div>
-                        <div className="flex-grow">
-                          <div className="flex items-center space-x-4 mb-3">
-                            <span className={`${jetbrains.className} text-2xl font-bold bg-gradient-to-r ${achievement.gradient} bg-clip-text text-transparent`}>
-                              {achievement.year}
-                            </span>
-                            <div className="flex-grow h-px bg-gradient-to-r from-white/20 to-transparent" />
-                          </div>
-                          <h3 className="text-xl font-semibold mb-3 text-white">{achievement.title}</h3>
-                          <p className="text-gray-400 leading-relaxed">{achievement.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+        {/* Achievements Timeline - Lazy loaded */}
+        <Suspense fallback={
+          <div className="relative py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="h-64 bg-gray-800/20 rounded-lg animate-pulse" />
             </div>
           </div>
-        </section>
+        }>
+          <AchievementsSection achievements={achievements} jetbrains={jetbrains} />
+        </Suspense>
 
-        {/* Fun Facts Section */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Beyond the Code</span>
-              </h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Life is about more than just coding - here's what keeps me grounded and motivated
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-              {/* Dog Dad Section */}
-              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '200ms' }}>
-                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center mr-4">
-                      <Heart className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-white">Dog Dad</h3>
-                  </div>
-
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    Meet Vito, my German Shepherd rescue and the best dog in the whole world. This guy is my adventure buddy,
-                    workout partner, and constant companion. Whether we're exploring new trails, going for bike rides,
-                    roller blading through the neighborhood, or just playing in the yard - he comes with me everywhere.
-                  </p>
-
-                  {/* Media Grid */}
-                  <div className="space-y-4 mb-6">
-                    {/* Full Width First Image */}
-                    <div className="w-full overflow-hidden rounded-lg group">
-                      <img
-                        src="/047B9985-47E4-457F-AE9A-E2F2910E8DBF.png"
-                        alt="Vito the German Shepherd"
-                        className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-
-                    {/* Second Row: Image and Video */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="aspect-square overflow-hidden rounded-lg group">
-                        <img
-                          src="/IMG_1691.png"
-                          alt="Adventures with Vito"
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                      </div>
-
-                      {/* Video Section */}
-                      <div className="flex flex-col space-y-4">
-                        <div className="aspect-square overflow-hidden rounded-lg relative group">
-                          <video
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                          >
-                            <source src="/IMG_1915.mov" type="video/quicktime" />
-                            <source src="/IMG_1915.mov" type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                              <div className="w-0 h-0 border-l-[6px] border-l-white border-y-[4px] border-y-transparent ml-1"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Fun Callout */}
-                    <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20 p-4">
-                      <p className="text-sm text-amber-400 text-center font-medium">
-                        Life's better with a furry co-pilot! 🐕
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Firefighter Section */}
-              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '300ms' }}>
-                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center mr-4">
-                      <Target className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-white">Firefighter</h3>
-                  </div>
-
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    When I'm not coding, I serve my community as a firefighter. It's taught me the importance of
-                    teamwork, quick decision-making under pressure, and always being ready to help others.
-                    Plus, Vito gets to visit the station sometimes!
-                  </p>
-
-                  {/* Fire Department Image */}
-                  <div className="relative overflow-hidden rounded-lg group mb-6">
-                    <img
-                      src="/IMG_1360.png"
-                      alt="Zack and Vito at the fire station"
-                      className="w-full h-128 object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <p className="text-sm font-medium">Vito checking out the fire truck</p>
-                    </div>
-                  </div>
-
-                  {/* <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-lg border border-red-500/20 p-4">
-                    <p className="text-sm text-red-400 text-center font-medium">
-                      Serving the community, one call at a time 🚒
-                    </p>
-                  </div> */}
-                </div>
-              </div>
-            </div>
-
-            {/* Army Veteran & World Traveler Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16">
-              {/* Army Veteran Section */}
-              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '500ms' }}>
-                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-500 flex items-center justify-center mr-4">
-                      <Star className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-white">Army Veteran</h3>
-                  </div>
-
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    Proud to have served as an Airborne Infantryman, stationed in Italy and North Carolina.
-                    Deployed to Iraq in 2019, where I learned the true meaning of teamwork, leadership under pressure,
-                    and the importance of mission accomplishment. The discipline and problem-solving skills from my
-                    military service continue to shape how I approach every challenge today.
-                  </p>
-
-                  {/* Military Images */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="aspect-square overflow-hidden rounded-lg group">
-                      <img
-                        src="/IMG_6325.png"
-                        alt="Military service - Army training"
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="aspect-square overflow-hidden rounded-lg group">
-                      <img
-                        src="/3A28D7A4-D601-4B60-8B1B-ABF447146B9F.png"
-                        alt="Deployment memories"
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="aspect-square overflow-hidden rounded-lg group col-span-2">
-                      <img
-                        src="/IMG_1157.png"
-                        alt="Army service memories"
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                  </div>
-
-                
-                </div>
-              </div>
-
-              {/* World Traveler Section */}
-              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '600ms' }}>
-                <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-blue-500 flex items-center justify-center mr-4">
-                      <Globe className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-white">World Traveler</h3>
-                  </div>
-
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    From military deployments to personal adventures, I've been fortunate to experience different
-                    cultures and perspectives around the world. These experiences have broadened my worldview and
-                    taught me that great solutions often come from understanding diverse approaches to problems.
-                    Travel keeps me curious and adaptable.
-                  </p>
-
-                  {/* Travel Images */}
-                  <div className="space-y-4 mb-6">
-                    <div className="relative overflow-hidden rounded-lg group">
-                      <img
-                        src="/IMG_1367.png"
-                        alt="Positive host review showing character"
-                        className="w-full h-64 object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                        style={{ objectPosition: 'center 70%' }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-
-                      </div>
-                    </div>
-                    <div className="relative overflow-hidden rounded-lg group">
-                      <img
-                        src="/IMG_8133.png"
-                        alt="Travel adventures around the world"
-                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-teal-500/10 to-blue-500/10 rounded-lg border border-teal-500/20 p-4">
-                    <p className="text-sm text-teal-400 text-center font-medium">
-                      The world is my classroom 🌍
-                    </p>
-                  </div>
-                </div>
-              </div>
+        {/* Beyond Code Section - Lazy loaded */}
+        <Suspense fallback={
+          <div className="relative py-24 border-t border-white/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="h-96 bg-gray-800/20 rounded-lg animate-pulse" />
             </div>
           </div>
-        </section>
+        }>
+          <BeyondCodeSection jetbrains={jetbrains} />
+        </Suspense>
 
         {/* Call to Action */}
         <section className="relative py-24 border-t border-white/10">
@@ -722,6 +489,7 @@ export default function AboutPage() {
                 <Link
                   href="/contact"
                   className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[200px] text-center inline-flex items-center justify-center group"
+                  prefetch={true}
                 >
                   Start Your Project
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -729,6 +497,7 @@ export default function AboutPage() {
                 <Link
                   href="/services/full-stack-development"
                   className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md font-medium transition-colors min-w-[200px] text-center"
+                  prefetch={true}
                 >
                   Explore Services
                 </Link>
@@ -754,6 +523,15 @@ export default function AboutPage() {
           .prose {
             font-size: 16px;
           }
+        }
+
+        /* Performance optimizations */
+        img {
+          content-visibility: auto;
+        }
+
+        video {
+          content-visibility: auto;
         }
       `}</style>
     </div>

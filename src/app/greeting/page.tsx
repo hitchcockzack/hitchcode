@@ -21,7 +21,7 @@ export default function Greeting() {
 
   const loadPhoto = async () => {
     try {
-      const response = await fetch('/zack.png');
+      const response = await fetch('/optimized/zack.webp');
       const blob = await response.blob();
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -132,7 +132,7 @@ END:VCARD`;
         <div className={styles.header}>
           <div className={styles.imageWrapper}>
             <Image
-              src="/zack.png"
+              src="/optimized/zack.webp"
               alt="Zack Hitchcock"
               width={180}
               height={180}
