@@ -32,14 +32,40 @@ const faviconDataUrl = `data:image/svg+xml;base64,${Buffer.from(faviconSvg).toSt
 export const metadata: Metadata = {
   title: "hitchcode",
   description: "The solution to all your problems.",
-  icons: [
-    {
-      rel: 'icon',
-      url: '/favicon.svg',
-      type: 'image/svg+xml',
-      sizes: 'any'
-    }
-  ]
+  icons: {
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: '32x32',
+        type: 'image/x-icon',
+      },
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+        sizes: 'any'
+      }
+    ],
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png'
+      }
+    ],
+    shortcut: '/favicon.ico'
+  },
+  openGraph: {
+    title: 'hitchcode',
+    description: 'The solution to all your problems.',
+    images: [
+      {
+        url: '/og-blog-default.png',
+        width: 1200,
+        height: 630,
+        alt: 'hitchcode',
+      }
+    ],
+  }
 }
 
 export default function RootLayout({
@@ -50,6 +76,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon and Icons - Comprehensive Setup */}
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="msapplication-TileColor" content="#000000" />
+
+        {/* Open Graph Default Image */}
+        <meta property="og:image" content="/og-blog-default.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="hitchcode" />
+
         {/* Preload critical resources */}
         <link rel="preload" href="/optimized/zack.webp" as="image" type="image/webp" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />

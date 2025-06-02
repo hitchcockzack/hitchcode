@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import Link from 'next/link';
 import { JetBrains_Mono, Inter } from 'next/font/google';
-import { Send, ArrowRight, Mail, Github, Linkedin, Phone } from 'lucide-react';
+import { Send, ArrowRight, Mail, Linkedin, Phone, Download } from 'lucide-react';
 
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 const inter = Inter({ subsets: ['latin'] });
@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] });
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [photoData, setPhotoData] = useState<string | null>(null);
+  const [showSaveTooltip, setShowSaveTooltip] = useState(false);
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -18,6 +21,60 @@ export default function ContactPage() {
   });
   const [activeField, setActiveField] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    // Check if user is on mobile device
+    const checkMobile = () => {
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    loadPhoto();
+  }, []);
+
+  const loadPhoto = async () => {
+    try {
+      const response = await fetch('/optimized/zack.webp');
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        setPhotoData(base64data.split(',')[1]);
+      };
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error('Error loading photo:', error);
+    }
+  };
+
+  const handleSaveContact = async () => {
+    const photoString = photoData ? `
+PHOTO;ENCODING=b;TYPE=JPEG:${photoData}` : '';
+
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:Zack Hitchcock
+N:Hitchcock;Zack;;;
+TITLE:Software Engineer${photoString}
+TEL:+16175865962
+EMAIL:hitchcockzack@gmail.com
+URL:https://hitchcode.com
+URL;type=LinkedIn:www.linkedin.com/in/zack-hitchcock-17841a219/
+END:VCARD`;
+
+    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'zack-hitchcock.vcf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Hide tooltip after successful save
+    setShowSaveTooltip(false);
+  };
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -111,9 +168,12 @@ export default function ContactPage() {
             </h1>
             <div className="mt-2 h-1 w-12 bg-gradient-to-r from-blue-500 to-purple-500" />
 
-            <p className="mt-6 text-gray-400 max-w-xl text-lg">
-              Ready to discuss your project or have questions about my services?
-              Let's start a conversation.
+            <p className="mt-6 text-gray-400 max-w-2xl text-lg leading-relaxed">
+              Have a wild idea? Facing a frustrating problem? Just curious about something?
+              <span className="text-white font-medium"> I'd love to hear from you.</span> No question is too big, too small, or too unusual.
+            </p>
+            <p className="mt-3 text-gray-500">
+              Whether it's a full project, a quick consultation, or just brainstorming — let's talk.
             </p>
           </div>
 
@@ -208,7 +268,7 @@ export default function ContactPage() {
                             onBlur={handleBlur}
                             rows={5}
                             className="block w-full bg-white/5 rounded-md py-2.5 px-3 text-sm placeholder:text-gray-500 focus:outline-none resize-none"
-                            placeholder="I'm interested in discussing a new project..."
+                            placeholder="What's on your mind? Any idea, question, or problem you'd like to discuss..."
                           />
                         </div>
                       </div>
@@ -264,7 +324,33 @@ export default function ContactPage() {
             <div className="space-y-10">
               {/* Contact details card */}
               <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-6 shadow-xl">
-                <h3 className="text-lg font-medium mb-6">Contact Details</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-medium">Contact Details</h3>
+                  {/* Mobile-only save contact button with tooltip */}
+                  {isMobile && (
+                    <div className="relative">
+                      <button
+                        onClick={handleSaveContact}
+                        onMouseEnter={() => setShowSaveTooltip(true)}
+                        onMouseLeave={() => setShowSaveTooltip(false)}
+                        onTouchStart={() => setShowSaveTooltip(true)}
+                        onTouchEnd={() => setTimeout(() => setShowSaveTooltip(false), 2000)}
+                        className="p-2 rounded-full bg-blue-500/10 hover:bg-blue-500/20 transition-colors group"
+                        aria-label="Save contact to phone"
+                      >
+                        <Download className="h-4 w-4 text-blue-400 group-hover:text-blue-300" />
+                      </button>
+
+                      {/* Tooltip */}
+                      {showSaveTooltip && (
+                        <div className="absolute -top-10 right-0 bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-50">
+                          Save to contacts
+                          <div className="absolute top-full right-2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-l-transparent border-r-transparent border-t-gray-900"></div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div className="space-y-5">
                   <div className="flex items-start">
@@ -310,9 +396,6 @@ export default function ContactPage() {
 
                 <div className="mt-10 pt-6 border-t border-white/10">
                   <div className="flex space-x-4">
-                    <a href="https://github.com/hitchcode" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors" aria-label="GitHub">
-                      <Github className="h-5 w-5" />
-                    </a>
                     <a href="https://www.linkedin.com/in/zack-hitchcock-17841a219/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors" aria-label="LinkedIn">
                       <Linkedin className="h-5 w-5" />
                     </a>

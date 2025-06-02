@@ -7,6 +7,7 @@ import { JetBrains_Mono } from 'next/font/google';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
+  { href: '/demos', label: 'Demos' },
   { href: '/services/full-stack-development', label: 'Services' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
@@ -40,71 +41,87 @@ export default function Header() {
 
   return (
     <header className="relative z-20 py-6 px-4 sm:px-8 md:px-12 border-b border-white/10 bg-black">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-3">
-          <svg
-            className="h-8 w-8 rounded-md"
-            viewBox="0 0 32 32"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ display: 'block', background: 'linear-gradient(135deg, #2563eb 0%, #a21caf 100%)', borderRadius: '0.375rem' }}
-          >
-            <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
-            <defs>
-              <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#2563eb" />
-                <stop offset="1" stopColor="#a21caf" />
-              </linearGradient>
-            </defs>
-            <text
-              x="16"
-              y="16.5"
-              textAnchor="middle"
-              fontFamily="JetBrains Mono, Inter, sans-serif"
-              fontWeight="bold"
-              fontSize="20"
-              fill="white"
-              letterSpacing="1"
-              alignmentBaseline="middle"
-              dominantBaseline="middle"
+      <div className="max-w-7xl mx-auto relative">
+        {/* Brand - positioned absolutely on the left */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2">
+          <Link href="/" className="flex items-center space-x-3">
+            <svg
+              className="h-8 w-8 rounded-md"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ display: 'block', background: 'linear-gradient(135deg, #2563eb 0%, #a21caf 100%)', borderRadius: '0.375rem' }}
             >
-              H
-            </text>
-          </svg>
-          <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
-        </Link>
+              <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
+              <defs>
+                <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#2563eb" />
+                  <stop offset="1" stopColor="#a21caf" />
+                </linearGradient>
+              </defs>
+              <text
+                x="16"
+                y="16.5"
+                textAnchor="middle"
+                fontFamily="JetBrains Mono, Inter, sans-serif"
+                fontWeight="bold"
+                fontSize="20"
+                fill="white"
+                letterSpacing="1"
+                alignmentBaseline="middle"
+                dominantBaseline="middle"
+              >
+                H
+              </text>
+            </svg>
+            <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
+          </Link>
+        </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center space-x-8">
+        {/* Desktop nav - truly centered */}
+        <nav className="hidden lg:flex items-center justify-center space-x-8 py-2">
           {NAV_LINKS.map(link => (
-            <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+            <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
               {link.label}
             </Link>
           ))}
         </nav>
 
-        {/* Get Started button (desktop) */}
-        <Link
-          href="/contact"
-          className="hidden md:inline-block px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-sm rounded-md transition-colors border border-white/10"
-        >
-          Get Started
-        </Link>
+        {/* Get Started button - positioned absolutely on the right */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <Link
+            href="/contact"
+            className="hidden md:inline-block px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-sm rounded-md transition-colors border border-white/10 whitespace-nowrap"
+          >
+            Get Started
+          </Link>
+        </div>
 
-        {/* Hamburger (mobile) */}
-        <button
-          className="md:hidden p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Open navigation menu"
-          onClick={() => setDrawerOpen(true)}
-        >
-          <Menu className="w-7 h-7 text-white" />
-        </button>
+        {/* Hamburger (mobile/tablet) - positioned absolutely on the right */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:hidden">
+          <button
+            className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Open navigation menu"
+            onClick={() => setDrawerOpen(true)}
+          >
+            <Menu className="w-7 h-7 text-white" />
+          </button>
+        </div>
+
+        {/* Fallback navigation for medium screens where we need to split the difference */}
+        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-2 mx-40">
+          {NAV_LINKS.slice(0, 4).map(link => (
+            <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
 
       {/* Drawer overlay */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 lg:hidden"
           style={{ zIndex: 9998 }}
         >
           <div

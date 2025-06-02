@@ -107,7 +107,7 @@ export default function BlogPage() {
         </section>
 
         {/* Posts Grid */}
-        <section className="relative py-12 border-t border-white/10">
+        <section className="relative py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {posts.length > 0 ? (
               <div className="space-y-8">

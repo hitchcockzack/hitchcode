@@ -2,10 +2,7 @@
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
-import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink } from 'lucide-react'
-import SmartSchedulerDemo from "./SmartSchedulerDemo";
-import AutomatedInvoiceDemo from "./AutomatedInvoiceDemo";
-import SocialMediaContentStudio from "./SocialMediaPlannerDemo";
+import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink, Play, Zap, Clock, Target, CheckCircle, Calculator, TrendingUp } from 'lucide-react'
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
@@ -212,182 +209,485 @@ export default function Home() {
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-blue-600/20 rounded-full filter blur-[100px]" />
         <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full filter blur-[100px]" />
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
+        <div className="relative z-10 container mx-auto px-4">
           <div className={`transform transition-all duration-1000 ease-out ${playedHero ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <h1 className={`text-4xl sm:text-6xl md:text-7xl font-bold ${jetbrains.className} mb-6 tracking-tight`}>
+
+            {/* Problem identifier badge */}
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 rounded-full text-red-300 text-sm font-semibold backdrop-blur-sm">
+                <Clock className="h-4 w-4 mr-2" />
+                <span className="text-xs tracking-wide">TIRED OF WASTING TIME ON REPETITIVE WORK?</span>
+              </div>
+            </div>
+
+            <h1 className={`text-4xl sm:text-6xl md:text-7xl font-bold ${jetbrains.className} mb-6 tracking-tight text-center`}>
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent inline-block">HITCHCODE</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-300 max-w-xl mx-auto mb-10 leading-relaxed">
-              Architecting cutting-edge software solutions with precision,
-              innovation, and a relentless focus on quality.
-            </p>
+            {/* Business-focused value proposition */}
+            <div className="max-w-4xl mx-auto text-center mb-8">
+              <p className="text-xl md:text-2xl text-gray-200 font-medium mb-4 leading-relaxed">
+                We build <span className="text-white font-bold">custom software that does the boring work for you</span>
+              </p>
+              <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                Stop spending hours on tasks that could happen automatically. Get back to growing your business.
+              </p>
+            </div>
+
+            {/* Business problem solutions */}
+            <div className="flex flex-wrap justify-center gap-4 mb-12 max-w-4xl mx-auto">
+              <div className="flex items-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm">
+                <div className="w-3 h-3 bg-blue-400 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm text-gray-300">Eliminate Manual Data Entry</span>
+              </div>
+              <div className="flex items-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm">
+                <div className="w-3 h-3 bg-purple-400 rounded-full mr-2 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                <span className="text-sm text-gray-300">Automate Customer Communications</span>
+              </div>
+              <div className="flex items-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm">
+                <div className="w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulse" style={{ animationDelay: '1s' }}></div>
+                <span className="text-sm text-gray-300">Generate Reports Instantly</span>
+              </div>
+              <div className="flex items-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-sm">
+                <div className="w-3 h-3 bg-pink-400 rounded-full mr-2 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                <span className="text-sm text-gray-300">Connect Your Systems</span>
+              </div>
+            </div>
+
+            {/* Problem -> Solution showcase */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+              <div className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/20 rounded-xl p-6 text-center backdrop-blur-sm">
+                <div className="w-8 h-8 bg-red-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                  <Clock className="h-4 w-4 text-red-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-red-300 mb-2">YOUR PROBLEM</h3>
+                <p className="text-xs text-gray-400">Hours every week spent on tasks a computer should handle</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/20 rounded-xl p-6 text-center backdrop-blur-sm">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                  <Command className="h-4 w-4 text-blue-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-blue-300 mb-2">OUR SOLUTION</h3>
+                <p className="text-xs text-gray-400">Custom software that does your work for you</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-500/20 rounded-xl p-6 text-center backdrop-blur-sm">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                  <Target className="h-4 w-4 text-green-400" />
+                </div>
+                <h3 className="text-sm font-semibold text-green-300 mb-2">YOUR RESULT</h3>
+                <p className="text-xs text-gray-400">More time for what matters, fewer mistakes, happier customers</p>
+              </div>
+            </div>
+
+            {/* Business impact metrics */}
+            <div className="flex justify-center mb-10">
+              <div className="bg-gradient-to-r from-gray-900/80 to-gray-800/80 border border-white/10 rounded-xl p-6 backdrop-blur-sm max-w-2xl w-full">
+                <div className="grid grid-cols-3 gap-6 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-white mb-1">40+</div>
+                    <div className="text-xs text-gray-400 uppercase tracking-wide">Hours Saved Per Week</div>
+                    <div className="text-[10px] text-gray-500">Per Business*</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-white mb-1">$60k+</div>
+                    <div className="text-xs text-gray-400 uppercase tracking-wide">Savings in paid salaries</div>
+                    <div className="text-[10px] text-gray-500">Per Business*</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-white mb-1">24/7</div>
+                    <div className="text-xs text-gray-400 uppercase tracking-wide">Working For You</div>
+                    <div className="text-[10px] text-gray-500">Automation Never Sleeps</div>
+                  </div>
+                </div>
+                <div className="text-[10px] text-gray-500 text-center mt-4">*Based on average client results. Your savings may be higher.</div>
+              </div>
+            </div>
+
+            {/* Data organization and future-ready messaging */}
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <div className="bg-gradient-to-br from-blue-900/10 to-purple-900/10 border border-blue-500/20 rounded-2xl p-8 backdrop-blur-sm">
+                <p className="text-lg md:text-xl text-gray-300 mb-4 leading-relaxed">
+                  <span className="text-white font-semibold">Get the data you care about, nothing else. </span>
+                  Hitchcode systems organize all information that comes in or goes out,
+                  and make it available for easy access whenever you need it.
+                </p>
+                <div className="w-16 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto my-6"></div>
+                <p className="text-base text-gray-400 leading-relaxed">
+                  Technology is advancing incredibly fast, and it's quickly becoming the future.
+                  <span className="text-white font-medium"> Don't be scared, This is a good thing.</span> I'm here to help put you and your business
+                  at the head of the pack while everyone else is still figuring it out.
+                </p>
+              </div>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
               <Link
                 href="/contact"
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[160px] text-center"
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl font-semibold transition-all duration-300 min-w-[200px] text-center shadow-2xl shadow-blue-600/25"
               >
-                Start a Project
+                Fix My Workflow
               </Link>
               <Link
-                href="/services/full-stack-development"
-                className="px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md font-medium transition-colors min-w-[160px] text-center group"
+                href="/demos"
+                className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl font-semibold transition-colors min-w-[200px] text-center group backdrop-blur-sm"
               >
                 <span className="inline-flex items-center">
-                  Explore Services
-                  <ChevronRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                  See Real Examples
+                  <Play className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:scale-110" />
                 </span>
               </Link>
             </div>
 
-            {/* Client Concern Section */}
-            <div className="flex justify-center w-full mb-8">
-              <div className="max-w-lg w-full bg-gradient-to-br from-blue-900/80 to-purple-900/80 border border-blue-400/30 shadow-xl rounded-2xl px-6 py-5 flex flex-col items-start sm:items-center gap-2 relative overflow-hidden">
-                <span className="text-xs uppercase tracking-wider font-semibold text-blue-300 mb-1 select-none">Real Client Concern</span>
-                <div className="flex items-start w-full">
-                  <div className="mr-3 mt-1 hidden sm:block">
-                    {/* Chat bubble icon */}
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-blue-400"><path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4c-.5.6-.7 1.3-.6 2.1.1.7.3 1.4.5 2.1.1.3-.2.7-.5.6-2.2-.5-4.2-1.2-5.7-2.2A8.38 8.38 0 0 1 3 11.5C3 6.8 7.5 3 12 3s9 3.8 9 8.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </div>
-                  <p className="text-base md:text-lg text-blue-100 font-medium leading-relaxed bg-blue-800/40 rounded-xl px-4 py-3 shadow-inner w-full">
-                    "I have no time, way too much to do, there's no way I can grow without hiring an assistant."
-                  </p>
-                </div>
+            {/* Simple visual indicators of business benefits */}
+            <div className="absolute top-20 left-10 hidden lg:block animate-bounce" style={{ animationDelay: '2s', animationDuration: '3s' }}>
+              <div className="bg-green-500/10 border border-green-400/30 rounded-lg p-3 backdrop-blur-sm">
+                <CheckCircle className="h-5 w-5 text-green-400" />
               </div>
             </div>
 
-            {/* Animated Code Editor Typewriter */}
-            <div className="flex justify-center pt-4">
-              {/* <SmartSchedulerDemo /> */}
+            <div className="absolute top-32 right-16 hidden lg:block animate-bounce" style={{ animationDelay: '2.5s', animationDuration: '3s' }}>
+              <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-3 backdrop-blur-sm">
+                <Zap className="h-5 w-5 text-blue-400" />
+              </div>
             </div>
 
-            {/* Automated Invoicing Demo Section */}
-            <section className="mt-16 w-full flex flex-col items-center px-0 md:px-8">
-              <div className="w-full max-w-6xl bg-gradient-to-br from-blue-900/80 to-purple-900/80 border border-blue-400/30 shadow-xl rounded-2xl px-2 md:px-10 py-8 mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Automate Your Invoicing</h2>
-                <p className="text-gray-300 text-base md:text-lg text-center mb-6">See how you can automate invoicing in seconds. Click below to watch invoices generate and send themselves, using your job data.</p>
-                {/* Spreadsheet Table */}
-                <AutomatedInvoiceDemo />
+            <div className="absolute bottom-20 left-20 hidden lg:block animate-bounce" style={{ animationDelay: '3s', animationDuration: '3s' }}>
+              <div className="bg-purple-500/10 border border-purple-400/30 rounded-lg p-3 backdrop-blur-sm">
+                <TrendingUp className="h-5 w-5 text-purple-400" />
               </div>
-            </section>
+            </div>
 
-            {/* Social Media Planner Demo Section */}
-            <section className="w-full flex flex-col items-center px-0 md:px-8 reveal-item opacity-0 translate-y-8" style={{ transitionDelay: '120ms' }}>
-              <SocialMediaContentStudio />
-            </section>
           </div>
-
-
         </div>
       </section>
 
-      {/* Vision/Core Intro Section */}
-      <section className="relative py-16 md:py-24 border-t border-white/10">
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="relative reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <div className="absolute -top-6 left-0 w-12 h-12 rounded-full bg-blue-500/10 blur-xl" />
-              <div className="absolute top-8 right-20 w-20 h-20 rounded-full bg-purple-500/10 blur-xl" />
+      {/* Live Demos Call-Out Section */}
+      <section className="relative py-24 bg-gradient-to-br from-gray-900/50 to-black border-t border-white/10">
+        <div className="absolute inset-0 overflow-hidden z-0">
+          <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/15 rounded-full filter blur-[120px]" />
+          <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-600/15 rounded-full filter blur-[120px]" />
+          <HexPattern className="absolute inset-0 text-white opacity-3" />
+        </div>
 
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold text-center relative z-10 mb-8`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Development Redefined</span>
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            {/* Main CTA */}
+            <div className="text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-full text-blue-300 text-sm font-semibold mb-8 backdrop-blur-sm">
+                <Play className="h-4 w-4 mr-2" />
+                LIVE DEMONSTRATIONS
+              </div>
+
+              <h2 className={`text-4xl md:text-6xl font-bold ${jetbrains.className} mb-6 tracking-tight`}>
+                <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  See It In Action
+                </span>
               </h2>
 
-              <p className="text-gray-300 text-lg md:text-xl text-center leading-relaxed mb-8">
-                In a world of constantly evolving tech, there's an opportunity to put your business at the{' '}
-                <span className="text-white font-medium">head of the pack</span>.{' '}
-                Don't leave anything on the table.
+              <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
+                Don't just imagine the possibilities. <span className="text-white font-semibold">Watch real business problems get solved</span> in real-time with interactive demonstrations.
               </p>
+            </div>
 
-              <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto" />
+            {/* Demo Preview Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+              {/* Automated Invoicing Demo Preview */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '200ms' }}>
+                <div className="relative group h-full">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
+                  <div className="relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-white/10 rounded-2xl p-8 h-full backdrop-blur-sm group-hover:border-white/20 transition-all duration-300">
+                    <div className="flex items-center mb-6">
+                      <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mr-4">
+                        <Zap className="h-6 w-6 text-blue-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Automated Invoicing</h3>
+                        <p className="text-blue-400 text-sm">Problem to Solution in 30 seconds</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 mb-8">
+                      <div className="flex items-start">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-red-400 font-medium">Problem:</span> "I spend hours every week creating invoices manually"
+                        </p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-4 w-4 text-green-400 mt-1 mr-3 flex-shrink-0" />
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-green-400 font-medium">Solution:</span> Watch invoices generate and send themselves in seconds
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">95%</div>
+                        <div className="text-gray-400 text-xs">Time Saved</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">0%</div>
+                        <div className="text-gray-400 text-xs">Error Rate</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">3x</div>
+                        <div className="text-gray-400 text-xs">Faster Payment</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Media Automation Demo Preview */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '300ms' }}>
+                <div className="relative group h-full">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
+                  <div className="relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-white/10 rounded-2xl p-8 h-full backdrop-blur-sm group-hover:border-white/20 transition-all duration-300">
+                    <div className="flex items-center mb-6">
+                      <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mr-4">
+                        <Target className="h-6 w-6 text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Social Media Automation</h3>
+                        <p className="text-purple-400 text-sm">From overwhelmed to organized</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 mb-8">
+                      <div className="flex items-start">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-red-400 font-medium">Problem:</span> "Creating consistent content is overwhelming and time-consuming"
+                        </p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-4 w-4 text-green-400 mt-1 mr-3 flex-shrink-0" />
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-green-400 font-medium">Solution:</span> Generate weeks of content in minutes with AI planning
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">30+</div>
+                        <div className="text-gray-400 text-xs">Posts Created</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">5min</div>
+                        <div className="text-gray-400 text-xs">Time Investment</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">250%</div>
+                        <div className="text-gray-400 text-xs">Engagement Boost</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Lifetime Value Calculator Demo Preview */}
+              <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '400ms' }}>
+                <div className="relative group h-full lg:col-span-2 xl:col-span-1">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-600/20 to-blue-600/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
+                  <div className="relative bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-white/10 rounded-2xl p-8 h-full backdrop-blur-sm group-hover:border-white/20 transition-all duration-300">
+                    <div className="flex items-center mb-6">
+                      <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mr-4">
+                        <Calculator className="h-6 w-6 text-green-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">CLV Calculator</h3>
+                        <p className="text-green-400 text-sm">Smart business intelligence</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 mb-8">
+                      <div className="flex items-start">
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-red-400 font-medium">Problem:</span> "I don't know which customers are actually profitable"
+                        </p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-4 w-4 text-green-400 mt-1 mr-3 flex-shrink-0" />
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-green-400 font-medium">Solution:</span> Calculate lifetime value with real industry benchmarks
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-6">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">15+</div>
+                        <div className="text-gray-400 text-xs">Industries</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">Real</div>
+                        <div className="text-gray-400 text-xs">Data Sources</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white">AI</div>
+                        <div className="text-gray-400 text-xs">Insights</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '500ms' }}>
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-xl opacity-30"></div>
+                <Link
+                  href="/demos"
+                  className="relative inline-flex items-center px-12 py-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-2xl font-bold text-xl transition-all duration-300 shadow-2xl group"
+                >
+                  <Play className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform duration-300" />
+                  Watch Live Demos
+                  <ArrowRight className="h-6 w-6 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+              <p className="text-gray-400 mt-4 text-lg">
+                See exactly how these solutions work • No commitment required
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="relative py-16 md:py-24">
+      {/* What We Do - Brief Synopsis Section */}
+      <section className="relative py-20 border-t border-white/10 bg-gradient-to-br from-black to-gray-900/50">
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center mb-12 md:mb-20 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '200ms' }}>
-            <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Full-Stack Excellence</span>
+          <div className="max-w-4xl mx-auto text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
+            <h2 className={`${jetbrains.className} text-4xl md:text-5xl font-bold mb-6`}>
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">What We Build</span>
             </h2>
-            <p className="text-gray-400 text-lg">
-              Comprehensive software solutions tailored to your specific needs
+            <p className="text-xl text-gray-300 leading-relaxed mb-8">
+              We create custom software solutions that solve real business problems. From automating repetitive tasks to building
+              complex applications, our goal is simple: <span className="text-white font-semibold">make your business run better</span>.
+            </p>
+            <p className="text-lg text-gray-400">
+              Whether you're looking to streamline operations, reach more customers, or gain insights from your data,
+              we have the expertise to bring your vision to life.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
-                style={{ transitionDelay: `${300 + index * 100}ms` }}
-                onMouseEnter={() => setActiveService(index)}
-                onMouseLeave={() => setActiveService(null)}
-              >
-                <div className={`h-full p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border ${activeService === index ? 'border-white/20' : 'border-white/10'} shadow-xl transition-all duration-300 flex flex-col hover:translate-y-[-4px]`}>
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-5 ${index === 0 ? 'bg-blue-500/10' : index === 1 ? 'bg-purple-500/10' : 'bg-pink-500/10'}`}>
-                    {index === 0 && <Layers className="h-6 w-6 text-blue-400" />}
-                    {index === 1 && <Cpu className="h-6 w-6 text-purple-400" />}
-                    {index === 2 && <Command className="h-6 w-6 text-pink-400" />}
-                  </div>
-
-                  <h3 className="text-lg md:text-xl font-medium mb-3">{service.title}</h3>
-                  <p className="text-gray-400 text-sm md:text-base mb-6 flex-grow">{service.description}</p>
-
-                  <Link
-                    href={service.href}
-                    className="inline-flex items-center text-sm text-gray-300 hover:text-white group/link transition-colors"
-                  >
-                    <span>Learn more</span>
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-1" />
-                  </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {/* Automation & Efficiency */}
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '200ms' }}>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Zap className="h-8 w-8 text-blue-400" />
                 </div>
+                <h3 className="text-xl font-bold text-white mb-4">Automation & Efficiency</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Stop doing repetitive work. We build systems that handle the boring stuff so you can focus on what matters most.
+                </p>
               </div>
-            ))}
+            </div>
+
+            {/* Custom Applications */}
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '300ms' }}>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Layers className="h-8 w-8 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Custom Applications</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Off-the-shelf software doesn't fit? We create applications tailored specifically to how your business works.
+                </p>
+              </div>
+            </div>
+
+            {/* Data & Insights */}
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '400ms' }}>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <TrendingUp className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">Data & Insights</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Turn your data into actionable insights. We help you understand your business and make better decisions.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* For Different Business Types */}
+          <div className="text-center reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '500ms' }}>
+            <h3 className="text-2xl font-bold text-white mb-8">Perfect For</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-center h-20">
+                <p className="text-gray-300 font-medium">Small Businesses</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-center h-20">
+                <p className="text-gray-300 font-medium">Growing Companies</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-center h-20">
+                <p className="text-gray-300 font-medium">Entrepreneurs</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10 flex items-center justify-center h-20">
+                <p className="text-gray-300 font-medium">Anyone</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="relative py-16 md:py-24 border-t border-white/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(30,41,59,0.4)_0,rgba(0,0,0,0)_50%)] z-0" />
-
+      {/* How We Work - Brief Process */}
+      <section className="relative py-20 border-t border-white/10">
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '200ms' }}>
+          <div className="max-w-3xl mx-auto text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
             <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">How We Work</span>
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Simple Process</span>
             </h2>
-            <p className="text-gray-400 text-lg">
-              A systematic approach to delivering exceptional software solutions
+            <p className="text-lg text-gray-400">
+              No confusing technical jargon or complicated project management. Just a straightforward approach that gets results.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {workflow.map((step, index) => (
-              <div
-                key={index}
-                className="reveal-item opacity-0 transition-all duration-700 translate-y-8"
-                style={{ transitionDelay: `${300 + index * 100}ms` }}
-              >
-                <div className="relative">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-blue-500/10 mb-4 relative">
-                      <span className={`${jetbrains.className} text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent`}>
-                        {index + 1}
-                      </span>
-                      {index < workflow.length - 1 && (
-                        <div className="hidden lg:block absolute left-full top-1/2 w-full h-0.5 bg-gradient-to-r from-blue-500/50 to-transparent transform -translate-y-1/2" />
-                      )}
-                    </div>
-                    <h3 className="text-lg font-medium mb-2">{step.title}</h3>
-                    <p className="text-gray-400 text-sm">{step.description}</p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '200ms' }}>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/10 mb-4 mx-auto relative">
+                  <span className={`${jetbrains.className} text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent`}>
+                    1
+                  </span>
+                  <div className="hidden md:block absolute left-full top-1/2 w-full h-0.5 bg-gradient-to-r from-blue-500/50 to-purple-500/50 transform -translate-y-1/2" />
                 </div>
+                <h3 className="text-lg font-medium mb-2 text-white">We Listen</h3>
+                <p className="text-gray-400 text-sm">Tell us about your challenges and what you want to achieve</p>
               </div>
-            ))}
+            </div>
+
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '300ms' }}>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/10 mb-4 mx-auto relative">
+                  <span className={`${jetbrains.className} text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent`}>
+                    2
+                  </span>
+                  <div className="hidden md:block absolute left-full top-1/2 w-full h-0.5 bg-gradient-to-r from-purple-500/50 to-pink-500/50 transform -translate-y-1/2" />
+                </div>
+                <h3 className="text-lg font-medium mb-2 text-white">We Build</h3>
+                <p className="text-gray-400 text-sm">Create a solution designed specifically for your needs</p>
+              </div>
+            </div>
+
+            <div className="reveal-item opacity-0 transition-all duration-700 translate-y-8" style={{ transitionDelay: '400ms' }}>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/10 mb-4 mx-auto">
+                  <span className={`${jetbrains.className} text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent`}>
+                    3
+                  </span>
+                </div>
+                <h3 className="text-lg font-medium mb-2 text-white">You Succeed</h3>
+                <p className="text-gray-400 text-sm">Launch your solution and watch your business improve</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -403,11 +703,10 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
             <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-              Ready to Transform Your Ideas?
+              Ready to Transform Your Business?
             </h2>
             <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-              Let's collaborate to build something extraordinary. From concept to deployment,
-              we're here to bring your vision to life with precision and innovation.
+              Let's talk about your challenges and explore how custom software can help you work smarter, not harder.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -415,13 +714,13 @@ export default function Home() {
                 href="/contact"
                 className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[180px]"
               >
-                Contact Us
+                Start a Conversation
               </Link>
               <Link
-                href="/greeting"
+                href="/demos"
                 className="inline-flex items-center text-gray-300 hover:text-white group transition-colors"
               >
-                <span>View Digital Business Card</span>
+                <span>Explore More Demos</span>
                 <ExternalLink className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
@@ -431,21 +730,51 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="relative z-10 py-8 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-3 mb-4 md:mb-0">
-            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-blue-600 to-purple-600"></div>
-            <span className={`${jetbrains.className} text-sm font-medium tracking-wide`}>HITCHCODE</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* Brand - positioned absolutely on the left */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+            <div className="flex items-center space-x-3">
+              <div className="h-6 w-6 rounded-md bg-gradient-to-br from-blue-600 to-purple-600"></div>
+              <span className={`${jetbrains.className} text-sm font-medium tracking-wide`}>HITCHCODE</span>
+            </div>
           </div>
 
-          <nav className="flex items-center space-x-8 mb-4 md:mb-0">
+          {/* Navigation - truly centered */}
+          <nav className="hidden lg:flex items-center justify-center space-x-8 py-4">
+            <Link href="/" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Home</Link>
+            <Link href="/demos" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Demos</Link>
+            <Link href="/services/full-stack-development" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Services</Link>
+            <Link href="/about" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">About</Link>
+            <Link href="/contact" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Contact</Link>
+          </nav>
+
+          {/* Fallback navigation for medium screens where we need to split the difference */}
+          <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-4 mx-32">
+            <Link href="/" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Home</Link>
+            <Link href="/demos" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Demos</Link>
+            <Link href="/services/full-stack-development" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Services</Link>
+            <Link href="/contact" className="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">Contact</Link>
+          </nav>
+
+          {/* Mobile navigation - centered */}
+          <nav className="flex md:hidden items-center justify-center space-x-4 py-4">
             <Link href="/" className="text-xs text-gray-400 hover:text-white transition-colors">Home</Link>
-            <Link href="/services/full-stack-development" className="text-xs text-gray-400 hover:text-white transition-colors">Services</Link>
-            <Link href="/about" className="text-xs text-gray-400 hover:text-white transition-colors">About</Link>
+            <Link href="/demos" className="text-xs text-gray-400 hover:text-white transition-colors">Demos</Link>
             <Link href="/contact" className="text-xs text-gray-400 hover:text-white transition-colors">Contact</Link>
           </nav>
 
-          <div className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} HitchCode. All rights reserved.
+          {/* Copyright - positioned absolutely on the right */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden md:block">
+            <div className="text-xs text-gray-500">
+              &copy; {new Date().getFullYear()} HitchCode. All rights reserved.
+            </div>
+          </div>
+
+          {/* Mobile copyright - below navigation */}
+          <div className="md:hidden text-center mt-4">
+            <div className="text-xs text-gray-500">
+              &copy; {new Date().getFullYear()} HitchCode. All rights reserved.
+            </div>
           </div>
         </div>
       </footer>
@@ -554,8 +883,8 @@ const services = [
     href: "/services/technology-consulting"
   },
   {
-    title: "System Refinement",
-    description: "Elevating existing systems to peak performance. Modernizing architecture, optimizing speed, and enhancing reliability of what exists already.",
+    title: "System Refinement & Automation ",
+    description: "Elevating existing systems to peak performance. Modernizing architecture, optimizing speed, and enhancing reliability of what exists already. Lets see what works, and do 100x more with half the effort",
     href: "/services/system-refinement"
   }
 ]
