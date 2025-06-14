@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 import { ArrowRight, ChevronRight, Code, Cpu, Layers, Command, ExternalLink, Play, Zap, Clock, Target, CheckCircle, Calculator, TrendingUp } from 'lucide-react'
+import { sendNotification } from '../lib/notifications'
 
 const inter = Inter({ subsets: ['latin'] })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
@@ -184,6 +185,19 @@ export default function Home() {
       const scrollPosition = window.scrollY;
       document.documentElement.style.setProperty('--scroll-y', `${scrollPosition}px`);
     };
+
+    // Check for Instagram referral parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromParam = urlParams.get('from');
+
+    if (fromParam === 'instagram') {
+      // Send notification for Instagram visitor
+      sendNotification('📸 New visitor from Instagram! 🎉');
+
+      // Clean up the URL without refreshing the page
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
 
     window.addEventListener('scroll', handleScroll);
     return () => {
