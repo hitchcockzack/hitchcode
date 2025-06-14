@@ -15,7 +15,7 @@ export default function Greeting() {
 
   useEffect(() => {
     setIsMobile('share' in navigator);
-    sendNotification('📱 Page visited');
+    sendNotification('greeting page visited');
     loadPhoto();
   }, []);
 
@@ -46,7 +46,7 @@ export default function Greeting() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action: message }),
+        body: JSON.stringify({ message: message }),
       });
     } catch (error) {
       // Silently fail in production
@@ -77,10 +77,11 @@ END:VCARD`;
     link.click();
     document.body.removeChild(link);
 
-    await sendNotification('💾 Contact saved');
+    await sendNotification('contact saved');
   };
 
   const handleShare = async () => {
+    await sendNotification('share button clicked');
     if (navigator.share) {
       try {
         await navigator.share({
@@ -88,7 +89,7 @@ END:VCARD`;
           text: 'Connect with Zack Hitchcock - Software Engineer',
           url: window.location.href,
         });
-        await sendNotification('🌍 Contact shared');
+        await sendNotification('contact shared');
       } catch (error) {
         // Silently ignore share cancellations
       }
@@ -97,10 +98,10 @@ END:VCARD`;
 
   const handleContactClick = async (type: string) => {
     const messages = {
-      Phone: '📞 Phone number clicked',
-      Email: '📧 Email clicked',
-      Website: '🌐 Website clicked',
-      LinkedIn: '💼 LinkedIn clicked'
+      Phone: 'phone number clicked',
+      Email: 'email clicked',
+      Website: 'website clicked',
+      LinkedIn: 'linkedin clicked'
     };
     await sendNotification(messages[type as keyof typeof messages]);
   };
@@ -111,7 +112,7 @@ END:VCARD`;
     switch (method) {
       case 'venmo':
         window.location.href = 'https://venmo.com/code?user_id=2307831361437696227&created=1738446665.6013&printed=1';
-        await sendNotification('💸 Venmo payment initiated');
+        await sendNotification('venmo payment initiated');
         break;
       case 'paypal':
         // Check if user is on mobile
@@ -121,7 +122,7 @@ END:VCARD`;
         } else {
           window.location.href = 'https://paypal.me/hitchcockzack';
         }
-        await sendNotification('💰 PayPal payment initiated');
+        await sendNotification('paypal payment initiated');
         break;
     }
   };
@@ -143,7 +144,7 @@ END:VCARD`;
           <div className={styles.headerContent}>
             <h1 className={styles.name}>Zack Hitchcock</h1>
             <div className={styles.titleWrapper}>
-              <p className={styles.title}>Software Engineer</p>
+              <p className={styles.title}>Digital Architect</p>
               <div className={styles.company}>
                 <Crown className={styles.buildingIcon} />
                 <span>hitchcode</span>
@@ -205,7 +206,10 @@ END:VCARD`;
           )}
 
           <button
-            onClick={() => setShowPaymentOptions(true)}
+            onClick={async () => {
+              await sendNotification('pay button clicked');
+              setShowPaymentOptions(true);
+            }}
             className={`${styles.button} ${styles.secondary}`}
           >
             <DollarSign className={styles.buttonIcon} />

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 // import { GeistSans } from 'geist/font/sans';
 // import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
-import Header from "./components/Header";
 
+import ConditionalHeader from "./components/ConditionalHeader";
 // const geistSans = GeistSans;
 // const geistMono = GeistMono;
 
@@ -134,7 +134,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="antialiased">
-        <Header />
+      <ConditionalHeader />
         {children}
       </body>
     </html>

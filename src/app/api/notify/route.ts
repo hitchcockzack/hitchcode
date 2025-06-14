@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         token: PUSHOVER_TOKEN,
         user: PUSHOVER_USER,
         message: message,
-        title: 'HitchCode Activity',
+        title: 'hitchcode',
       }),
     });
 
