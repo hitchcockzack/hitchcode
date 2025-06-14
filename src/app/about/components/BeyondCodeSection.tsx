@@ -223,12 +223,11 @@ const BeyondCodeSection: React.FC<BeyondCodeSectionProps> = ({ jetbrains }) => {
               <div className="space-y-4 mb-6">
                 <div className="relative overflow-hidden rounded-lg group">
                   <Image
-                    src="/optimized/IMG_1367.webp"
+                    src="/optimized/review.webp"
                     alt="Positive host review showing character"
                     width={600}
                     height={400}
-                    className="w-full h-64 object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                    style={{ objectPosition: 'center 70%' }}
+                    className="w-full h-64 object-contain object-center transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                     placeholder="blur"
                     blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="

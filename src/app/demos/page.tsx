@@ -81,7 +81,8 @@ export default function DemosPage() {
       stats: [
         { label: 'Content Created', value: '30+ Posts' },
         { label: 'Time Investment', value: '5 Minutes' },
-        { label: 'Engagement Boost', value: '250%' }
+        { label: 'Engagement Boost', value: '250%' },
+        { label: 'Schedule Consistency', value: '100%' }
       ]
     },
     {
@@ -194,7 +195,7 @@ export default function DemosPage() {
                   <p className="text-xl text-gray-300 mb-6">{demo.solution}</p>
 
                   {/* Stats */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+                  <div className={`grid grid-cols-2 gap-6 max-w-2xl mx-auto ${demo.stats.length === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
                     {demo.stats.map((stat, statIndex) => (
                       <div key={statIndex} className="text-center">
                         <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>

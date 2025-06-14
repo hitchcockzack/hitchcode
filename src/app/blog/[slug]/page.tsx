@@ -56,10 +56,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     publisher: 'Zack Hitchcock',
     category: 'Technology',
     keywords: post.categories?.map(cat => cat.title).join(', ') || 'web development, programming, tech, automation, full-stack',
+
+    // Core meta tags
+    metadataBase: new URL(baseUrl),
+
+    // Icons
     icons: {
       icon: faviconUrl,
       apple: `${baseUrl}/apple-touch-icon.png`
     },
+
+    // Open Graph for Facebook and general social media
     openGraph: {
       title,
       description,
@@ -82,19 +89,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         }
       ],
     },
+
+    // Twitter Card
     twitter: {
       card: 'summary_large_image',
       site: '@hitchcode',
       creator: '@hitchcode',
       title,
       description,
-      images: {
-        url: imageUrl,
-        alt: `${post.title} - Blog post by Zack Hitchcock`,
-        width: 1200,
-        height: 630,
-      },
+      images: [
+        {
+          url: imageUrl,
+          alt: `${post.title} - Blog post by Zack Hitchcock`,
+          width: 1200,
+          height: 630,
+        }
+      ],
     },
+
+    // SEO and robots
     robots: {
       index: true,
       follow: true,
@@ -106,23 +119,61 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'max-snippet': -1,
       },
     },
+
+    // Canonical URL
     alternates: {
       canonical: url,
     },
+
+    // Additional platform-specific and general meta tags
     other: {
-      // Facebook Open Graph specific
+      // Basic article info
+      'author': 'Zack Hitchcock',
+      'article:author': 'Zack Hitchcock',
+      'article:published_time': post.publishedAt,
+      'article:modified_time': post.publishedAt,
+      'article:section': 'Technology',
+      'article:tag': post.categories?.map(cat => cat.title).join(',') || 'Technology,Programming,Automation',
+
+      // LinkedIn specific
+      'linkedin:owner': 'Zack Hitchcock',
+
+      // Facebook specific
+      'fb:admins': 'Zack Hitchcock',
+
+      // Additional Open Graph properties
       'og:site_name': 'hitchcode',
       'og:locale': 'en_US',
       'og:type': 'article',
-      'article:author': 'Zack Hitchcock',
-      'article:published_time': post.publishedAt,
-      'article:section': 'Technology',
-      'article:tag': post.categories?.map(cat => cat.title).join(',') || 'Technology,Programming,Automation',
-      // LinkedIn specific meta tags
-      'linkedin:owner': 'Zack Hitchcock',
-      // Additional meta for better previews
+      'og:title': title,
+      'og:description': description,
+      'og:url': url,
+      'og:image': imageUrl,
+      'og:image:width': '1200',
+      'og:image:height': '630',
+      'og:image:type': 'image/png',
+      'og:image:alt': `${post.title} - Blog post by Zack Hitchcock`,
+
+      // Twitter specific
+      'twitter:card': 'summary_large_image',
+      'twitter:site': '@hitchcode',
+      'twitter:creator': '@hitchcode',
+      'twitter:title': title,
+      'twitter:description': description,
+      'twitter:image': imageUrl,
+      'twitter:image:alt': `${post.title} - Blog post by Zack Hitchcock`,
+
+      // Theme and app related
       'theme-color': '#000000',
       'msapplication-TileColor': '#000000',
+      'msapplication-TileImage': `${baseUrl}/apple-touch-icon.png`,
+
+      // Content type and language
+      'content-type': 'text/html; charset=utf-8',
+      'content-language': 'en',
+
+      // Cache control for social media crawlers
+      'cache-control': 'public, max-age=31536000',
     },
   }
 }

@@ -144,6 +144,33 @@ const HexPattern = ({ className }: { className?: string }) => (
   </svg>
 )
 
+// Hitchcode Logo component based on favicon
+const HitchcodeLogo = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient-logo)" />
+    <defs>
+      <linearGradient id="hitchcode-gradient-logo" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#2563eb" />
+        <stop offset="1" stopColor="#a21caf" />
+      </linearGradient>
+    </defs>
+    <text
+      x="16"
+      y="16.5"
+      textAnchor="middle"
+      fontFamily="JetBrains Mono, Inter, sans-serif"
+      fontWeight="bold"
+      fontSize="20"
+      fill="white"
+      letterSpacing="1"
+      alignmentBaseline="middle"
+      dominantBaseline="middle"
+    >
+      H
+    </text>
+  </svg>
+)
+
 export default function Home() {
   const [activeService, setActiveService] = useState<number | null>(0)
   const [playedHero, setPlayedHero] = useState(false)
@@ -227,7 +254,7 @@ export default function Home() {
             {/* Business-focused value proposition */}
             <div className="max-w-4xl mx-auto text-center mb-8">
               <p className="text-xl md:text-2xl text-gray-200 font-medium mb-4 leading-relaxed">
-                We build <span className="text-white font-bold">custom software that does the boring work for you</span>
+                Builds <span className="text-white font-bold">custom software that does the boring work for you</span>
               </p>
               <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
                 Stop spending hours on tasks that could happen automatically. Get back to growing your business.
@@ -265,10 +292,10 @@ export default function Home() {
               </div>
 
               <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/20 rounded-xl p-6 text-center backdrop-blur-sm">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
-                  <Command className="h-4 w-4 text-blue-400" />
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                  <HitchcodeLogo className="h-4 w-4 text-blue-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-blue-300 mb-2">OUR SOLUTION</h3>
+                <h3 className="text-sm font-semibold text-blue-300 mb-2">SOLUTION</h3>
                 <p className="text-xs text-gray-400">Custom software that does your work for you</p>
               </div>
 
@@ -288,20 +315,16 @@ export default function Home() {
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">40+</div>
                     <div className="text-xs text-gray-400 uppercase tracking-wide">Hours Saved Per Week</div>
-                    <div className="text-[10px] text-gray-500">Per Business*</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">$60k+</div>
-                    <div className="text-xs text-gray-400 uppercase tracking-wide">Savings in paid salaries</div>
-                    <div className="text-[10px] text-gray-500">Per Business*</div>
+                    <div className="text-xs text-gray-400 uppercase tracking-wide">saved in paid salaries</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-white mb-1">24/7</div>
                     <div className="text-xs text-gray-400 uppercase tracking-wide">Working For You</div>
-                    <div className="text-[10px] text-gray-500">Automation Never Sleeps</div>
                   </div>
                 </div>
-                <div className="text-[10px] text-gray-500 text-center mt-4">*Based on average client results. Your savings may be higher.</div>
               </div>
             </div>
 
@@ -467,6 +490,12 @@ export default function Home() {
                         <CheckCircle className="h-4 w-4 text-green-400 mt-1 mr-3 flex-shrink-0" />
                         <p className="text-gray-300 text-sm">
                           <span className="text-green-400 font-medium">Solution:</span> Generate weeks of content in minutes with AI planning
+                        </p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="h-4 w-4 text-green-400 mt-1 mr-3 flex-shrink-0" />
+                        <p className="text-gray-300 text-sm">
+                          <span className="text-green-400 font-medium">Bonus:</span> Consistent posting schedule adherence boosts reach and engagement even more
                         </p>
                       </div>
                     </div>

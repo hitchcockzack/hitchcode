@@ -29,9 +29,19 @@ const faviconSvg = `
 
 const faviconDataUrl = `data:image/svg+xml;base64,${Buffer.from(faviconSvg).toString('base64')}`
 
+// For dev environment, use localhost for Open Graph images to work
+const baseUrl = process.env.NODE_ENV === 'production'
+  ? 'https://hitchcode.com'
+  : 'http://localhost:3000'
+
 export const metadata: Metadata = {
-  title: "hitchcode",
-  description: "The solution to all your problems.",
+  title: "hitchcode - Full-Stack Developer & Digital Architect",
+  description: "Zack Hitchcock - Full-Stack Developer & Digital Architect. Custom web applications, automation solutions, and technology consulting. Transform your business with innovative digital solutions.",
+  authors: [{ name: 'Zack Hitchcock', url: 'https://hitchcode.com' }],
+  creator: 'Zack Hitchcock',
+  publisher: 'Zack Hitchcock',
+  category: 'Technology',
+  keywords: 'full-stack developer, web development, automation, digital architect, custom software, technology consulting, Zack Hitchcock',
   icons: {
     icon: [
       {
@@ -55,17 +65,49 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico'
   },
   openGraph: {
-    title: 'hitchcode',
-    description: 'The solution to all your problems.',
+    title: 'hitchcode - Full-Stack Developer & Digital Architect',
+    description: 'Zack Hitchcock - Full-Stack Developer & Digital Architect. Custom web applications, automation solutions, and technology consulting. Transform your business with innovative digital solutions.',
+    url: baseUrl,
+    siteName: 'hitchcode',
+    locale: 'en_US',
+    type: 'website',
     images: [
       {
-        url: '/og-blog-default.png',
+        url: `${baseUrl}/og-blog-default.png`,
         width: 1200,
         height: 630,
-        alt: 'hitchcode',
+        alt: 'hitchcode - Zack Hitchcock | Full-Stack Developer & Digital Architect',
+        type: 'image/png'
       }
     ],
-  }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@hitchcode',
+    creator: '@hitchcode',
+    title: 'hitchcode - Full-Stack Developer & Digital Architect',
+    description: 'Zack Hitchcock - Full-Stack Developer & Digital Architect. Custom web applications, automation solutions, and technology consulting.',
+    images: {
+      url: `${baseUrl}/og-blog-default.png`,
+      alt: 'hitchcode - Zack Hitchcock | Full-Stack Developer & Digital Architect',
+      width: 1200,
+      height: 630,
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
 }
 
 export default function RootLayout({
@@ -82,12 +124,6 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
-
-        {/* Open Graph Default Image */}
-        <meta property="og:image" content="/og-blog-default.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="hitchcode" />
 
         {/* Preload critical resources */}
         <link rel="preload" href="/optimized/zack.webp" as="image" type="image/webp" />
