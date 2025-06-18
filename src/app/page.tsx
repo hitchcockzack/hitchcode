@@ -253,14 +253,6 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-4">
           <div className={`transform transition-all duration-1000 ease-out ${playedHero ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
 
-            {/* Problem identifier badge */}
-            <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500/20 to-orange-500/20 border border-red-400/30 rounded-full text-red-300 text-sm font-semibold backdrop-blur-sm">
-                <Clock className="h-4 w-4 mr-2" />
-                <span className="text-xs tracking-wide">TIRED OF WASTING TIME ON REPETITIVE WORK?</span>
-              </div>
-            </div>
-
             <h1 className={`text-4xl sm:text-6xl md:text-7xl font-bold ${jetbrains.className} mb-6 tracking-tight text-center`}>
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent inline-block">HITCHCODE</span>
             </h1>
