@@ -95,11 +95,7 @@ const BeyondCodeSection: React.FC<BeyondCodeSectionProps> = ({ jetbrains }) => {
                 </div>
 
                 {/* Fun Callout */}
-                <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20 p-4">
-                  <p className="text-sm text-amber-400 text-center font-medium">
-                    Life's better with a furry co-pilot! 🐕
-                  </p>
-                </div>
+               
               </div>
             </div>
           </div>
@@ -249,11 +245,7 @@ const BeyondCodeSection: React.FC<BeyondCodeSectionProps> = ({ jetbrains }) => {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-teal-500/10 to-blue-500/10 rounded-lg border border-teal-500/20 p-4">
-                <p className="text-sm text-teal-400 text-center font-medium">
-                  The world is my classroom 🌍
-                </p>
-              </div>
+
             </div>
           </div>
         </div>

@@ -5,16 +5,42 @@ import { client } from '@/lib/sanity'
 import { postsQuery } from '@/lib/sanity.queries'
 import { Post } from '@/lib/sanity.types'
 import Link from 'next/link'
-import { CalendarDays, Tag, ArrowRight, BookOpen, Clock } from 'lucide-react'
-import { JetBrains_Mono, Inter } from 'next/font/google';
+import { CalendarDays, Tag, ArrowRight, BookOpen, Clock, PenTool } from 'lucide-react'
+import { Inter } from 'next/font/google';
 import { sendNotification } from '@/lib/notifications';
 
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 const inter = Inter({ subsets: ['latin'] });
+
+// Scroll reveal hook for smooth animations
+const useScrollReveal = () => {
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -100px 0px',
+      threshold: 0.1
+    }
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in')
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions)
+    document.querySelectorAll('.reveal-on-scroll').forEach(item => {
+      observer.observe(item)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+}
 
 export default function BlogPageClient() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [playedIntro, setPlayedIntro] = useState(false);
+
+  useScrollReveal();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -23,109 +49,73 @@ export default function BlogPageClient() {
     };
 
     fetchPosts();
-
-    const timer = setTimeout(() => {
-      setPlayedIntro(true);
-    }, 500);
-
-    // Intersection Observer for reveal animations
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
-
-    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    document.querySelectorAll('.reveal-item').forEach(item => {
-      observer.observe(item);
-    });
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
   }, []);
 
-  // Send notification when page is visited
+  // Send notification when page is visited - debounced
   useEffect(() => {
-    sendNotification('📝 Blog page visited');
+    const timeoutId = setTimeout(() => {
+      sendNotification('📝 Blog page visited');
+    }, 1000);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
-    <div className={`min-h-screen w-full bg-black text-white flex flex-col ${inter.className}`}>
-      {/* Background Elements */}
-      <div className="fixed inset-0 z-0 opacity-10 pointer-events-none">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:80px_80px]" />
-      </div>
-
-      {/* Global accent lines */}
-      <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/30 via-purple-600/30 to-transparent z-0" />
-      <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/30 to-blue-600/30 z-0" />
-
-      {/* Floating gradient orbs */}
-      <div className="fixed -top-40 -left-40 w-80 h-80 bg-blue-600/20 rounded-full filter blur-[100px] animate-pulse" />
-      <div className="fixed -bottom-40 -right-40 w-80 h-80 bg-purple-600/20 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
-
-      <main className="flex-1 relative z-10">
-        {/* Hero Section */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center transform transition-all duration-1000 ease-out ${playedIntro ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-              <div className="flex items-center justify-center mb-8">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                  <BookOpen className="w-8 h-8 text-white" />
-                </div>
+    <div className={`min-h-screen bg-white ${inter.className}`}>
+      {/* Hero Section */}
+      <section className="relative py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Icon */}
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8">
+              <div className="w-16 h-16 mx-auto mb-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                <PenTool className="w-8 h-8 text-blue-600" />
               </div>
+            </div>
 
-              <h1 className={`${jetbrains.className} text-4xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">The Blog</span>
+            {/* Main headline */}
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8" style={{ transitionDelay: '200ms' }}>
+              <h1 className="text-5xl md:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
+                The Blog
               </h1>
 
-              <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl md:text-2xl text-zinc-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 Thoughts, insights, and stories from the intersection of technology and creativity.
               </p>
 
-              <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
+              <div className="flex items-center justify-center gap-4 text-sm text-zinc-500">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   <span>{posts.length} articles</span>
                 </div>
-                <div className="w-1 h-1 bg-gray-500 rounded-full" />
+                <div className="w-1 h-1 bg-zinc-300 rounded-full" />
                 <span>Regular updates</span>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Posts Grid */}
-        <section className="relative py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Posts Section */}
+      <section className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
             {posts.length > 0 ? (
               <div className="space-y-8">
                 {posts.map((post, index) => (
                   <article
                     key={post._id}
-                    className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
+                    className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 group"
                     style={{ transitionDelay: `${200 + index * 100}ms` }}
                   >
                     <Link href={`/blog/${post.slug.current}`}>
-                      <div className="p-8 md:p-10 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:translate-y-[-4px] shadow-xl">
+                      <div className="p-8 md:p-10 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
                         {/* Categories */}
                         {post.categories && post.categories.length > 0 && (
                           <div className="flex flex-wrap gap-2 mb-6">
                             {post.categories.map((category) => (
                               <span
                                 key={category._id}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-gray-300 group-hover:bg-blue-500/20 group-hover:border-blue-500/30 group-hover:text-blue-300 transition-all duration-300"
+                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-zinc-50 border border-zinc-200 text-zinc-600 group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:text-blue-700 transition-all duration-200"
                               >
                                 <Tag size={12} />
                                 {category.title}
@@ -135,20 +125,20 @@ export default function BlogPageClient() {
                         )}
 
                         {/* Title */}
-                        <h2 className={`${jetbrains.className} text-2xl md:text-3xl lg:text-4xl font-bold text-white group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-500 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 mb-4`}>
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-zinc-900 group-hover:text-blue-600 transition-colors duration-200 mb-4">
                           {post.title}
                         </h2>
 
                         {/* Excerpt */}
                         {post.excerpt && (
-                          <p className="text-gray-300 leading-relaxed mb-6 text-lg">
+                          <p className="text-zinc-700 leading-relaxed mb-6 text-lg">
                             {post.excerpt}
                           </p>
                         )}
 
                         {/* Meta Info */}
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <div className="flex items-center gap-2 text-sm text-zinc-500">
                             <CalendarDays size={16} />
                             <time dateTime={post.publishedAt}>
                               {new Date(post.publishedAt).toLocaleDateString('en-US', {
@@ -160,9 +150,9 @@ export default function BlogPageClient() {
                           </div>
 
                           {/* Read More */}
-                          <div className="inline-flex items-center text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                          <div className="inline-flex items-center text-sm font-medium text-blue-600 group-hover:text-blue-700 transition-colors duration-200">
                             Read article
-                            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                           </div>
                         </div>
                       </div>
@@ -171,28 +161,76 @@ export default function BlogPageClient() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '200ms' }}>
-                <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-gradient-to-r from-gray-700 to-gray-600 flex items-center justify-center">
-                  <BookOpen className="w-8 h-8 text-gray-300" />
+              <div className="text-center py-20 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '200ms' }}>
+                <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-zinc-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">No posts yet</h3>
-                <p className="text-gray-400">Check back soon for new content!</p>
+                <h3 className="text-xl font-semibold text-zinc-900 mb-2">No posts yet</h3>
+                <p className="text-zinc-600">Check back soon for new content!</p>
               </div>
             )}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <style jsx global>{`
-        .reveal-item {
-          opacity: 1;
-          transform: translateY(0);
-          transition: opacity 1s ease-out, transform 1s ease-out;
+      {/* Call to Action */}
+      <section className="relative py-24 bg-white border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-6">
+                Stay Updated
+              </h2>
+              <p className="text-lg text-zinc-600 mb-8 leading-relaxed">
+                Want to be notified when I publish new articles? Get in touch and let me know what topics interest you most.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/contact"
+                  className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center group"
+                  prefetch={true}
+                >
+                  Get In Touch
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="/about"
+                  className="px-8 py-4 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-900 rounded-lg font-semibold transition-all duration-200"
+                  prefetch={true}
+                >
+                  Learn More About Me
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        .animate-in {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
         }
 
-        .reveal-item.revealed {
-          opacity: 1;
-          transform: translateY(0);
+        /* Focus styles for accessibility */
+        .focus-visible:focus {
+          outline: 2px solid #3A5AFF;
+          outline-offset: 2px;
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+          .transition-all,
+          .transition-colors,
+          .transition-transform {
+            transition: none;
+          }
+
+          .animate-pulse {
+            animation: none;
+          }
         }
       `}</style>
     </div>

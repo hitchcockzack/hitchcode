@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { JetBrains_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ];
 
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -40,147 +40,141 @@ export default function Header() {
   }, [drawerOpen]);
 
   return (
-    <header className="relative z-20 py-6 px-4 sm:px-8 md:px-12 border-b border-white/10 bg-black">
-      <div className="max-w-7xl mx-auto relative">
-        {/* Brand - positioned absolutely on the left */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2">
-          <Link href="/" className="flex items-center space-x-3">
-            <svg
-              className="h-8 w-8 rounded-md"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ display: 'block', background: 'linear-gradient(135deg, #2563eb 0%, #a21caf 100%)', borderRadius: '0.375rem' }}
-            >
-              <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
-              <defs>
-                <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#2563eb" />
-                  <stop offset="1" stopColor="#a21caf" />
-                </linearGradient>
-              </defs>
-              <text
-                x="16"
-                y="16.5"
-                textAnchor="middle"
-                fontFamily="JetBrains Mono, Inter, sans-serif"
-                fontWeight="bold"
-                fontSize="20"
-                fill="white"
-                letterSpacing="1"
-                alignmentBaseline="middle"
-                dominantBaseline="middle"
-              >
-                H
-              </text>
-            </svg>
-            <span className={`${jetbrains.className} text-lg font-medium tracking-tight hidden sm:block`}>HITCHCODE</span>
-          </Link>
-        </div>
-
-        {/* Desktop nav - truly centered */}
-        <nav className="hidden lg:flex items-center justify-center space-x-8 py-2">
-          {NAV_LINKS.map(link => (
-            <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
-              {link.label}
+    <header className="sticky top-0 z-20 bg-white border-b border-zinc-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="relative flex items-center justify-between h-16">
+          {/* Brand */}
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800 transition-all duration-200 shadow-md">
+                <span className="text-white font-bold text-lg">H</span>
+              </div>
+              <span className={`${inter.className} text-xl font-bold tracking-tight text-zinc-900 group-hover:text-blue-600 transition-colors duration-200`}>
+                hitchcode
+              </span>
             </Link>
-          ))}
-        </nav>
+          </div>
 
-        {/* Get Started button - positioned absolutely on the right */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2">
-          <Link
-            href="/contact"
-            className="hidden md:inline-block px-4 py-2 bg-white/10 hover:bg-white/15 text-white text-sm rounded-md transition-colors border border-white/10 whitespace-nowrap"
-          >
-            Get Started
-          </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-1">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="relative px-4 py-2 text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-all duration-200 rounded-lg hover:bg-zinc-50 group"
+              >
+                {link.label}
+                <span className="absolute inset-x-4 bottom-0 h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-center"></span>
+              </Link>
+            ))}
+          </nav>
+
+          {/* CTA Button & Mobile Menu */}
+          <div className="flex items-center space-x-4">
+            {/* Get Started Button */}
+            <Link
+              href="/contact"
+              className="hidden md:inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+            >
+              Get Started
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="lg:hidden p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+              aria-label="Open navigation menu"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <Menu className="w-5 h-5 text-zinc-700" />
+            </button>
+          </div>
         </div>
 
-        {/* Hamburger (mobile/tablet) - positioned absolutely on the right */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:hidden">
-          <button
-            className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Open navigation menu"
-            onClick={() => setDrawerOpen(true)}
-          >
-            <Menu className="w-7 h-7 text-white" />
-          </button>
-        </div>
-
-        {/* Fallback navigation for medium screens where we need to split the difference */}
-        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-2 mx-40">
+        {/* Tablet Navigation (md to lg) */}
+        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-3 border-t border-zinc-100">
           {NAV_LINKS.slice(0, 4).map(link => (
-            <Link key={link.href} href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 px-3 py-2 rounded-lg transition-colors duration-200"
+            >
               {link.label}
             </Link>
           ))}
         </nav>
       </div>
 
-      {/* Drawer overlay */}
+      {/* Mobile Drawer */}
       {drawerOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity duration-200 lg:hidden"
           style={{ zIndex: 9998 }}
         >
           <div
             ref={drawerRef}
-            className="fixed top-0 right-0 h-full w-4/5 max-w-xs border-l border-white/10 shadow-2xl z-50 flex flex-col p-6 animate-slide-in drawer-solid-bg"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white border-l border-zinc-200 shadow-2xl z-50 flex flex-col animate-slide-in"
             tabIndex={-1}
             aria-modal="true"
             role="dialog"
           >
-            <div className="flex items-center justify-between mb-8">
-              <span className="text-lg font-bold tracking-tight text-white">Menu</span>
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between p-6 border-b border-zinc-100 bg-zinc-50">
+              <div className="flex items-center space-x-3">
+                <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">H</span>
+                </div>
+                <span className="text-lg font-bold tracking-tight text-zinc-900">Menu</span>
+              </div>
               <button
-                className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="p-2 rounded-lg hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
                 aria-label="Close navigation menu"
                 onClick={() => setDrawerOpen(false)}
               >
-                <X className="w-6 h-6 text-white" />
+                <X className="w-5 h-5 text-zinc-700" />
               </button>
             </div>
-            <nav className="flex flex-col gap-4">
+
+            {/* Drawer Navigation */}
+            <nav className="flex-1 flex flex-col p-6 space-y-2">
               {NAV_LINKS.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-base text-gray-200 hover:text-white py-2 px-2 rounded transition-colors"
+                  className="flex items-center px-4 py-3 text-base font-medium text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg transition-all duration-200 border border-transparent hover:border-zinc-200"
                   onClick={() => setDrawerOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/contact"
-                className="mt-6 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md font-medium text-center transition-all duration-300"
-                onClick={() => setDrawerOpen(false)}
-              >
-                Get Started
-              </Link>
+
+              {/* Mobile CTA */}
+              <div className="pt-6 mt-6 border-t border-zinc-200">
+                <Link
+                  href="/contact"
+                  className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  Get Started
+                </Link>
+              </div>
             </nav>
           </div>
         </div>
       )}
+
       <style jsx global>{`
         @keyframes slide-in {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
         }
         .animate-slide-in {
-          animation: slide-in 0.25s cubic-bezier(0.4,0,0.2,1);
-        }
-        .drawer-solid-bg {
-          background-color: #000000 !important;
-          background: #000000 !important;
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
-          z-index: 9999 !important;
-        }
-        .drawer-solid-bg * {
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
+          animation: slide-in 0.3s cubic-bezier(0.4,0,0.2,1);
         }
       `}</style>
     </header>

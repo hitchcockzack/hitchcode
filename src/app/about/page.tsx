@@ -3,61 +3,54 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { JetBrains_Mono, Inter } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { sendNotification } from '../../lib/notifications';
 import {
-  Code,
-  Lightbulb,
+  ArrowRight,
+  ChevronRight,
+  Heart,
   Rocket,
-  Users,
-  Clock,
+  Star,
+  TrendingUp,
+  Settings,
   Target,
   Zap,
   Award,
-  ChevronRight,
-  ArrowRight,
-  Heart,
-  Coffee,
-  Brain,
-  Smartphone,
-  Monitor,
-  Database,
-  Cloud,
-  Palette,
-  Settings,
-  Globe,
-  Star,
-  BookOpen,
-  TrendingUp
+  Users,
+  Lightbulb
 } from 'lucide-react';
 
-// Lazy load heavy components with better granularity
-const TechStackSection = lazy(() => import('./components/TechStackSection'));
+// Lazy load heavy components
 const AchievementsSection = lazy(() => import('./components/AchievementsSection'));
 const BeyondCodeSection = lazy(() => import('./components/BeyondCodeSection'));
 
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
+// Scroll reveal hook for smooth animations
+const useScrollReveal = () => {
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -100px 0px',
+      threshold: 0.1
+    }
 
-const skills = [
-  { name: 'React & Next.js', level: 98, category: 'Frontend' },
-  { name: 'TypeScript', level: 96, category: 'Languages' },
-  { name: 'Node.js', level: 94, category: 'Backend' },
-  { name: 'Python', level: 92, category: 'Languages' },
-  { name: 'PostgreSQL', level: 90, category: 'Database' },
-  { name: 'AWS/Cloud', level: 88, category: 'DevOps' },
-  { name: 'UI/UX Design', level: 85, category: 'Design' },
-  { name: 'Mobile Development', level: 83, category: 'Mobile' }
-];
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in')
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions)
+    document.querySelectorAll('.reveal-on-scroll').forEach(item => {
+      observer.observe(item)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+}
 
 const achievements = [
   {
@@ -95,40 +88,29 @@ const values = [
     title: 'Innovation First',
     description: 'Every line of code is an opportunity to push boundaries and create something extraordinary.',
     icon: Rocket,
-    color: 'text-blue-400'
+    color: 'blue'
   },
   {
     title: 'Quality Obsessed',
     description: 'Perfection isn\'t an accident. It\'s the result of meticulous attention to detail and rigorous testing.',
     icon: Star,
-    color: 'text-purple-400'
+    color: 'purple'
   },
   {
     title: 'Client Partnership',
     description: 'Your success is my success. I don\'t just build software, I build lasting business relationships.',
     icon: Heart,
-    color: 'text-pink-400'
+    color: 'pink'
   },
   {
     title: 'Continuous Growth',
     description: 'Technology evolves rapidly. I stay ahead by constantly learning and adapting to new paradigms.',
     icon: TrendingUp,
-    color: 'text-green-400'
+    color: 'green'
   }
 ];
 
-const techStack = [
-  { name: 'Frontend', tools: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'], icon: Monitor },
-  { name: 'Backend', tools: ['Node.js', 'Python', 'Express', 'FastAPI'], icon: Database },
-  { name: 'Mobile', tools: ['React Native', 'Expo', 'Flutter'], icon: Smartphone },
-  { name: 'Cloud & DevOps', tools: ['AWS', 'Vercel', 'Docker', 'CI/CD'], icon: Cloud },
-  { name: 'Design', tools: ['Figma', 'Adobe Creative Suite', 'Framer'], icon: Palette },
-  { name: 'Tools', tools: ['Git', 'VS Code', 'Linear', 'Notion'], icon: Settings }
-];
-
 export default function AboutPage() {
-  const [activeSkill, setActiveSkill] = useState<number | null>(null);
-  const [playedIntro, setPlayedIntro] = useState(false);
   const [currentQuote, setCurrentQuote] = useState(0);
 
   const quotes = [
@@ -137,50 +119,16 @@ export default function AboutPage() {
     "Every bug is a puzzle waiting to be solved with creativity."
   ];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPlayedIntro(true);
-    }, 500);
+  useScrollReveal();
 
+  useEffect(() => {
     // Rotating quotes
     const quoteInterval = setInterval(() => {
       setCurrentQuote((prev) => (prev + 1) % quotes.length);
     }, 4000);
 
-    // Intersection Observer for reveal animations
-    const observerOptions = {
-      root: null,
-      rootMargin: '50px',
-      threshold: 0.1
-    };
-
-    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-
-    // Use requestIdleCallback for performance
-    const observeElements = () => {
-      const elements = document.querySelectorAll('.reveal-item');
-      elements.forEach(item => observer.observe(item));
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(observeElements);
-    } else {
-      setTimeout(observeElements, 0);
-    }
-
     return () => {
-      clearTimeout(timer);
       clearInterval(quoteInterval);
-      observer.disconnect();
     };
   }, []);
 
@@ -193,35 +141,22 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className={`min-h-screen w-full bg-black text-white flex flex-col ${inter.className}`}>
-      {/* Background Elements */}
-      <div className="fixed inset-0 z-0 opacity-10 pointer-events-none">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:80px_80px]" />
-      </div>
-
-      {/* Global accent lines - simplified */}
-      <div className="fixed top-0 left-0 w-4 h-screen bg-gradient-to-b from-blue-600/20 via-purple-600/20 to-transparent z-0" />
-      <div className="fixed top-0 right-0 w-4 h-screen bg-gradient-to-b from-transparent via-purple-600/20 to-blue-600/20 z-0" />
-
-      {/* Floating gradient orbs - reduced intensity */}
-      <div className="fixed -top-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full filter blur-[100px] animate-pulse" />
-      <div className="fixed -bottom-40 -right-40 w-80 h-80 bg-purple-600/10 rounded-full filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
-
-      <main className="flex-1 relative z-10">
+    <div className={`min-h-screen bg-white ${inter.className}`}>
         {/* Hero Section */}
-        <section className="relative min-h-[90vh] flex items-center justify-center py-20 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center transform transition-all duration-1000 ease-out ${playedIntro ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-              {/* Profile Image with optimization */}
+      <section className="relative py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+
+            {/* Profile Image */}
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8">
               <div className="w-32 h-32 mx-auto mb-8 relative">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1">
-                  <div className="w-full h-full rounded-full bg-black overflow-hidden">
+                <div className="w-full h-full rounded-full border-4 border-zinc-200 overflow-hidden">
                     <Image
                       src="/optimized/zack.webp"
                       alt="Zack Hitchcock"
                       width={128}
                       height={128}
-                      className="w-full h-full object-cover rounded-full"
+                    className="w-full h-full object-cover"
                       priority
                       placeholder="blur"
                       quality={85}
@@ -230,46 +165,46 @@ export default function AboutPage() {
                     />
                   </div>
                 </div>
-                <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-xl animate-pulse" />
               </div>
 
-              <h1 className={`${jetbrains.className} text-4xl sm:text-6xl md:text-7xl font-bold mb-6 tracking-tight`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Zack Hitchcock</span>
+            {/* Main headline */}
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8" style={{ transitionDelay: '200ms' }}>
+              <h1 className="text-5xl md:text-6xl font-bold text-zinc-900 mb-6 tracking-tight">
+                Zack Hitchcock
+                <br />
+                <span className="text-zinc-600">Full-Stack Developer & Digital Architect</span>
               </h1>
 
               <div className="mb-8">
-                <p className="text-xl md:text-2xl text-gray-300 mb-4">
-                  Full-Stack Developer & Digital Architect
-                </p>
                 <div className="h-8 flex items-center justify-center">
-                  <p className="text-lg text-gray-400 italic min-h-[2rem] transition-all duration-500">
+                  <p className="text-lg text-zinc-700 italic min-h-[2rem] transition-all duration-500">
                     "{quotes[currentQuote]}"
                   </p>
                 </div>
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            {/* CTA Buttons */}
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16" style={{ transitionDelay: '400ms' }}>
                 <Link
                   href="/contact"
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[160px] text-center"
+                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors duration-200 shadow-sm hover:shadow-md"
                   prefetch={true}
                 >
                   Let's Work Together
                 </Link>
                 <Link
                   href="/services/full-stack-development"
-                  className="px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md font-medium transition-colors min-w-[160px] text-center group"
+                className="px-8 py-4 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-900 rounded-lg font-semibold transition-all duration-200 group flex items-center"
                   prefetch={true}
                 >
-                  <span className="inline-flex items-center">
                     View My Work
                     <ChevronRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                  </span>
                 </Link>
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto" style={{ transitionDelay: '600ms' }}>
                 {[
                   { number: '50+', label: 'Projects Completed' },
                   { number: '100%', label: 'Client Satisfaction' },
@@ -277,10 +212,10 @@ export default function AboutPage() {
                   { number: '24/7', label: 'Support Available' }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
-                    <div className={`text-2xl md:text-3xl font-bold ${jetbrains.className} bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent`}>
+                  <div className="text-2xl md:text-3xl font-bold text-zinc-900">
                       {stat.number}
-                    </div>
-                    <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+                  </div>
+                  <div className="text-sm text-zinc-600 mt-1">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -289,40 +224,40 @@ export default function AboutPage() {
         </section>
 
         {/* My Story Section */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
+        <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-                <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold text-center mb-16`}>
-                  <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">My Journey</span>
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 text-center mb-16">
+                My Journey
                 </h2>
 
-                <div className="prose prose-lg prose-invert max-w-none">
-                  <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12 mb-12">
+              <div className="space-y-8">
+                <div className="bg-white border border-zinc-200 rounded-xl p-8 shadow-sm">
                     <div className="flex items-start space-x-4 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                        <Settings className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Settings className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-blue-400">From Hands to Code</h3>
-                        <p className="text-gray-300 leading-relaxed">
+                      <h3 className="text-xl font-semibold mb-4 text-zinc-900">From Hands to Code</h3>
+                      <p className="text-zinc-700 leading-relaxed">
                           My journey began with my hands and a toolbox. As a carpenter, I learned that every project starts with
                           understanding the problem, choosing the right tools, and building something that lasts. Then came the Army—as
                           an Airborne Infantryman, I discovered the power of precision, adaptability, and mission-critical thinking.
-                          These weren't just jobs; they were schools of problem-solving that would shape everything that followed.
+                          These weren't just jobs; they were neatly-packaged schools of thought, vehicles for problem-solving that would shape everything that followed.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12 mb-12">
+                <div className="bg-white border border-zinc-200 rounded-xl p-8 shadow-sm">
                     <div className="flex items-start space-x-4 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                        <Target className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Target className="w-6 h-6 text-purple-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-purple-400">The Pivotal Moment</h3>
-                        <p className="text-gray-300 leading-relaxed">
+                      <h3 className="text-xl font-semibold mb-4 text-zinc-900">The Pivotal Moment</h3>
+                      <p className="text-zinc-700 leading-relaxed">
                           Returning to construction, I was promoted to project manager—suddenly thrust from the field into an office chair,
                           surrounded by screens and spreadsheets. That's when it hit me: the computer wasn't just another tool—it was the
                           most powerful tool I had never fully embraced. Every construction project had taught me that the right tool makes
@@ -332,18 +267,18 @@ export default function AboutPage() {
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 p-8 md:p-12">
+                <div className="bg-white border border-zinc-200 rounded-xl p-8 shadow-sm">
                     <div className="flex items-start space-x-4 mb-6">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                        <Zap className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-6 h-6 text-green-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 text-green-400">Tools for Impact</h3>
-                        <p className="text-gray-300 leading-relaxed">
+                      <h3 className="text-xl font-semibold mb-4 text-zinc-900">Tools for Impact</h3>
+                      <p className="text-zinc-700 leading-relaxed">
                           I dove headfirst into a software engineering bootcamp, bringing my problem-solver's mindset to code. While the
                           job market for new developers has shifted dramatically, I've found my true calling: using technology as a force
                           multiplier to solve problems for the community on a scale I never imagined possible. Every line of code is
-                          a tool, every application a solution, every project an opportunity to build something that makes life better.
+                          a tool, every application a solution, every project an opportunity to build something that makes life better for everyone involved.
                         </p>
                       </div>
                     </div>
@@ -355,13 +290,14 @@ export default function AboutPage() {
         </section>
 
         {/* Core Values Section */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Core Values</span>
+      <section className="relative py-24 bg-white border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-6">
+                Core Values
               </h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              <p className="text-zinc-600 text-lg max-w-2xl mx-auto">
                 These principles guide every decision I make and every line of code I write
               </p>
             </div>
@@ -369,20 +305,27 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {values.map((value, index) => {
                 const Icon = value.icon;
+                const colorClasses = {
+                  blue: 'bg-blue-50 text-blue-600',
+                  purple: 'bg-purple-50 text-purple-600',
+                  pink: 'bg-pink-50 text-pink-600',
+                  green: 'bg-green-50 text-green-600'
+                };
+
                 return (
                   <div
                     key={index}
-                    className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
+                    className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 group"
                     style={{ transitionDelay: `${200 + index * 100}ms` }}
                   >
-                    <div className="h-full p-8 bg-gradient-to-br from-gray-900/50 to-gray-800/30 backdrop-blur-sm rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:translate-y-[-4px] shadow-xl">
+                    <div className="h-full p-8 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200">
                       <div className="flex items-start space-x-4">
-                        <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${value.color === 'text-blue-400' ? 'from-blue-500/20 to-blue-600/20' : value.color === 'text-purple-400' ? 'from-purple-500/20 to-purple-600/20' : value.color === 'text-pink-400' ? 'from-pink-500/20 to-pink-600/20' : 'from-green-500/20 to-green-600/20'} flex items-center justify-center flex-shrink-0`}>
-                          <Icon className={`w-6 h-6 ${value.color}`} />
+                        <div className={`w-12 h-12 rounded-lg ${colorClasses[value.color as keyof typeof colorClasses]} flex items-center justify-center flex-shrink-0`}>
+                          <Icon className="w-6 h-6" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-semibold mb-3 text-white">{value.title}</h3>
-                          <p className="text-gray-400 leading-relaxed">{value.description}</p>
+                          <h3 className="text-xl font-semibold mb-3 text-zinc-900">{value.title}</h3>
+                          <p className="text-zinc-600 leading-relaxed">{value.description}</p>
                         </div>
                       </div>
                     </div>
@@ -390,62 +333,251 @@ export default function AboutPage() {
                 );
               })}
             </div>
+            </div>
           </div>
         </section>
 
-        {/* Skills & Expertise Section */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Technical Expertise</span>
+            {/* Visual Story Section */}
+      <section className="relative py-24 bg-white border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700">
+              <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-6">
+                Beyond the Code
               </h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Constantly evolving skillset built through years of hands-on experience and continuous learning
+              <p className="text-zinc-600 text-lg max-w-2xl mx-auto">
+                Life is about more than just coding - here's what keeps me grounded and motivated
               </p>
             </div>
 
-            {/* Tech Stack Grid - Lazy loaded */}
-            <Suspense fallback={
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-32 bg-gray-800/20 rounded-lg animate-pulse" />
-                ))}
-              </div>
-            }>
-              <TechStackSection techStack={techStack} />
-            </Suspense>
+            {/* Personal Life Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
 
-            {/* Skills Progress Bars */}
-            <div className="max-w-4xl mx-auto">
-              <h3 className="text-xl font-semibold mb-8 text-center">Proficiency Levels</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {skills.map((skill, index) => (
-                  <div
-                    key={index}
-                    className="reveal-item opacity-0 transition-all duration-700 translate-y-8 group"
-                    style={{ transitionDelay: `${400 + index * 50}ms` }}
-                    onMouseEnter={() => setActiveSkill(index)}
-                    onMouseLeave={() => setActiveSkill(null)}
-                  >
-                    <div className="p-4 bg-gradient-to-br from-gray-900/30 to-gray-800/20 rounded-lg border border-white/5 hover:border-white/10 transition-all duration-300">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">{skill.name}</span>
-                        <span className="text-xs text-gray-400">{skill.category}</span>
+              {/* Dog Dad Section */}
+              <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '200ms' }}>
+                <div className="h-full p-8 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center mr-4">
+                      <Heart className="w-6 h-6 text-amber-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-zinc-900">Dog Dad</h3>
+              </div>
+
+                  <p className="text-zinc-700 leading-relaxed mb-6">
+                    Meet Vito, my German Shepherd rescue and the best dog in the whole world. This guy is my adventure buddy,
+                    workout partner, and constant companion. Whether we're exploring new trails, going for bike rides,
+                    roller blading through the neighborhood, or just playing in the yard - he comes with me everywhere.
+                  </p>
+
+                  {/* Media Grid */}
+                  <div className="space-y-4 mb-6">
+                    {/* Full Width First Image */}
+                    <div className="w-full overflow-hidden rounded-lg group">
+                      <Image
+                        src="/optimized/047B9985-47E4-457F-AE9A-E2F2910E8DBF.webp"
+                        alt="Vito the German Shepherd"
+                        width={800}
+                        height={600}
+                        className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
                       </div>
-                      <div className="w-full bg-gray-800 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ease-out ${activeSkill === index ? 'shadow-lg shadow-blue-500/25' : ''}`}
-                          style={{
-                            width: `${skill.level}%`,
-                            transitionDelay: `${600 + index * 50}ms`
-                          }}
+
+                    {/* Second Row: Image and Video */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="aspect-square overflow-hidden rounded-lg group">
+                        <Image
+                          src="/optimized/IMG_1691.webp"
+                          alt="Adventures with Vito"
+                          width={600}
+                          height={400}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                          placeholder="blur"
+                          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                         />
                       </div>
-                      <div className="text-xs text-gray-500 mt-1 text-right">{skill.level}%</div>
+
+                      {/* Video Section */}
+                      <div className="flex flex-col space-y-4">
+                        <div className="aspect-square overflow-hidden rounded-lg relative group">
+                          <video
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            width={300}
+                            height={300}
+                          >
+                            <source src="/IMG_1915.mov" type="video/quicktime" />
+                            <source src="/IMG_1915.mov" type="video/mp4" />
+                            Your browser does not support the video tag.
+                          </video>
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                              <div className="w-0 h-0 border-l-[6px] border-l-white border-y-[4px] border-y-transparent ml-1"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fun Callout */}
+
+                  </div>
+                </div>
+              </div>
+
+              {/* Firefighter Section */}
+              <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '300ms' }}>
+                <div className="h-full p-8 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center mr-4">
+                      <Target className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-zinc-900">Firefighter</h3>
+                  </div>
+
+                  <p className="text-zinc-700 leading-relaxed mb-6">
+                    When I'm not coding, I serve my community as a firefighter. It's taught me the importance of
+                    teamwork, quick decision-making under pressure, and always being ready to help others.
+                    Plus, Vito gets to visit the station sometimes!
+                  </p>
+
+                  {/* Fire Department Image */}
+                  <div className="relative overflow-hidden rounded-lg group mb-6">
+                    <Image
+                      src="/optimized/IMG_1360.webp"
+                      alt="Zack and Vito at the fire station"
+                      width={800}
+                      height={600}
+                      className="w-full h-128 object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-sm font-medium">Vito checking out the fire truck</p>
                     </div>
                   </div>
-                ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Army Veteran & World Traveler Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16">
+
+              {/* Army Veteran Section */}
+              <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '500ms' }}>
+                <div className="h-full p-8 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mr-4">
+                      <Star className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-zinc-900">Army Veteran</h3>
+                  </div>
+
+                  <p className="text-zinc-700 leading-relaxed mb-6">
+                    Proud to have served as an Airborne Infantryman, stationed in Italy and North Carolina.
+                    Deployed to Iraq in 2019, where I learned the true meaning of teamwork, leadership under pressure,
+                    and the importance of mission accomplishment. The discipline and problem-solving skills from my
+                    military service continue to shape how I approach every challenge today.
+                  </p>
+
+                  {/* Military Images */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="aspect-square overflow-hidden rounded-lg group">
+                      <Image
+                        src="/optimized/IMG_6325.webp"
+                        alt="Military service - Army training"
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                    </div>
+                    <div className="aspect-square overflow-hidden rounded-lg group">
+                      <Image
+                        src="/optimized/3A28D7A4-D601-4B60-8B1B-ABF447146B9F.webp"
+                        alt="Deployment memories"
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                    </div>
+                    <div className="aspect-square overflow-hidden rounded-lg group col-span-2">
+                      <Image
+                        src="/optimized/IMG_1157.webp"
+                        alt="Army service memories"
+                        width={600}
+                        height={400}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* World Traveler Section */}
+              <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '600ms' }}>
+                <div className="h-full p-8 bg-white border border-zinc-200 rounded-xl hover:border-zinc-300 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
+                      <TrendingUp className="w-6 h-6 text-teal-600" />
+                    </div>
+                    <h3 className="text-2xl font-semibold text-zinc-900">World Traveler</h3>
+                  </div>
+
+                  <p className="text-zinc-700 leading-relaxed mb-6">
+                    From military deployments to personal adventures, I've been fortunate to experience different
+                    cultures and perspectives around the world. These experiences have broadened my worldview and
+                    taught me that great solutions often come from understanding diverse approaches to problems.
+                    Travel keeps me curious and adaptable.
+                  </p>
+
+                  {/* Travel Images */}
+                  <div className="space-y-4 mb-6">
+                    <div className="relative overflow-hidden rounded-lg group">
+                      <Image
+                        src="/optimized/review.webp"
+                        alt="Positive host review showing character"
+                        width={600}
+                        height={400}
+                        className="w-full h-64 object-contain object-center transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <div className="relative overflow-hidden rounded-lg group">
+                      <Image
+                        src="/optimized/IMG_8133.webp"
+                        alt="Travel adventures around the world"
+                        width={600}
+                        height={400}
+                        className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
           </div>
@@ -453,34 +585,28 @@ export default function AboutPage() {
 
         {/* Achievements Timeline - Lazy loaded */}
         <Suspense fallback={
-          <div className="relative py-24 border-t border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="h-64 bg-gray-800/20 rounded-lg animate-pulse" />
+        <div className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="h-64 bg-zinc-200 rounded-lg animate-pulse" />
+            </div>
             </div>
           </div>
         }>
-          <AchievementsSection achievements={achievements} jetbrains={jetbrains} />
+        <AchievementsSection achievements={achievements} jetbrains={inter} />
         </Suspense>
 
-        {/* Beyond Code Section - Lazy loaded */}
-        <Suspense fallback={
-          <div className="relative py-24 border-t border-white/10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="h-96 bg-gray-800/20 rounded-lg animate-pulse" />
-            </div>
-          </div>
-        }>
-          <BeyondCodeSection jetbrains={jetbrains} />
-        </Suspense>
+
 
         {/* Call to Action */}
-        <section className="relative py-24 border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <h2 className={`${jetbrains.className} text-3xl md:text-4xl font-bold mb-6`}>
-                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Ready to Create Something Amazing?</span>
+      <section className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-8">
+                Ready to Create Something Amazing?
               </h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-12">
+              <p className="text-xl text-zinc-600 mb-12 leading-relaxed">
                 Whether you have a clear vision or just an idea, I'm here to help bring your digital dreams to life.
                 Let's start a conversation about what we can build together.
               </p>
@@ -488,7 +614,7 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   href="/contact"
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-md font-medium transition-all duration-300 min-w-[200px] text-center inline-flex items-center justify-center group"
+                  className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center group"
                   prefetch={true}
                 >
                   Start Your Project
@@ -496,42 +622,41 @@ export default function AboutPage() {
                 </Link>
                 <Link
                   href="/services/full-stack-development"
-                  className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-md font-medium transition-colors min-w-[200px] text-center"
+                  className="px-8 py-4 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-900 rounded-lg font-semibold transition-all duration-200"
                   prefetch={true}
                 >
                   Explore Services
                 </Link>
               </div>
+              </div>
             </div>
           </div>
         </section>
-      </main>
 
-      <style jsx global>{`
-        .reveal-item {
-          opacity: 1;
-          transform: translateY(0);
-          transition: opacity 1s ease-out, transform 1s ease-out;
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        .animate-in {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
         }
 
-        .reveal-item.revealed {
-          opacity: 1;
-          transform: translateY(0);
+        /* Focus styles for accessibility */
+        .focus-visible:focus {
+          outline: 2px solid #3A5AFF;
+          outline-offset: 2px;
         }
 
-        @media (max-width: 768px) {
-          .prose {
-            font-size: 16px;
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+          .transition-all,
+          .transition-colors,
+          .transition-transform {
+            transition: none;
           }
-        }
 
-        /* Performance optimizations */
-        img {
-          content-visibility: auto;
-        }
-
-        video {
-          content-visibility: auto;
+          .animate-pulse {
+            animation: none;
+          }
         }
       `}</style>
     </div>

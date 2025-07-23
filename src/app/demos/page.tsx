@@ -1,63 +1,45 @@
 'use client'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { ArrowLeft, Play, CheckCircle, Clock, Users, TrendingUp, Zap, Target } from 'lucide-react'
+import { ArrowLeft, Play, CheckCircle, Clock, Users, TrendingUp, Zap, Target, ChevronRight } from 'lucide-react'
 import SmartSchedulerDemo from "../SmartSchedulerDemo"
 import AutomatedInvoiceDemo from "../AutomatedInvoiceDemo"
 import SocialMediaContentStudio from "../SocialMediaPlannerDemo"
 import RevenueIntelligenceDemo from "../RevenueIntelligenceDemo"
 
 const inter = Inter({ subsets: ['latin'] })
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
 
-// Enhanced hex pattern for premium feel
-const HexPattern = ({ className }: { className?: string }) => (
-  <svg className={className} width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <pattern id="hexPatternDemos" width="60" height="104" patternUnits="userSpaceOnUse" patternTransform="scale(0.3)">
-        <path
-          d="M30 26l26 15v30l-26 15L4 71V41z"
-          fill="none"
-          stroke="currentColor"
-          strokeOpacity="0.05"
-          strokeWidth="1"
-        />
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#hexPatternDemos)" />
-  </svg>
-)
-
-export default function DemosPage() {
-  const [currentDemo, setCurrentDemo] = useState(0)
-  const [animateIn, setAnimateIn] = useState(false)
-
+// Scroll reveal hook for smooth animations
+const useScrollReveal = () => {
   useEffect(() => {
-    setAnimateIn(true)
-
-    // Intersection observer for reveal animations
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '0px 0px -100px 0px',
       threshold: 0.1
     }
 
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('revealed')
+          entry.target.classList.add('animate-in')
         }
       })
     }
 
     const observer = new IntersectionObserver(handleIntersect, observerOptions)
-    document.querySelectorAll('.reveal-item').forEach(item => {
+    document.querySelectorAll('.reveal-on-scroll').forEach(item => {
       observer.observe(item)
     })
 
     return () => observer.disconnect()
   }, [])
+}
+
+export default function DemosPage() {
+  const [currentDemo, setCurrentDemo] = useState(0)
+
+  useScrollReveal()
 
   const demos = [
     {
@@ -100,60 +82,47 @@ export default function DemosPage() {
   ]
 
   return (
-    <main className={`min-h-screen bg-black text-white ${inter.className}`}>
-      {/* Ambient background elements */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-4 h-full bg-gradient-to-b from-blue-600/20 via-purple-600/20 to-transparent" />
-        <div className="absolute top-0 right-0 w-4 h-full bg-gradient-to-b from-transparent via-purple-600/20 to-blue-600/20" />
-        <HexPattern className="absolute inset-0 text-white opacity-10" />
-      </div>
-
+    <main className={`min-h-screen bg-white ${inter.className}`}>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-radial from-blue-900/30 via-purple-900/20 to-transparent opacity-60" />
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full filter blur-[120px]" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-600/20 rounded-full filter blur-[120px]" />
+      <section className="relative py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8">
+              <Link
+                href="/"
+                className="inline-flex items-center text-zinc-500 hover:text-zinc-900 transition-colors mb-8 group"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                Back to Home
+              </Link>
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className={`transform transition-all duration-1000 ease-out ${animateIn ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
-            <Link
-              href="/"
-              className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-8 group"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
-              Back to Home
-            </Link>
-
-            <div className="flex justify-center mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <Play className="h-10 w-10 text-white ml-1" />
+              <div className="w-20 h-20 mx-auto mb-8 bg-blue-50 rounded-2xl flex items-center justify-center">
+                <Play className="h-10 w-10 text-blue-600 ml-1" />
               </div>
             </div>
 
-            <h1 className={`text-5xl md:text-7xl font-bold ${jetbrains.className} mb-6 tracking-tight`}>
-              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 mb-8" style={{ transitionDelay: '200ms' }}>
+              <h1 className="text-5xl md:text-7xl font-bold text-zinc-900 mb-6 tracking-tight">
                 LIVE DEMOS
-              </span>
-            </h1>
+              </h1>
 
-            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
-              Experience the future of business automation.
-              <span className="text-white font-medium"> See real solutions</span> to real problems,
-              demonstrated live.
-            </p>
+              <p className="text-xl md:text-2xl text-zinc-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+                Experience the future of business automation.
+                <span className="text-zinc-900 font-medium"> See real solutions</span> to real problems,
+                demonstrated live.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16" style={{ transitionDelay: '400ms' }}>
               {[
                 { icon: Clock, label: 'Save Hours Daily', desc: 'Automate repetitive tasks' },
                 { icon: Target, label: 'Zero Errors', desc: 'Eliminate human mistakes' },
                 { icon: TrendingUp, label: 'Scale Instantly', desc: 'Grow without limits' }
               ].map((benefit, index) => (
-                <div key={index} className={`transform transition-all duration-700 delay-${300 + index * 100} ${animateIn ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                    <benefit.icon className="h-8 w-8 text-blue-400 mx-auto mb-3" />
-                    <h3 className="font-semibold mb-2">{benefit.label}</h3>
-                    <p className="text-gray-400 text-sm">{benefit.desc}</p>
-                  </div>
+                <div key={index} className="bg-white border border-zinc-200 rounded-xl p-6 hover:border-zinc-300 hover:shadow-md transition-all duration-200">
+                  <benefit.icon className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+                  <h3 className="font-semibold mb-2 text-zinc-900">{benefit.label}</h3>
+                  <p className="text-zinc-600 text-sm">{benefit.desc}</p>
                 </div>
               ))}
             </div>
@@ -163,52 +132,47 @@ export default function DemosPage() {
 
       {/* Demo Sections */}
       {demos.map((demo, index) => (
-        <section key={demo.id} className="relative py-24 border-t border-white/10">
+        <section key={demo.id} className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
           <div className="container mx-auto px-4">
             {/* Problem Statement */}
-            <div className="max-w-4xl mx-auto text-center mb-16 reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-              <div className="inline-flex items-center px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-sm font-medium mb-8">
+            <div className="max-w-4xl mx-auto text-center mb-16 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <div className="inline-flex items-center px-4 py-2 bg-red-50 border border-red-200 rounded-full text-red-700 text-sm font-medium mb-8">
                 <span className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
                 REAL CLIENT CONCERN
               </div>
 
-              <div className="bg-gradient-to-br from-red-900/40 to-orange-900/40 border border-red-400/20 rounded-2xl p-8 mb-12">
-                <h2 className="text-2xl md:text-3xl font-bold text-red-100 mb-4">
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-8 mb-12">
+                <h2 className="text-2xl md:text-3xl font-bold text-red-900 mb-4">
                   "{demo.problem}"
                 </h2>
-                <p className="text-red-200/80">This is what we hear from business owners every day</p>
+
               </div>
 
               {/* Solution Announcement */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 rounded-2xl blur-xl" />
-                <div className="relative bg-gradient-to-br from-blue-900/60 to-purple-900/60 border border-blue-400/30 rounded-2xl p-8">
-                  <div className="flex items-center justify-center mb-4">
-                    <CheckCircle className="h-8 w-8 text-green-400 mr-3" />
-                    <span className="text-green-400 font-semibold text-lg">SOLUTION</span>
-                  </div>
-                  <h3 className={`text-3xl md:text-4xl font-bold ${jetbrains.className} mb-4`}>
-                    <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                      {demo.title}
-                    </span>
-                  </h3>
-                  <p className="text-xl text-gray-300 mb-6">{demo.solution}</p>
+              <div className="bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm">
+                <div className="flex items-center justify-center mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600 mr-3" />
+                  <span className="text-green-600 font-semibold text-lg">SOLUTION</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-4">
+                  {demo.title}
+                </h3>
+                <p className="text-xl text-zinc-700 mb-6">{demo.solution}</p>
 
-                  {/* Stats */}
-                  <div className={`grid grid-cols-2 gap-6 max-w-2xl mx-auto ${demo.stats.length === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
-                    {demo.stats.map((stat, statIndex) => (
-                      <div key={statIndex} className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>
-                        <div className="text-gray-400 text-sm">{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
+                {/* Stats */}
+                <div className={`grid grid-cols-2 gap-6 max-w-2xl mx-auto ${demo.stats.length === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
+                  {demo.stats.map((stat, statIndex) => (
+                    <div key={statIndex} className="text-center">
+                      <div className="text-2xl md:text-3xl font-bold text-zinc-900 mb-1">{stat.value}</div>
+                      <div className="text-zinc-600 text-sm">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
             {/* Demo Component */}
-            <div className="reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '200ms' }}>
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '200ms' }}>
               {demo.component}
             </div>
           </div>
@@ -216,52 +180,61 @@ export default function DemosPage() {
       ))}
 
       {/* CTA Section */}
-      <section className="relative py-24 bg-gradient-to-br from-gray-900 to-black border-t border-white/10">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-600/10 rounded-full filter blur-[100px]" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-600/10 rounded-full filter blur-[100px]" />
-        </div>
+      <section className="relative py-24 bg-white border-t border-zinc-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700" style={{ transitionDelay: '100ms' }}>
+              <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 mb-6">
+                Ready to Automate Your Business?
+              </h2>
+              <p className="text-xl text-zinc-600 mb-12 max-w-2xl mx-auto">
+                These demos show just a fraction of what's possible. Let's build something custom for your specific needs.
+              </p>
 
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto reveal-item opacity-0 transition-all duration-1000 translate-y-8" style={{ transitionDelay: '100ms' }}>
-            <h2 className={`text-4xl md:text-5xl font-bold ${jetbrains.className} mb-6`}>
-              Ready to Automate Your Business?
-            </h2>
-            <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
-              These demos show just a fraction of what's possible. Let's build something custom for your specific needs.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link
-                href="/contact"
-                className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg font-semibold transition-all duration-300 text-lg min-w-[200px] shadow-xl"
-              >
-                Start Your Project
-              </Link>
-              <Link
-                href="/services/full-stack-development"
-                className="px-10 py-4 bg-white/5 border border-white/20 hover:bg-white/10 rounded-lg font-semibold transition-colors text-lg min-w-[200px]"
-              >
-                Explore Services
-              </Link>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <Link
+                  href="/contact"
+                  className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors duration-200 text-lg min-w-[200px] shadow-sm hover:shadow-md inline-flex items-center justify-center group"
+                >
+                  Start Your Project
+                  <ChevronRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="/services/full-stack-development"
+                  className="px-10 py-4 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-900 rounded-lg font-semibold transition-all duration-200 text-lg min-w-[200px]"
+                >
+                  Explore Services
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <style jsx global>{`
-        .revealed {
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        .animate-in {
           opacity: 1 !important;
           transform: translateY(0) !important;
         }
 
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        /* Focus styles for accessibility */
+        .focus-visible:focus {
+          outline: 2px solid #3A5AFF;
+          outline-offset: 2px;
         }
 
-        .bg-gradient-radial {
-          background: radial-gradient(circle at center, var(--tw-gradient-stops));
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+          .transition-all,
+          .transition-colors,
+          .transition-transform {
+            transition: none;
+          }
+
+          .animate-pulse {
+            animation: none;
+          }
         }
       `}</style>
     </main>
