@@ -20,7 +20,9 @@ import {
   Database,
   Cpu,
   GitBranch,
-  Command
+  Command,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -51,57 +53,75 @@ const useScrollReveal = () => {
   }, [])
 }
 
-// Modern card component
-const ProjectCard = ({
+// New flagship project card component with expandable details
+const FlagshipProjectCard = ({
+  title,
   subtitle,
   headline,
-  metric,
-  description,
-  buttonText,
-  href,
-  icon: Icon,
+  shortDescription,
+  detailedDescription,
   delay = 0
 }: {
+  title: string
   subtitle: string
   headline: string
-  metric: string
-  description: string
-  buttonText: string
-  href: string
-  icon: any
+  shortDescription: string
+  detailedDescription: string
   delay?: number
-}) => (
-  <div
-    className={`reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out group`}
-    style={{ transitionDelay: `${delay}ms` }}
-  >
-    <div className="bg-white border border-zinc-200 rounded-xl p-8 hover:border-zinc-300 hover:shadow-md transition-all duration-200 h-full">
-      <div className="flex items-start justify-between mb-6">
-        <div className="p-3 bg-zinc-50 rounded-lg">
-          <Icon className="h-6 w-6 text-zinc-700" />
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  return (
+    <div
+      className={`reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      <div className="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+        {/* Header */}
+        <div className="p-8 border-b border-zinc-100 bg-gradient-to-r from-zinc-50 to-white">
+          <div className="mb-4">
+            <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">{subtitle}</div>
+            <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">{title}</h3>
+            <p className="text-lg font-medium text-zinc-700">{headline}</p>
+          </div>
         </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-zinc-900 font-mono">{metric}</div>
-          <div className="text-sm text-zinc-500">improvement</div>
+
+        {/* Content */}
+        <div className="p-8">
+          <p className="text-zinc-600 leading-relaxed mb-6">{shortDescription}</p>
+
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg group"
+          >
+            {isExpanded ? 'Show Less' : 'Learn More About This System'}
+            {isExpanded ? (
+              <ChevronUp className="h-4 w-4 ml-2 transition-transform duration-200" />
+            ) : (
+              <ChevronDown className="h-4 w-4 ml-2 transition-transform duration-200" />
+            )}
+          </button>
+        </div>
+
+        {/* Expanded Details */}
+        <div className={`grid transition-all duration-500 ease-in-out ${
+          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}>
+          <div className="overflow-hidden">
+            <div className="border-t border-zinc-100 bg-zinc-50/50">
+              <div className="px-8 py-8">
+                <h4 className="text-lg font-semibold text-zinc-900 mb-4">System Details</h4>
+                <div className="prose prose-zinc max-w-none">
+                  <p className="text-zinc-700 leading-relaxed whitespace-pre-line">{detailedDescription}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="mb-6">
-        <div className="text-sm font-medium text-zinc-500 mb-2">{subtitle}</div>
-        <h3 className="text-xl font-semibold text-zinc-900 mb-3">{headline}</h3>
-        <p className="text-zinc-600 leading-relaxed">{description}</p>
-      </div>
-
-      <Link
-        href={href}
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200 group"
-      >
-        {buttonText}
-        <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
-      </Link>
     </div>
-  </div>
-)
+  )
+}
 
 export default function Home() {
   useScrollReveal()
@@ -152,19 +172,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CASE STUDIES SECTION */}
+      {/* FLAGSHIP PROJECTS SECTION */}
       <section className="relative py-24 bg-zinc-50/50 border-t border-zinc-200">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto">
 
             {/* Section header */}
             <div className="text-center mb-16 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700">
-              <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 mb-6">
-                Real Systems. Real Results.
+              <h2 className="text-4xl md:text-6xl font-bold text-zinc-900 mb-6">
+                Flagship Systems
               </h2>
-              <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
-                Three transformations across different industries,
-                each solving unique operational complexity.
+              <p className="text-xl text-zinc-600 max-w-3xl mx-auto leading-relaxed">
+                Three complete system transformations that eliminated manual workflows,
+                saved thousands of hours, and revolutionized entire industries.
               </p>
             </div>
 
@@ -172,38 +192,50 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
               {/* FD Shirts */}
-              <ProjectCard
-                subtitle="Fire Department Merch Platform"
-                headline="From Clunky Ordering to Mobile-First Flow"
-                metric="300%"
-                description="Transformed manual email ordering into a seamless PWA with real-time customization, mobile admin workflows, and automated fulfillment."
-                buttonText="View Case Study"
-                href="/demos"
-                icon={Zap}
+              <FlagshipProjectCard
+                title="FD Shirts"
+                subtitle="E-Commerce Automation"
+                headline="Fully Automated Clothing Brand Fulfillment"
+                shortDescription="A complete end-to-end fulfillment system that transforms how fire departments manage their merchandise operations."
+                detailedDescription="This is a fully automated clothing brand fulfillment service where all logistics are handled for the shop owner, essentially eliminating any manual workload they once had. What used to take 100 hours is now fully automated, with zero instances of error.
+
+The shop owner simply announces a drop and opens the store. The system handles inventory management, order processing, fulfillment coordination, shipping logistics, customer service, and financial reconciliation.
+
+Every aspect of the business that once required manual intervention—from processing orders to managing supplier relationships—now runs seamlessly in the background. This allows fire departments to focus on their core mission while generating revenue through branded merchandise without any operational overhead."
                 delay={0}
               />
 
               {/* TrackTap */}
-              <ProjectCard
-                subtitle="Progressive Overload Tracker"
-                headline="Strength Gains, Automated"
-                metric="80%"
-                description="Built intelligent gym tracking with progressive overload automation, smart rescheduling, and streak motivation that keeps users consistent."
-                buttonText="See How It Works"
-                href="/demos"
-                icon={TrendingUp}
+              <FlagshipProjectCard
+                title="TrackTap"
+                subtitle="Fitness Technology"
+                headline="The First App for Experienced Lifters"
+                shortDescription="Revolutionary fitness tracking designed specifically for serious athletes who know what they're doing in the gym."
+                detailedDescription="TrackTap is the first app catered specifically for experienced lifters in the gym. Users create their own splits and exercise order—they're free to roam about the gym with their plan in their head, or reference a different workout of the same type.
+
+The platform provides key insights for hypertrophy, progressive overload, rest time, work time, total volume, and detailed comparisons of the same lift against other users. This creates a comprehensive database that gives individual users feedback on how they stack up against the community.
+
+Unlike other fitness apps that assume you need guidance, TrackTap respects that experienced lifters know their bodies and goals. It simply provides the intelligent tracking and analytics to optimize their performance, with advanced metrics that serious athletes actually care about.
+
+The social comparison feature creates a competitive environment where users can benchmark their progress against others performing similar routines, driving motivation and providing real-world context for their achievements."
                 delay={200}
               />
 
-              {/* Verified Roster */}
-              <ProjectCard
-                subtitle="Youth Sports Compliance"
-                headline="Age Verification in Seconds"
-                metric="95%"
-                description="Created OCR-powered age verification system with automated roster generation, eliminating hours of manual compliance work."
-                buttonText="Explore Platform"
-                href="/demos"
-                icon={Shield}
+              {/* Verified Youth Lax */}
+              <FlagshipProjectCard
+                title="Verified Youth Lax"
+                subtitle="Sports Compliance Platform"
+                headline="Eliminating Cheating in Youth Athletics"
+                shortDescription="Advanced age verification system that ensures fair competition in high-stakes youth tournaments."
+                detailedDescription="Verified Youth Lax solves the problem of cheating in high-stakes competitive tournaments for young athletes. For many of these kids, they work tirelessly to compete at their maximum capacity for a shot to make it to a great college. The old system made it easy for a parent to sign a player up for leagues their child was too old to play in, not giving other teams a fair shot.
+
+We solved this by creating a scan algorithm that processes birth certificates, checking for validity and age, and automates the entire intake process for new applicants. The result is a pool of players that have all been age-verified in the database.
+
+Previously, the limited resources for checking birth certificates used to take weeks and cost organizations thousands in salary. Now it all happens at the click of a button with cutting-edge technology.
+
+On top of the verification platform, we built a comprehensive UI for officials where they can create rosters near-instantly, assign them to events, create schedules for those events, and much more. Parents, players, coaches, event directors, and club directors all have their own use cases and dashboards to monitor what's important to them.
+
+This application effectively replaced 12 full-time salaried workers and runs for pennies a day, while ensuring complete fairness and transparency in youth athletics."
                 delay={400}
               />
             </div>
