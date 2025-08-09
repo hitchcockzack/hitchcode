@@ -98,7 +98,10 @@ export default function HomePage() {
       className={`min-h-screen bg-black text-zinc-300 ${inter.className}`}
     >
       <FutureHero />
-      <LiveDataRibbon />
+      {/* Move the live data ribbon below the hero scene to avoid covering the cube */}
+      <div className="relative z-0">
+        <LiveDataRibbon />
+      </div>
       <NeuralIntro />
 
       {/* INTRODUCTION */}
