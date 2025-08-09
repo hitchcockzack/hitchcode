@@ -1,2 +1,3 @@
 1. never suggest I run 'npm run dev'. I already have a server running.
 2. ensure all components that you build and implement are compatible equally as well and display equally as clean and nicely on mobile AND desktop.
+3. do not run npm run build unless I explicitly tell you, or if I give you an error log from a failed build. 

@@ -115,6 +115,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Client component wrapper to read pathname and conditionally render overlay
+  // We intentionally keep this inside the component to avoid SSR pathname use
   return (
     <html lang="en">
       <head>
@@ -134,8 +136,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="antialiased">
-      <ConditionalHeader />
+        <ConditionalHeader />
         {children}
+        {/* Hero overlay removed; the hero now embeds its own scene */}
       </body>
     </html>
   );
