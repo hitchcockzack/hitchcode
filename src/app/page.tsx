@@ -2,11 +2,15 @@
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 import { ArrowRight, Zap, GitBranch, Cpu, Check } from 'lucide-react'
-import LiveDataRibbon from './components/LiveDataRibbon'
+// Removed Proven Impact ribbon in favor of immersive scroll section
+import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
 import NeuralIntro from './components/NeuralIntro'
-import AdaptiveShowcase from './components/AdaptiveShowcase'
+import MirrorRubiksCube from './components/MirrorRubiksCube'
+import { Vortex } from '@/components/ui/vortex'
 
 const FutureHero = dynamic(() => import('./components/FutureHero'), { ssr: false })
 
@@ -90,6 +94,21 @@ const ProjectShowcase = ({
   </div>
 )
 
+function CubeMedia() {
+  return (
+    <div className="w-full h-full relative">
+      <Canvas className="pointer-events-none block w-full h-full z-0 bg-transparent" camera={{ position: [0, 0, 8], fov: 60 }} dpr={[1, 2]}>
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 5, 5]} intensity={1.8} />
+        <Suspense fallback={null}>
+          <MirrorRubiksCube position={[0, 0.35, 0]} scaleFactor={1.9} />
+        </Suspense>
+        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} enabled={false} />
+      </Canvas>
+    </div>
+  )
+}
+
 export default function HomePage() {
   useScrollReveal()
 
@@ -97,11 +116,82 @@ export default function HomePage() {
     <main
       className={`min-h-screen bg-black text-zinc-300 ${inter.className}`}
     >
-      <FutureHero />
-      {/* Move the live data ribbon below the hero scene to avoid covering the cube */}
-      <div className="relative z-0">
-        <LiveDataRibbon />
+      <div className="absolute inset-0 z-0 h-full w-full">
+        <Vortex
+          backgroundColor="black"
+          colors={['#2563eb', '#a21caf']}
+          intensity={0.9}
+          className="h-full w-full"
+        />
       </div>
+      <FutureHero />
+      {/* Full-width sticky scroll reveal – Proven Impact case studies */}
+      <section className="w-full">
+        <StickyScroll
+          content={[
+            {
+              title: 'Make Your Business Run on Autopilot',
+              description:
+                "I design automations that take the repetitive stuff off your plate so you can focus on the things that actually move the needle.",
+              content: <CubeMedia />,
+            },
+            {
+              title: 'AI That Works Like a Team Member',
+              description:
+                "From answering leads to generating reports, I’ll build AI tools that think, respond, and act like they’re part of your business.",
+              content: <CubeMedia />,
+            },
+            {
+              title: 'One-Click Documents',
+              description:
+                'Need invoices, contracts, proposals, or reports? I set you up to generate them instantly, perfectly formatted, every single time.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Lead Generation',
+              description:
+                'I build targeted, automated lead generation systems that fill your inbox with qualified prospects while you sleep.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Custom Software',
+              description:
+                'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Data Management',
+              description:
+                'I’ll pull, clean, and organize your data so you actually get answers you can use — no more spreadsheet chaos.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Strategic Tech Partnership',
+              description:
+                'Need a second brain for your tech decisions? I help you choose the right tools, integrations, and strategies to grow faster.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'From Idea to Reality — Fast',
+              description:
+                'Got a concept for an app, service, or workflow? I’ll turn it into something real, tested, and ready to launch.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Integrations',
+              description:
+                'Your systems will talk to each other — CRM, email, scheduling, invoicing — no more manual copying and pasting.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Always in Your Corner',
+              description:
+                'I don’t just “deliver a project” — I stick around to make sure it’s running smoothly and keep improving it as your needs grow.',
+              content: <CubeMedia />,
+            },
+          ]}
+        />
+      </section>
       <NeuralIntro />
 
       {/* INTRODUCTION */}
@@ -186,19 +276,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <AdaptiveShowcase />
-
       {/* FINAL CTA */}
-      <section className="py-32 px-4 text-center">
+      <section className="py-32 px-4 text-center relative z-10">
         <div className="container mx-auto max-w-3xl">
           <div
             className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out"
             style={{ transitionDelay: '100ms' }}
           >
-            <h2 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 mb-8 leading-tight tracking-tighter">
+            <h2 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 mb-8 leading-[1.07] tracking-tighter pb-[10px] -mb-[10px] relative z-20 overflow-visible">
               Ready to Build Your Advantage?
             </h2>
-            <p className="text-xl text-zinc-400 mb-12 leading-relaxed">
+            <p className="text-xl text-zinc-400 mb-12 leading-relaxed overflow-visible relative z-10">
               Let's discuss how a thoughtfully architected system can transform
               your business. I partner with a select group of clients to ensure
               maximum focus and impact.

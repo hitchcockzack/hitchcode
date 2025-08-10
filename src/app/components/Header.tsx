@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { Inter } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
+import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -14,11 +15,12 @@ const NAV_LINKS = [
   { href: '/contact', label: 'Contact' },
 ];
 
-const inter = Inter({ subsets: ['latin'] });
+const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   // Close drawer on ESC or click outside
   useEffect(() => {
@@ -40,16 +42,23 @@ export default function Header() {
   }, [drawerOpen]);
 
   return (
-    <header className="sticky top-0 z-20 bg-white border-b border-zinc-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/50 border-b border-zinc-800 h-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12">
         <div className="relative flex items-center justify-between h-16">
           {/* Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
-              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800 transition-all duration-200 shadow-md">
-                <span className="text-white font-bold text-lg">H</span>
-              </div>
-              <span className={`${inter.className} text-xl font-bold tracking-tight text-zinc-900 group-hover:text-blue-600 transition-colors duration-200`}>
+              <svg viewBox="0 0 32 32" className="h-9 w-9" role="img" aria-hidden="true">
+                <defs>
+                  <linearGradient id="hc-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#2563eb" />
+                    <stop offset="1" stopColor="#a21caf" />
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hc-grad)" />
+                <text x="16" y="16.5" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui" fontWeight="bold" fontSize="20" fill="#fff" letterSpacing="1" alignmentBaseline="middle" dominantBaseline="middle">H</text>
+              </svg>
+              <span className={`${jetbrains.className} text-lg md:text-xl font-bold tracking-tight text-zinc-100 group-hover:text-white transition-colors duration-200`}>
                 hitchcode
               </span>
             </Link>
@@ -57,46 +66,47 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {NAV_LINKS.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative px-4 py-2 text-sm font-medium text-zinc-700 hover:text-zinc-900 transition-all duration-200 rounded-lg hover:bg-zinc-50 group"
-              >
-                {link.label}
-                <span className="absolute inset-x-4 bottom-0 h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-center"></span>
-              </Link>
-            ))}
+            {NAV_LINKS.map(link => {
+              const active = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group ${active ? 'text-white' : 'text-zinc-300 hover:text-white'} hover:bg-zinc-900/40`}
+                >
+                  {link.label}
+                  <span className={`absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-zinc-400 to-transparent transition-opacity duration-200 ${active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}></span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* CTA Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
             {/* Get Started Button */}
-            <Link
-              href="/contact"
-              className="hidden md:inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-            >
-              Get Started
+            <Link href="/contact" className="hidden md:inline-flex relative items-center justify-center p-[3px] rounded-full group">
+              <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
+              <span className="px-5 py-2.5 bg-black rounded-full text-white text-sm font-semibold relative transition-colors duration-200 group-hover:bg-transparent">Start the Conversation</span>
             </Link>
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+              className="lg:hidden p-2 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200"
               aria-label="Open navigation menu"
               onClick={() => setDrawerOpen(true)}
             >
-              <Menu className="w-5 h-5 text-zinc-700" />
+              <Menu className="w-5 h-5 text-zinc-200" />
             </button>
           </div>
         </div>
 
         {/* Tablet Navigation (md to lg) */}
-        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-3 border-t border-zinc-100">
+        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-3 border-t border-zinc-800/70">
           {NAV_LINKS.slice(0, 4).map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 px-3 py-2 rounded-lg transition-colors duration-200"
+              className="text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900/40 px-3 py-2 rounded-lg transition-colors duration-200"
             >
               {link.label}
             </Link>
@@ -106,31 +116,35 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       {drawerOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity duration-200 lg:hidden"
-          style={{ zIndex: 9998 }}
-        >
+        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden" style={{ zIndex: 9998 }}>
           <div
             ref={drawerRef}
-            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white border-l border-zinc-200 shadow-2xl z-50 flex flex-col animate-slide-in"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-zinc-950 border-l border-zinc-800 shadow-2xl z-50 flex flex-col animate-slide-in"
             tabIndex={-1}
             aria-modal="true"
             role="dialog"
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-zinc-100 bg-zinc-50">
-              <div className="flex items-center space-x-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">H</span>
-                </div>
-                <span className="text-lg font-bold tracking-tight text-zinc-900">Menu</span>
+            <div className="flex items-center justify-between p-6 border-b border-zinc-800/70 bg-zinc-950">
+            <div className="flex items-center space-x-3">
+                <svg viewBox="0 0 32 32" className="h-8 w-8" role="img" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="hc-grad-drawer" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#2563eb" />
+                      <stop offset="1" stopColor="#a21caf" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hc-grad-drawer)" />
+                  <text x="16" y="16.5" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui" fontWeight="bold" fontSize="20" fill="#fff" letterSpacing="1" alignmentBaseline="middle" dominantBaseline="middle">H</text>
+                </svg>
+                <span className="text-lg font-bold tracking-tight text-zinc-100">Menu</span>
               </div>
               <button
-                className="p-2 rounded-lg hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                className="p-2 rounded-lg hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-colors duration-200"
                 aria-label="Close navigation menu"
                 onClick={() => setDrawerOpen(false)}
               >
-                <X className="w-5 h-5 text-zinc-700" />
+                <X className="w-5 h-5 text-zinc-200" />
               </button>
             </div>
 
@@ -140,7 +154,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center px-4 py-3 text-base font-medium text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 rounded-lg transition-all duration-200 border border-transparent hover:border-zinc-200"
+                  className="flex items-center px-4 py-3 text-base font-medium text-zinc-300 hover:text-white hover:bg-zinc-900 rounded-lg transition-all duration-200 border border-zinc-800/0 hover:border-zinc-700/70"
                   onClick={() => setDrawerOpen(false)}
                 >
                   {link.label}
@@ -148,13 +162,10 @@ export default function Header() {
               ))}
 
               {/* Mobile CTA */}
-              <div className="pt-6 mt-6 border-t border-zinc-200">
-                <Link
-                  href="/contact"
-                  className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-                  onClick={() => setDrawerOpen(false)}
-                >
-                  Get Started
+              <div className="pt-6 mt-6 border-t border-zinc-800/70">
+                <Link href="/contact" className="relative flex items-center justify-center p-[3px] rounded-full group" onClick={() => setDrawerOpen(false)}>
+                  <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
+                  <span className="px-6 py-3 bg-zinc-950 rounded-full text-white font-semibold relative transition-colors duration-200 group-hover:bg-transparent">Start the Conversation</span>
                 </Link>
               </div>
             </nav>

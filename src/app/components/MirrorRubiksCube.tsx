@@ -62,7 +62,7 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
     if (!g) return
 
     const since = performance.now() - lastInteract.current
-    const auto = since > 3500 && !isDragging
+    const auto = since > 0 && !isDragging
 
     if (auto) {
       g.rotation.y += 0.25 * delta
@@ -134,29 +134,9 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
     }
   })
 
-  const handlePointerDown: React.PointerEventHandler = (e) => {
-    e.stopPropagation()
-    setIsDragging(true)
-    dragStart.current = { x: e.clientX, y: e.clientY }
-    lastInteract.current = performance.now()
-  }
-  const handlePointerMove: React.PointerEventHandler = (e) => {
-    if (!isDragging || !groupRef.current || !dragStart.current) return
-    const dx = e.clientX - dragStart.current.x
-    const dy = e.clientY - dragStart.current.y
-    groupRef.current.rotation.y += dx * 0.005
-    groupRef.current.rotation.x += dy * 0.005
-    velocity.current.vx = dx * 0.02
-    velocity.current.vy = dy * 0.02
-    dragStart.current = { x: e.clientX, y: e.clientY }
-    lastInteract.current = performance.now()
-  }
-  const handlePointerUp: React.PointerEventHandler = (e) => {
-    e.stopPropagation()
-    setIsDragging(false)
-    dragStart.current = null
-    lastInteract.current = performance.now()
-  }
+  const handlePointerDown: React.PointerEventHandler = () => {}
+  const handlePointerMove: React.PointerEventHandler = () => {}
+  const handlePointerUp: React.PointerEventHandler = () => {}
 
   const cubies = useMemo(() => {
     const positions: [number, number, number][] = []
@@ -174,17 +154,14 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
       ref={groupRef}
       {...props}
       scale={[scale, scale, scale]}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
     >
       {cubies.map((pos, i) => (
         <Cubie position={pos} key={i} />
       ))}
       {/* Pivot used for face twists */}
       <group ref={pivotRef} />
-      <Environment preset="city" />
+      {/* Neutral studio-like environment to avoid busy reflections while keeping background black */}
+      <Environment preset="studio" background={false} />
       <ContactShadows position={[0, -1.6, 0]} blur={2.5} opacity={0.35} scale={18} />
     </group>
   )
