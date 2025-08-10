@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
-import { ContactShadows, Environment, Edges } from "@react-three/drei"
+import { ContactShadows, Edges, Environment, Lightformer } from "@react-three/drei"
 import * as THREE from "three"
 
 type MirrorRubiksCubeProps = React.ComponentProps<'group'> & {
@@ -10,22 +10,20 @@ type MirrorRubiksCubeProps = React.ComponentProps<'group'> & {
 }
 
 function Cubie({ position, size = 0.58 }: { position: [number, number, number]; size?: number }) {
-  const material = useMemo(() => new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(0.85, 0.88, 0.95),
-    metalness: 1,
-    roughness: 0.06,
-    reflectivity: 1,
-    clearcoat: 1,
-    clearcoatRoughness: 0.08,
-    envMapIntensity: 1.35,
-  }), [])
-
   return (
     <group position={position}>
       <mesh castShadow receiveShadow>
         <boxGeometry args={[size, size, size]} />
-        <primitive object={material} attach="material" />
-        <Edges threshold={6} color="#171717" />
+        {/* Toned, physically-based material that won't blow out with lights */}
+        <meshPhysicalMaterial
+          color={new THREE.Color(0.96, 0.96, 0.96)}
+          metalness={0.9}
+          roughness={0.1}
+          clearcoat={1}
+          clearcoatRoughness={0.05}
+          envMapIntensity={1.75}
+        />
+        <Edges threshold={6} color="#0a0a0a" />
       </mesh>
     </group>
   )
@@ -69,7 +67,6 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
       g.rotation.x += 0.12 * delta
       g.rotation.z += 0.06 * delta
     } else if (!isDragging) {
-      // apply inertia
       g.rotation.y += velocity.current.vx * delta
       g.rotation.x += velocity.current.vy * delta
       velocity.current.vx *= 0.94
@@ -86,11 +83,10 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
       const axis = axes[twist.current.axisIndex]
       const sign = twist.current.sign
 
-      // Select outer-layer cubies on the chosen face
       const threshold = 0.6
       const selected: THREE.Object3D[] = []
       for (const child of g.children) {
-        const pos = child.position
+        const pos = (child as THREE.Object3D).position
         if (
           (axis === 'x' && (sign > 0 ? pos.x > threshold : pos.x < -threshold)) ||
           (axis === 'y' && (sign > 0 ? pos.y > threshold : pos.y < -threshold)) ||
@@ -100,7 +96,6 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
         }
       }
 
-      // Attach selected to pivot to rotate as a unit
       for (const c of selected) pivot.attach(c)
       twist.current.active = true
       twist.current.axis = axis
@@ -114,22 +109,20 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
     if (twist.current.active) {
       const cur = twist.current
       cur.t += delta / cur.duration
-      const eased = 0.5 - 0.5 * Math.cos(Math.min(cur.t, 1) * Math.PI) // easeInOut
+      const eased = 0.5 - 0.5 * Math.cos(Math.min(cur.t, 1) * Math.PI)
       const angle = eased * (Math.PI / 2) * cur.sign
       pivot.rotation.set(0, 0, 0)
       if (cur.axis === 'x') pivot.rotation.x = angle
       if (cur.axis === 'y') pivot.rotation.y = angle
       if (cur.axis === 'z') pivot.rotation.z = angle
       if (cur.t >= 1) {
-        // bake transforms and reattach to main group
         const children = [...pivot.children]
         for (const c of children) g.attach(c)
         pivot.rotation.set(0, 0, 0)
-        // prepare next adjacent face rotation in counter-direction
         twist.current.active = false
         twist.current.axisIndex = (twist.current.axisIndex + 1) % 3
         twist.current.sign = (cur.sign * -1) as 1 | -1
-        twist.current.nextAt = performance.now() + 120 // short delay
+        twist.current.nextAt = performance.now() + 120
       }
     }
   })
@@ -142,7 +135,6 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
     const positions: [number, number, number][] = []
     const coords = [-1, 0, 1]
     for (const x of coords) for (const y of coords) for (const z of coords) {
-      // Outer shell: include face centers and edges and corners; exclude only the invisible core
       if (x === 0 && y === 0 && z === 0) continue
       positions.push([x * 0.68, y * 0.68, z * 0.68])
     }
@@ -158,11 +150,17 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
       {cubies.map((pos, i) => (
         <Cubie position={pos} key={i} />
       ))}
-      {/* Pivot used for face twists */}
       <group ref={pivotRef} />
-      {/* Neutral studio-like environment to avoid busy reflections while keeping background black */}
-      <Environment preset="studio" background={false} />
-      <ContactShadows position={[0, -1.6, 0]} blur={2.5} opacity={0.35} scale={18} />
+      <ContactShadows position={[0, -1.6, 0]} blur={2.2} opacity={0.4} scale={14} />
+
+      {/* Balanced environment highlights for nice reflections without overexposure */}
+      <Environment resolution={256} background={false} frames={1}>
+        <group>
+          <Lightformer form="rect" color="#2563eb" intensity={8} position={[0, 1, 10]} scale={[8, 4, 1]} rotation={[0, 0, 0]} />
+          <Lightformer form="rect" color="#a21caf" intensity={6} position={[-3, -0.5, 10]} scale={[6, 3, 1]} rotation={[0, 0, 0]} />
+          <Lightformer form="rect" color="#ffffff" intensity={2.5} position={[0, 2.5, 9]} scale={[2, 0.6, 1]} rotation={[0, 0, 0]} />
+        </group>
+      </Environment>
     </group>
   )
 }

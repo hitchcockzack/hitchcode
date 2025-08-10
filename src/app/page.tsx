@@ -97,9 +97,19 @@ const ProjectShowcase = ({
 function CubeMedia() {
   return (
     <div className="w-full h-full relative">
-      <Canvas className="pointer-events-none block w-full h-full z-0 bg-transparent" camera={{ position: [0, 0, 8], fov: 60 }} dpr={[1, 2]}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 5, 5]} intensity={1.8} />
+      <Canvas
+        className="pointer-events-none block w-full h-full z-0 bg-transparent"
+        camera={{ position: [0, 0, 8], fov: 60 }}
+        dpr={[1, 2]}
+        shadows
+      >
+        {/* Balanced lighting */}
+        <ambientLight intensity={0.25} />
+        <hemisphereLight args={[0x6a8cff, 0x0a0a0a, 0.5]} position={[0, 1, 0]} />
+        <directionalLight position={[5, 5, 5]} intensity={1.1} castShadow />
+        <directionalLight position={[-4, 3, 4]} intensity={0.8} />
+        <directionalLight position={[0, 0, 6]} intensity={0.9} />
+        <spotLight position={[0, 0, 9]} angle={0.45} penumbra={0.35} intensity={1.2} castShadow />
         <Suspense fallback={null}>
           <MirrorRubiksCube position={[0, 0.35, 0]} scaleFactor={1.9} />
         </Suspense>
@@ -116,15 +126,19 @@ export default function HomePage() {
     <main
       className={`min-h-screen bg-black text-zinc-300 ${inter.className}`}
     >
-      <div className="absolute inset-0 z-0 h-full w-full">
-        <Vortex
-          backgroundColor="black"
-          colors={['#2563eb', '#a21caf']}
-          intensity={0.25}
-          className="h-full w-full"
-        />
-      </div>
-      <FutureHero />
+      <Vortex
+        backgroundColor="black"
+        particleCount={800}
+        rangeY={220}
+        baseHue={220}
+        baseSpeed={0.15}
+        rangeSpeed={0.9}
+        baseRadius={0.5}
+        rangeRadius={1.25}
+        className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full min-h-[60vh]"
+      >
+        <FutureHero />
+      </Vortex>
       {/* Full-width sticky scroll reveal – Proven Impact case studies */}
       <section className="w-full">
         <StickyScroll
