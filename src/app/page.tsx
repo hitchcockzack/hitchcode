@@ -120,7 +120,7 @@ export default function HomePage() {
         <Vortex
           backgroundColor="black"
           colors={['#2563eb', '#a21caf']}
-          intensity={0.9}
+          intensity={0.25}
           className="h-full w-full"
         />
       </div>

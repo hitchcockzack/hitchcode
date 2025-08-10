@@ -16,52 +16,52 @@ export function Vortex({
   className = "",
   backgroundColor = "#000000",
   colors = ["#2563eb", "#a21caf"],
-  intensity = 0.6,
+  intensity = 0.25,
 }: VortexProps) {
   const [c1, c2] = colors
   const glowOpacity = Math.max(0, Math.min(1, intensity))
 
   return (
     <div className={`relative overflow-hidden ${className}`} style={{ backgroundColor }}>
-      {/* Base visible glow */}
+      {/* Subtle base glow */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(80% 80% at 50% 35%, ${c1}80 0%, transparent 60%), radial-gradient(65% 65% at 55% 60%, ${c2}66 0%, transparent 70%)`,
-          filter: "saturate(1.08) brightness(1.06)",
+          background: `radial-gradient(70% 70% at 50% 40%, ${c1}1f 0%, transparent 60%), radial-gradient(55% 55% at 55% 60%, ${c2}19 0%, transparent 70%)`,
+          filter: "saturate(1.02) brightness(1.02)",
         }}
       />
       {/* Swirl layers */}
       <div
         aria-hidden
-        className="absolute -inset-[18%] opacity-70"
+        className="absolute -inset-[20%] opacity-[0.12]"
         style={{
-          background: `conic-gradient(from 0deg at 50% 50%, ${c1}cc 0deg 140deg, transparent 140deg 180deg, ${c2}cc 180deg 320deg, transparent 320deg 360deg)`,
-          filter: "blur(22px)",
-          animation: "vortex-rotate 30s linear infinite",
+          background: `conic-gradient(from 0deg at 50% 50%, ${c1}33, transparent 45%, ${c2}33 70%, transparent 90%)`,
+          filter: "blur(40px)",
+          animation: "vortex-rotate 60s linear infinite",
           mixBlendMode: "screen",
         }}
       />
       <div
         aria-hidden
-        className="absolute -inset-[22%] opacity-60"
+        className="absolute -inset-[22%] opacity-[0.10]"
         style={{
-          background: `conic-gradient(from 180deg at 50% 50%, ${c2}b3 0deg 150deg, transparent 150deg 210deg, ${c1}b3 210deg 340deg, transparent 340deg 360deg)`,
-          filter: "blur(26px)",
-          animation: "vortex-rotate-rev 42s linear infinite",
+          background: `conic-gradient(from 180deg at 50% 50%, ${c2}33, transparent 50%, ${c1}33 75%, transparent 95%)`,
+          filter: "blur(48px)",
+          animation: "vortex-rotate-rev 90s linear infinite",
           mixBlendMode: "screen",
         }}
       />
-      {/* Soft radial tie-in */}
+      {/* Tie-in glow scaled by intensity */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
-          background: `radial-gradient(55% 55% at 50% 38%, ${c1}${Math.round(glowOpacity * 192)
-            .toString(16)
-            .padStart(2, "0")} 0%, transparent 60%), radial-gradient(45% 45% at 56% 62%, ${c2}${
-            Math.round(glowOpacity * 192).toString(16).padStart(2, "0")
+          background: `radial-gradient(60% 60% at 50% 35%, ${c1}${Math.round(
+            glowOpacity * 96,
+          ).toString(16).padStart(2, "0")} 0%, transparent 60%), radial-gradient(45% 45% at 55% 60%, ${c2}${
+            Math.round(glowOpacity * 96).toString(16).padStart(2, "0")
           } 0%, transparent 70%)`,
         }}
       />
@@ -72,14 +72,12 @@ export function Vortex({
       {/* Keyframes */}
       <style jsx>{`
         @keyframes vortex-rotate {
-          0% { transform: rotate(0deg) scale(1.05); }
-          50% { transform: rotate(180deg) scale(1.1); }
-          100% { transform: rotate(360deg) scale(1.05); }
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
         @keyframes vortex-rotate-rev {
-          0% { transform: rotate(0deg) scale(1.05); }
-          50% { transform: rotate(-180deg) scale(1.0); }
-          100% { transform: rotate(-360deg) scale(1.05); }
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(-360deg); }
         }
       `}</style>
     </div>
