@@ -3,19 +3,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { JetBrains_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/demos', label: 'Demos' },
-  { href: '/services/full-stack-development', label: 'Services' },
+  { href: '/services', label: 'Services' },
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
 
-const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -48,17 +48,37 @@ export default function Header() {
           {/* Brand */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
-              <svg viewBox="0 0 32 32" className="h-9 w-9" role="img" aria-hidden="true">
+              <svg
+                viewBox="0 0 32 32"
+                className="h-9 w-9"
+                role="img"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <defs>
-                  <linearGradient id="hc-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2563eb" />
-                    <stop offset="1" stopColor="#a21caf" />
+                  <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#3b82f6" />
+                    <stop offset="1" stopColor="#c026d3" />
                   </linearGradient>
                 </defs>
-                <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hc-grad)" />
-                <text x="16" y="16.5" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui" fontWeight="bold" fontSize="20" fill="#fff" letterSpacing="1" alignmentBaseline="middle" dominantBaseline="middle">H</text>
+                <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
+                <text
+                  x="16"
+                  y="16"
+                  textAnchor="middle"
+                  fontFamily="JetBrains Mono, Inter, sans-serif"
+                  fontWeight="bold"
+                  fontSize="18"
+                  fill="#fff"
+                  letterSpacing="0"
+                  alignmentBaseline="central"
+                  dominantBaseline="central"
+                  style={{ textShadow: '0 0 2px #fff, 0 0 5px #3b82f6, 0 0 8px #c026d3' }}
+                >
+                  H
+                </text>
               </svg>
-              <span className={`${jetbrains.className} text-lg md:text-xl font-bold tracking-tight text-zinc-100 group-hover:text-white transition-colors duration-200`}>
+              <span className={`${inter.className} text-lg md:text-xl font-bold tracking-tight text-zinc-100 group-hover:text-white transition-colors duration-200`}>
                 hitchcode
               </span>
             </Link>
@@ -127,15 +147,35 @@ export default function Header() {
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-6 border-b border-zinc-800/70 bg-zinc-950">
             <div className="flex items-center space-x-3">
-                <svg viewBox="0 0 32 32" className="h-8 w-8" role="img" aria-hidden="true">
+                <svg
+                  viewBox="0 0 32 32"
+                  className="h-8 w-8"
+                  role="img"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <defs>
-                    <linearGradient id="hc-grad-drawer" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#2563eb" />
-                      <stop offset="1" stopColor="#a21caf" />
+                    <linearGradient id="hitchcode-gradient-drawer" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#3b82f6" />
+                      <stop offset="1" stopColor="#c026d3" />
                     </linearGradient>
                   </defs>
-                  <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hc-grad-drawer)" />
-                  <text x="16" y="16.5" textAnchor="middle" fontFamily="Inter, ui-sans-serif, system-ui" fontWeight="bold" fontSize="20" fill="#fff" letterSpacing="1" alignmentBaseline="middle" dominantBaseline="middle">H</text>
+                  <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient-drawer)" />
+                  <text
+                    x="16"
+                    y="16"
+                    textAnchor="middle"
+                    fontFamily="JetBrains Mono, Inter, sans-serif"
+                    fontWeight="bold"
+                    fontSize="18"
+                    fill="#fff"
+                    letterSpacing="0"
+                    alignmentBaseline="central"
+                    dominantBaseline="central"
+                    style={{ textShadow: '0 0 2px #fff, 0 0 5px #3b82f6, 0 0 8px #c026d3' }}
+                  >
+                    H
+                  </text>
                 </svg>
                 <span className="text-lg font-bold tracking-tight text-zinc-100">Menu</span>
               </div>

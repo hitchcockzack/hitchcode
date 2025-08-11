@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'HitchCode | Buttons',
+  title: 'hitchcode | Buttons',
   description: 'A playful grid of interactive buttons and games.',
   icons: [
     {

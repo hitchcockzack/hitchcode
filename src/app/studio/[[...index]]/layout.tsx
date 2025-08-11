@@ -1,8 +1,4 @@
-'use client'
-
 import { NextStudioNoScript } from 'next-sanity/studio'
-import {Studio} from 'sanity'
-import config from '../../../../sanity.config'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

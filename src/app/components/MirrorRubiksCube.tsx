@@ -1,12 +1,27 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { Suspense, useMemo, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { ContactShadows, Edges, Environment, Lightformer } from "@react-three/drei"
 import * as THREE from "three"
 
 type MirrorRubiksCubeProps = React.ComponentProps<'group'> & {
   scaleFactor?: number
+  environment?:
+    | 'venetian'
+    | 'peppermint'
+    | 'syferfontein'
+    | 'night'
+    | 'city'
+    | 'dawn'
+    | 'dusk'
+    | 'forest'
+    | 'lobby'
+    | 'park'
+    | 'sunset'
+    | 'warehouse'
+    | 'apartment'
+  envFile?: string
 }
 
 function Cubie({ position, size = 0.58 }: { position: [number, number, number]; size?: number }) {
@@ -16,12 +31,12 @@ function Cubie({ position, size = 0.58 }: { position: [number, number, number]; 
         <boxGeometry args={[size, size, size]} />
         {/* Toned, physically-based material that won't blow out with lights */}
         <meshPhysicalMaterial
-          color={new THREE.Color(0.96, 0.96, 0.96)}
-          metalness={0.9}
-          roughness={0.1}
+          color={new THREE.Color(0.98, 0.98, 0.98)}
+          metalness={1}
+          roughness={0.02}
           clearcoat={1}
-          clearcoatRoughness={0.05}
-          envMapIntensity={1.75}
+          clearcoatRoughness={0.01}
+          envMapIntensity={2.6}
         />
         <Edges threshold={6} color="#0a0a0a" />
       </mesh>
@@ -29,7 +44,7 @@ function Cubie({ position, size = 0.58 }: { position: [number, number, number]; 
   )
 }
 
-export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: MirrorRubiksCubeProps) {
+export default function MirrorRubiksCube({ scaleFactor = 2.2, environment = 'night', envFile, ...props }: MirrorRubiksCubeProps) {
   const groupRef = useRef<THREE.Group>(null)
   const pivotRef = useRef<THREE.Group>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -54,6 +69,37 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
     if (size.width < 1280) return scaleFactor * 1.2
     return scaleFactor * 1.3
   }, [size.width, scaleFactor])
+
+  const environmentFile = useMemo(() => {
+    if (envFile) return envFile
+    switch (environment) {
+      case 'peppermint':
+        return '/peppermint_powerplant_2_4k.exr'
+      case 'venetian':
+        return '/venetian_crossroads_4k.exr'
+      case 'syferfontein':
+        return '/syferfontein_18d_clear_puresky_16k.hdr'
+      default:
+        return undefined
+    }
+  }, [environment, envFile])
+
+  const environmentPreset = useMemo(() => {
+    if (envFile) return undefined
+    const presetEnvs = new Set([
+      'night',
+      'city',
+      'dawn',
+      'dusk',
+      'forest',
+      'lobby',
+      'park',
+      'sunset',
+      'warehouse',
+      'apartment',
+    ])
+    return presetEnvs.has(environment as string) ? (environment as any) : undefined
+  }, [environment, envFile])
 
   useFrame((_, delta) => {
     const g = groupRef.current
@@ -153,14 +199,59 @@ export default function MirrorRubiksCube({ scaleFactor = 2.2, ...props }: Mirror
       <group ref={pivotRef} />
       <ContactShadows position={[0, -1.6, 0]} blur={2.2} opacity={0.4} scale={14} />
 
-      {/* Balanced environment highlights for nice reflections without overexposure */}
-      <Environment resolution={256} background={false} frames={1}>
-        <group>
-          <Lightformer form="rect" color="#2563eb" intensity={8} position={[0, 1, 10]} scale={[8, 4, 1]} rotation={[0, 0, 0]} />
-          <Lightformer form="rect" color="#a21caf" intensity={6} position={[-3, -0.5, 10]} scale={[6, 3, 1]} rotation={[0, 0, 0]} />
-          <Lightformer form="rect" color="#ffffff" intensity={2.5} position={[0, 2.5, 9]} scale={[2, 0.6, 1]} rotation={[0, 0, 0]} />
-        </group>
-      </Environment>
+      {/* Load environment in its own Suspense so cube appears immediately */}
+      <Suspense fallback={null}>
+        {environmentPreset ? (
+          <Environment preset={environmentPreset as any} background={false} blur={0.35}>
+            {/* Color-tint the environment lighting with lightweight Lightformers */}
+            <Lightformer
+              intensity={0.8}
+              color={new THREE.Color('#60a5fa') /* blue-400 */}
+              position={[5, 2, -8]}
+              scale={[3, 3, 1]}
+              form="rect"
+            />
+            <Lightformer
+              intensity={0.5}
+              color={new THREE.Color('#93c5fd') /* blue-300 */}
+              position={[-6, -1, 6]}
+              scale={[2.5, 2.5, 1]}
+              form="rect"
+            />
+            <Lightformer
+              intensity={0.25}
+              color={new THREE.Color('#818cf8') /* indigo-400 */}
+              position={[0, 5, 4]}
+              scale={[4, 2, 1]}
+              form="ring"
+            />
+          </Environment>
+        ) : environmentFile ? (
+          <Environment files={environmentFile} background={false} blur={0.35}>
+            <Lightformer
+              intensity={0.8}
+              color={new THREE.Color('#60a5fa')}
+              position={[5, 2, -8]}
+              scale={[3, 3, 1]}
+              form="rect"
+            />
+            <Lightformer
+              intensity={0.5}
+              color={new THREE.Color('#93c5fd')}
+              position={[-6, -1, 6]}
+              scale={[2.5, 2.5, 1]}
+              form="rect"
+            />
+            <Lightformer
+              intensity={0.25}
+              color={new THREE.Color('#818cf8')}
+              position={[0, 5, 4]}
+              scale={[4, 2, 1]}
+              form="ring"
+            />
+          </Environment>
+        ) : null}
+      </Suspense>
     </group>
   )
 }

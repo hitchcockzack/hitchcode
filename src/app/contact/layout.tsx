@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'HitchCode | Contact',
+  title: 'hitchcode | Contact',
   description: "Let's start a conversation about your next project or idea.",
   icons: [
     {

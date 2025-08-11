@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { ProgressiveBlur } from "@/components/magicui/progressive-blur";
 
 export const StickyScroll = ({
   content,
@@ -55,8 +56,10 @@ export const StickyScroll = ({
       if (rafRef.current != null) return; // throttle to rAF
       rafRef.current = window.requestAnimationFrame(() => {
         computeProximities();
-        rafRef.current && window.cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
+        if (rafRef.current) {
+          window.cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
       });
     };
     computeProximities();
@@ -86,16 +89,26 @@ export const StickyScroll = ({
             const proximity = proximities[index] ?? 0;
             const opacity = 0.35 + 0.65 * proximity; // 0.35 -> 1 as it centers
             const brighten = 0.8 + 0.7 * proximity; // brightness(0.8 -> 1.5)
+            // Only blur items that are below the viewport center; keep above-center items sharp
+            const el = itemRefs.current[index];
+            const rect = el?.getBoundingClientRect();
+            const viewportCenterY = typeof window !== "undefined" ? window.innerHeight / 2 : 0;
+            const elementCenterY = rect ? rect.top + rect.height / 2 : 0;
+            const isBelowCenter = rect ? elementCenterY > viewportCenterY : false;
+            const blurAmountPx = isBelowCenter ? Math.max(0, 6 * (1 - proximity)) : 0; // up to 6px when far from center
+            const filterValue = `brightness(${brighten}) blur(${blurAmountPx.toFixed(2)}px)`;
             return (
               <div
                 key={item.title + index}
                 className="my-20 will-change-transform"
-                ref={(el) => (itemRefs.current[index] = el)}
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
               >
                 <motion.h2
                   initial={{ opacity: 0 }}
                   animate={{ opacity }}
-                  style={{ filter: `brightness(${brighten})` }}
+                  style={{ filter: filterValue }}
                   className="text-2xl md:text-3xl font-bold text-slate-100"
                 >
                   {item.title}
@@ -103,7 +116,7 @@ export const StickyScroll = ({
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity }}
-                  style={{ filter: `brightness(${brighten})` }}
+                  style={{ filter: filterValue }}
                   className="text-base md:text-lg mt-6 md:mt-10 max-w-sm text-slate-300"
                 >
                   {item.description}
@@ -114,6 +127,8 @@ export const StickyScroll = ({
           {/* small buffer to let the last item center nicely without huge trailing space */}
           <div className="h-16" />
         </div>
+        {/* Bottom-only progressive blur overlay; keep top half clear */}
+        <ProgressiveBlur position="bottom" height="12vh" blur={10} />
       </div>
 
       {/* Right: sticky, vertically centered media block */}

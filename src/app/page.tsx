@@ -2,7 +2,7 @@
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Suspense, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { ArrowRight, Zap, GitBranch, Cpu, Check } from 'lucide-react'
@@ -11,6 +11,7 @@ import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
 import NeuralIntro from './components/NeuralIntro'
 import MirrorRubiksCube from './components/MirrorRubiksCube'
 import { Vortex } from '@/components/ui/vortex'
+
 
 const FutureHero = dynamic(() => import('./components/FutureHero'), { ssr: false })
 
@@ -100,19 +101,15 @@ function CubeMedia() {
       <Canvas
         className="pointer-events-none block w-full h-full z-0 bg-transparent"
         camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 2]}
-        shadows
+        dpr={[1, 1.5]}
       >
-        {/* Balanced lighting */}
-        <ambientLight intensity={0.25} />
-        <hemisphereLight args={[0x6a8cff, 0x0a0a0a, 0.5]} position={[0, 1, 0]} />
-        <directionalLight position={[5, 5, 5]} intensity={1.1} castShadow />
-        <directionalLight position={[-4, 3, 4]} intensity={0.8} />
-        <directionalLight position={[0, 0, 6]} intensity={0.9} />
-        <spotLight position={[0, 0, 9]} angle={0.45} penumbra={0.35} intensity={1.2} castShadow />
-        <Suspense fallback={null}>
-          <MirrorRubiksCube position={[0, 0.35, 0]} scaleFactor={1.9} />
-        </Suspense>
+        {/* Balanced lighting; leave reflections to Environment HDRI */}
+        <ambientLight intensity={0.5} />
+        <hemisphereLight args={[0xffffff, 0x222222, 0.3]} position={[0, 1, 0]} />
+        <directionalLight position={[5, 5, 5]} intensity={0.9} />
+        <directionalLight position={[-4, 3, 4]} intensity={0.6} />
+        {/* Render cube directly; its internal environment now loads in its own Suspense */}
+        <MirrorRubiksCube position={[0, 0.35, 0]} scaleFactor={1.9} />
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} enabled={false} />
       </Canvas>
     </div>
@@ -141,18 +138,33 @@ export default function HomePage() {
       </Vortex>
       {/* Full-width sticky scroll reveal – Proven Impact case studies */}
       <section className="w-full">
+        {/* Section header */}
+        <div className="px-6 md:px-10 pt-8 md:pt-12 text-center relative z-30">
+          <h2 className="text-3xl md:text-5xl font-bold text-zinc-100 tracking-tight">
+            What I Can Do For You
+          </h2>
+          <p className="text-zinc-400 mt-3 max-w-2xl mx-auto">
+            Practical systems that save time, scale operations, and create real leverage—built with today’s best AI and automation tools.
+          </p>
+        </div>
         <StickyScroll
           content={[
             {
-              title: 'Make Your Business Run on Autopilot',
+              title: 'AI Agents That Never Sleep',
               description:
-                "I design automations that take the repetitive stuff off your plate so you can focus on the things that actually move the needle.",
+              'I build AI agents that instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
+              content: <CubeMedia/>,
+            },
+            {
+              title: 'Workflow Automation with Make, n8n, Zapier — or Fully Custom',
+              description:
+                'I audit your workflows and connect the dots between tools so work moves automatically. Whether it’s Make.com, n8n, Zapier, or custom code, I’ll design robust, scalable automations—hosted on-prem, on-site, or in the cloud. Instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
               content: <CubeMedia />,
             },
             {
-              title: 'AI That Works Like a Team Member',
+              title: 'MCP Agents & Connectors',
               description:
-                "From answering leads to generating reports, I’ll build AI tools that think, respond, and act like they’re part of your business.",
+                "MCP is like a universal adapter that lets AI safely use your systems. I build custom MCP connectors and guardrails so your AI can fetch the right data, take the right actions, and stay within your rules—securely and predictably.",
               content: <CubeMedia />,
             },
             {
@@ -170,7 +182,7 @@ export default function HomePage() {
             {
               title: 'Custom Software',
               description:
-                'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around.',
+                'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around. Simple landing pages to enterprise-level SaaS.',
               content: <CubeMedia />,
             },
             {
@@ -205,8 +217,21 @@ export default function HomePage() {
             },
           ]}
         />
+        {/* Section CTA */}
+        <div className="px-6 md:px-10 pb-10 md:pb-14 text-center">
+          <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
+            One of these catch your eye? Click the button below to reach out for a quick demo or to talk through your use case.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 group bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base md:text-lg px-6 md:px-8 py-3 md:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+          >
+            Get a Demo or Consultation
+            <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
       </section>
-      <NeuralIntro />
+      {/* Removed Autonomous Stability/NeuralIntro section per request */}
 
       {/* INTRODUCTION */}
       <section className="py-24 px-4 bg-zinc-950 border-y border-zinc-800">
@@ -250,45 +275,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div
-              className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out"
-              style={{ transitionDelay: '100ms' }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-zinc-100 mb-4">
-                What I Build
-              </h2>
-              <p className="text-lg text-zinc-400 leading-relaxed">
-                I specialize in three core areas of system development, each designed
-                to eliminate friction and unlock scale.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <ServiceCard
-              icon={GitBranch}
-              title="Full-Stack System Development"
-              description="From concept to deployment, I build complete, production-grade applications. This includes architecting the database, crafting the user interface, and engineering the business logic that powers it all."
-              delay={200}
-            />
-            <ServiceCard
-              icon={Zap}
-              title="Intelligent Automation"
-              description="I identify and eliminate your most time-consuming manual workflows by designing intelligent automation systems. This frees up your team to focus on high-impact work, not repetitive tasks."
-              delay={400}
-            />
-            <ServiceCard
-              icon={Cpu}
-              title="Technology Consulting & Refinement"
-              description="For businesses with existing technology, I provide strategic guidance to optimize performance, enhance security, and scale your infrastructure. We'll turn your tech debt into a competitive asset."
-              delay={600}
-            />
-          </div>
-        </div>
-      </section>
+
 
       {/* FINAL CTA */}
       <section className="py-32 px-4 text-center relative z-10">

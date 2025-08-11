@@ -1,22 +1,23 @@
-<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <rect x="0" y="0" width="32" height="32" rx="6" fill="url(#hitchcode-gradient)" />
   <defs>
     <linearGradient id="hitchcode-gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563eb" />
-      <stop offset="1" stop-color="#a21caf" />
+      <stop stop-color="#3b82f6" />
+      <stop offset="1" stop-color="#c026d3" />
     </linearGradient>
   </defs>
   <text
     x="16"
-    y="16.5"
+    y="16"
     text-anchor="middle"
     font-family="JetBrains Mono, Inter, sans-serif"
     font-weight="bold"
-    font-size="20"
-    fill="white"
-    letter-spacing="1"
-    alignment-baseline="middle"
-    dominant-baseline="middle"
+    font-size="18"
+    fill="#ffffff"
+    letter-spacing="0"
+    alignment-baseline="central"
+    dominant-baseline="central"
+    style="text-shadow: 0 0 2px #ffffff, 0 0 5px #3b82f6, 0 0 8px #c026d3;"
   >
     H
   </text>

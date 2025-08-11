@@ -16,13 +16,13 @@ export default function FutureHero() {
       <div className="relative z-[2] px-6">
         <div className="pointer-events-auto text-center max-w-6xl mx-auto pt-12 md:pt-20 relative z-30">
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.07] bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 drop-shadow-[0_0_18px_rgba(0,0,0,0.6)] text-left md:text-center md:px-8 pb-[10px] -mb-[10px] overflow-visible">
-            Building Tomorrow’s Systems Today
+            Your One‑Person Systems Team
           </h1>
         </div>
 
         <div className="mx-auto max-w-4xl mt-3 md:mt-5 text-center">
-          <p className="mx-auto max-w-2xl text-zinc-300 text-lg md:text-2xl leading-relaxed">
-            Ultra-minimal on the surface. Unapologetically complex under the hood. Bespoke systems, intelligent automation, and real-time architectures that scale.
+          <p className="mx-auto max-w-3xl text-zinc-300 text-lg md:text-2xl leading-relaxed">
+            I’m Zack — a full‑stack software developer and systems architect who designs AI agents, automations, and custom software that capture your progress once and for all. You've spent years perfecting your workflow, and now, with my help, your computer can do it for you.
           </p>
         </div>
 
@@ -35,6 +35,12 @@ export default function FutureHero() {
             <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf] opacity-60" />
             <span className="px-7 py-4 bg-zinc-950 rounded-full text-zinc-200 text-base md:text-lg font-semibold relative transition-colors duration-200 group-hover:bg-transparent group-hover:text-white">See Capabilities</span>
           </Link>
+        </div>
+
+        <div className="mx-auto max-w-5xl mt-6 md:mt-8 text-center">
+          <p className="mx-auto max-w-3xl text-zinc-400 text-base md:text-lg leading-relaxed">
+            Small footprint. Big leverage. I partner with a select group of clients and ship tools that make your business meaningfully easier to run.
+          </p>
         </div>
       </div>
     </section>

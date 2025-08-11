@@ -1,3 +1,21 @@
 1. never suggest I run 'npm run dev'. I already have a server running.
 2. ensure all components that you build and implement are compatible equally as well and display equally as clean and nicely on mobile AND desktop.
-3. do not run npm run build unless I explicitly tell you, or if I give you an error log from a failed build. 
+3. do not run npm run build unless I explicitly tell you, or if I give you an error log from a failed build.
+
+Design Philosophy:
+All designs must reference—but never directly copy—the homepage’s level of effort, attention to detail, color scheme, stylistic pathology, and general energy. Every element added to a page must be intentional, significant, and valuable to the user. Avoid filler or low-value content.
+
+Component Usage:
+	•	You have access to Aceternity UI and Magic UI MCP. Use components from these libraries only when they genuinely enhance the user experience, adapting them to match the brand’s style and purpose of the page.
+	•	Integrate Lucide icons where icons add clarity or meaning. Icons must be colored and styled to fit seamlessly into the design.
+
+Design Execution:
+	•	Maintain exact typography, spacing, and color scheme consistency with the homepage.
+	•	Adapt layouts to the specific content and purpose of each page—preserve cohesion without repeating irrelevant homepage elements.
+	•	Ensure responsiveness across devices and accessibility for all users.
+	•	Add comments in code explaining significant design decisions.
+
+Quality Standard:
+	•	Deliver polished, production-ready code.
+	•	Every page should feel as premium and impressive as the homepage, with enhancements where appropriate.
+	•	No “garbage” or “fluff.” Every decision should feel like it would impress both a designer and the end user.
