@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { Inter } from 'next/font/google';
@@ -21,6 +22,7 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
 
   // Close drawer on ESC or click outside
   useEffect(() => {
@@ -38,6 +40,23 @@ export default function Header() {
     return () => {
       document.removeEventListener('keydown', handleKey);
       document.removeEventListener('mousedown', handleClick);
+    };
+  }, [drawerOpen]);
+
+  // Mount flag for portals to avoid SSR mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent background scroll when the mobile drawer is open
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
     };
   }, [drawerOpen]);
 
@@ -135,18 +154,19 @@ export default function Header() {
       </div>
 
       {/* Mobile Drawer */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden" style={{ zIndex: 9998 }}>
+      {mounted && drawerOpen && createPortal(
+        <div className="fixed inset-0 min-h-[100dvh] z-[9998] bg-black lg:hidden" onClick={() => setDrawerOpen(false)}>
           <div
             ref={drawerRef}
-            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-zinc-950 border-l border-zinc-800 shadow-2xl z-50 flex flex-col animate-slide-in"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black border-l border-zinc-800 shadow-2xl z-[9999] flex flex-col animate-slide-in"
             tabIndex={-1}
             aria-modal="true"
             role="dialog"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-6 border-b border-zinc-800/70 bg-zinc-950">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-between p-6 border-b border-zinc-800/70 bg-black">
+              <div className="flex items-center space-x-3">
                 <svg
                   viewBox="0 0 32 32"
                   className="h-8 w-8"
@@ -205,12 +225,13 @@ export default function Header() {
               <div className="pt-6 mt-6 border-t border-zinc-800/70">
                 <Link href="/contact" className="relative flex items-center justify-center p-[3px] rounded-full group" onClick={() => setDrawerOpen(false)}>
                   <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
-                  <span className="px-6 py-3 bg-zinc-950 rounded-full text-white font-semibold relative transition-colors duration-200 group-hover:bg-transparent">Start the Conversation</span>
+                  <span className="px-6 py-3 bg-black rounded-full text-white font-semibold relative transition-colors duration-200 group-hover:bg-transparent">Start the Conversation</span>
                 </Link>
               </div>
             </nav>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style jsx global>{`
