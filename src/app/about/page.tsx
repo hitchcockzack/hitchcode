@@ -174,20 +174,14 @@ export default function AboutPage() {
 
             {/* Main headline */}
             <BlurFade delay={0.08} inView>
-              <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter leading-[1.07] bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 drop-shadow-[0_0_18px_rgba(0,0,0,0.6)] pb-[10px] -mb-[10px]">
+              <h1 className="mb-10 text-5xl md:text-6xl font-extrabold tracking-tighter leading-[1.07] bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 drop-shadow-[0_0_18px_rgba(0,0,0,0.6)] pb-[10px] -mb-[10px]">
                 Zack Hitchcock
                 <br />
                 <span className="text-zinc-400">Full-Stack Developer & Digital Architect</span>
               </h1>
             </BlurFade>
 
-            <BlurFade delay={0.16} inView>
-              <div className="mb-8">
-                <div className="h-8 flex items-center justify-center">
-                  <p className="text-lg text-zinc-400 italic min-h-[2rem] transition-all duration-500">"{quotes[currentQuote]}"</p>
-                </div>
-              </div>
-            </BlurFade>
+
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
