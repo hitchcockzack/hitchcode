@@ -2,23 +2,25 @@
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { ArrowRight, Zap, GitBranch, Cpu, Check } from 'lucide-react'
+import { ArrowRight, Zap, GitBranch, Cpu, Check, CalendarCheck2 } from 'lucide-react'
 // Removed Proven Impact ribbon in favor of immersive scroll section
 import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
 import NeuralIntro from './components/NeuralIntro'
 import MirrorRubiksCube from './components/MirrorRubiksCube'
 import { Vortex } from '@/components/ui/vortex'
+import Steps from '@/components/magicui/steps'
 
 
 const FutureHero = dynamic(() => import('./components/FutureHero'), { ssr: false })
 
 const inter = Inter({ subsets: ['latin'] })
 
-const useScrollReveal = () => {
+const useScrollReveal = (enabled: boolean) => {
   useEffect(() => {
+    if (!enabled) return;
     const observerOptions = {
       root: null,
       rootMargin: '0px',
@@ -117,24 +119,49 @@ function CubeMedia() {
 }
 
 export default function HomePage() {
-  useScrollReveal()
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    onResize()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  useScrollReveal(!isMobile)
+  const revealY = isMobile ? '' : 'reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out'
+  const revealX = isMobile ? '' : 'reveal-on-scroll opacity-0 -translate-x-8 transition-all duration-700 ease-out'
 
   return (
     <main
       className={`min-h-screen bg-black text-zinc-300 ${inter.className}`}
     >
+      {/* Hero aligned exactly to services page structure */}
       <Vortex
         backgroundColor="black"
-        particleCount={800}
-        rangeY={220}
+        particleCount={isMobile ? 300 : 800}
+        rangeY={isMobile ? 120 : 220}
         baseHue={220}
-        baseSpeed={0.15}
-        rangeSpeed={0.9}
-        baseRadius={0.5}
-        rangeRadius={1.25}
-        className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full min-h-[60vh]"
+        baseSpeed={isMobile ? 0.05 : 0.15}
+        rangeSpeed={isMobile ? 0.5 : 0.9}
+        baseRadius={isMobile ? 0.4 : 0.5}
+        rangeRadius={isMobile ? 0.9 : 1.25}
+        className="flex items-center flex-col justify-center px-4 md:px-10 py-16 md:py-24 w-full min-h-[46vh] md:min-h-[50vh]"
       >
-        <FutureHero />
+        <div className="pointer-events-auto text-center max-w-5xl mx-auto relative z-20">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.07] bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 drop-shadow-[0_0_18px_rgba(0,0,0,0.6)] mb-4">
+            Your One‑Person Systems Team
+          </h1>
+          <p className="text-lg md:text-2xl text-zinc-300 leading-relaxed max-w-3xl mx-auto">
+            I’m Zack — a full‑stack software developer and systems architect who designs AI agents, automations, and custom software.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/contact" className="relative inline-flex items-center justify-center p-[3px] rounded-full group">
+              <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
+              <span className="px-6 md:px-7 py-3 md:py-4 bg-black rounded-full text-white text-sm md:text-base font-semibold relative transition-colors duration-200 group-hover:bg-transparent">
+                Start the Conversation
+              </span>
+            </Link>
+          </div>
+        </div>
       </Vortex>
       {/* Full-width sticky scroll reveal – Proven Impact case studies */}
       <section className="w-full">
@@ -147,61 +174,56 @@ export default function HomePage() {
             Practical systems that save time, scale operations, and create real leverage—built with today’s best AI and automation tools.
           </p>
         </div>
+        {!isMobile ? (
         <StickyScroll
           content={[
             {
-              title: 'AI Agents That Never Sleep',
-              description:
-              'I build AI agents that instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
-              content: <CubeMedia/>,
-            },
-            {
               title: 'Workflow Automation with Make, n8n, Zapier — or Fully Custom',
               description:
-                'I audit your workflows and connect the dots between tools so work moves automatically. Whether it’s Make.com, n8n, Zapier, or custom code, I’ll design robust, scalable automations—hosted on-prem, on-site, or in the cloud. Instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'MCP Agents & Connectors',
-              description:
-                "MCP is like a universal adapter that lets AI safely use your systems. I build custom MCP connectors and guardrails so your AI can fetch the right data, take the right actions, and stay within your rules—securely and predictably.",
-              content: <CubeMedia />,
-            },
-            {
-              title: 'One-Click Documents',
-              description:
-                'Need invoices, contracts, proposals, or reports? I set you up to generate them instantly, perfectly formatted, every single time.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Lead Generation',
-              description:
-                'I build targeted, automated lead generation systems that fill your inbox with qualified prospects while you sleep.',
+              'I audit your workflows and connect the dots between tools so work moves automatically. Whether it’s Make.com, n8n, Zapier, or custom code, I’ll design robust, scalable automations—hosted on-prem, on-site, or in the cloud. Instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
               content: <CubeMedia />,
             },
             {
               title: 'Custom Software',
               description:
-                'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around. Simple landing pages to enterprise-level SaaS.',
+              'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around. Simple landing pages to enterprise-level SaaS.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'MCP Agents & Connectors',
+              description:
+              "MCP is like a universal adapter that lets AI safely use your systems. I build custom MCP connectors and guardrails so your AI can fetch the right data, take the right actions, and stay within your rules—securely and predictably.",
+              content: <CubeMedia />,
+            },
+            {
+              title: 'One-Click Documents',
+              description:
+              'Need invoices, contracts, proposals, or reports? I set you up to generate them instantly, perfectly formatted, every single time.',
+              content: <CubeMedia />,
+            },
+            {
+              title: 'Lead Generation',
+              description:
+              'I build targeted, automated lead generation systems that fill your inbox with qualified prospects while you sleep.',
               content: <CubeMedia />,
             },
             {
               title: 'Data Management',
               description:
-                'I’ll pull, clean, and organize your data so you actually get answers you can use — no more spreadsheet chaos.',
+              'I’ll pull, clean, and organize your data so you actually get answers you can use — no more spreadsheet chaos.',
               content: <CubeMedia />,
             },
             {
               title: 'Strategic Tech Partnership',
               description:
-                'Need a second brain for your tech decisions? I help you choose the right tools, integrations, and strategies to grow faster.',
+              'Need a second brain for your tech decisions? I help you choose the right tools, integrations, and strategies to grow faster.',
               content: <CubeMedia />,
             },
             {
-              title: 'From Idea to Reality — Fast',
+              title: 'AI Agents That Never Sleep',
               description:
-                'Got a concept for an app, service, or workflow? I’ll turn it into something real, tested, and ready to launch.',
-              content: <CubeMedia />,
+              'I build AI agents that instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
+              content: <CubeMedia/>,
             },
             {
               title: 'Integrations',
@@ -216,7 +238,26 @@ export default function HomePage() {
               content: <CubeMedia />,
             },
           ]}
-        />
+        />) : (
+          <div className="px-6 pt-6 grid grid-cols-1 gap-4 max-w-2xl mx-auto">
+            {[
+              'Custom Software',
+              'Workflow Automation',
+              'Strategic Tech Partnership',
+              'One-Click Documents',
+              'Lead Generation',
+              'AI Agents',
+              'Data Management',
+              'MCP Agents & Connectors',
+              'Integrations',
+              'Always Reachable',
+            ].map((title, idx) => (
+              <div key={title + idx} className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/40">
+                <h3 className="text-zinc-100 font-semibold">{title}</h3>
+              </div>
+            ))}
+          </div>
+        )}
         {/* Section CTA */}
         <div className="px-6 md:px-10 pb-10 md:pb-14 text-center">
           <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
@@ -238,7 +279,7 @@ export default function HomePage() {
         <div className="container mx-auto max-w-5xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
             <div
-              className="md:col-span-1 reveal-on-scroll opacity-0 -translate-x-8 transition-all duration-700 ease-out"
+              className={`md:col-span-1 ${revealX}`}
               style={{ transitionDelay: '200ms' }}
             >
               <div className="p-1.5 bg-gradient-to-br from-zinc-700 via-zinc-900 to-zinc-950 rounded-full max-w-max mx-auto md:mx-0">
@@ -250,7 +291,7 @@ export default function HomePage() {
               </div>
             </div>
             <div
-              className="md:col-span-2 text-center md:text-left reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out"
+              className={`md:col-span-2 text-center md:text-left ${revealY}`}
               style={{ transitionDelay: '400ms' }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-6">
@@ -275,13 +316,32 @@ export default function HomePage() {
         </div>
       </section>
 
-
+      <section className="relative py-16 md:py-24 border-t border-zinc-800">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/60 border border-zinc-800 text-sm text-zinc-300">
+              <CalendarCheck2 className="h-4 w-4 text-blue-400" aria-hidden /> How we’ll work
+            </div>
+            <h2 className="mt-4 text-3xl md:text-5xl font-bold text-zinc-100 tracking-tight">A simple, effective process</h2>
+            <p className="mt-3 text-zinc-400 max-w-2xl mx-auto leading-relaxed">From idea to shipped system—focused on speed, clarity, and measurable outcomes.</p>
+          </div>
+          <Steps
+            steps={[
+              { title: 'Discovery & Direction', description: 'Short call to define goals, constraints, and what success looks like. You’ll get an actionable plan within 24–48 hours.' },
+              { title: 'Design & Architecture', description: 'We align on scope and choose the simplest robust approach. Wireframes and systems diagram as needed.' },
+              { title: 'Build & Integrate', description: 'Implement features in tight iterations. Frequent demos keep everything visible and adjustable.' },
+              { title: 'Refine & Launch', description: 'Polish UX, performance, and reliability. Ship with a minimal, maintainable stack.' },
+              { title: 'Evolve & Scale', description: 'Monitor results, add capabilities, and keep compounding value through ongoing partnership.' },
+            ]}
+          />
+        </div>
+      </section>
 
       {/* FINAL CTA */}
       <section className="py-32 px-4 text-center relative z-10">
         <div className="container mx-auto max-w-3xl">
           <div
-            className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out"
+            className={revealY}
             style={{ transitionDelay: '100ms' }}
           >
             <h2 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 mb-8 leading-[1.07] tracking-tighter pb-[10px] -mb-[10px] relative z-20 overflow-visible">
@@ -354,8 +414,8 @@ export default function HomePage() {
           }
           .min-h-screen {
             min-height: auto;
-            padding-top: 6rem;
-            padding-bottom: 4rem;
+            padding-top: 0rem;
+            padding-bottom: 3.5rem;
           }
         }
       `}</style>

@@ -249,6 +249,8 @@ export const Vortex = (props: VortexProps) => {
     };
   }, []);
 
+
+
   return (
     <div className={cn("relative h-full w-full", props.containerClassName)}>
       <motion.div
