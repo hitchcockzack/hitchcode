@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 // import { GeistSans } from 'geist/font/sans';
 // import { GeistMono } from 'geist/font/mono';
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import ConditionalHeader from "./components/ConditionalHeader";
@@ -138,6 +140,9 @@ export default function RootLayout({
       <body className="antialiased">
         <ConditionalHeader />
         {children}
+        {/* Vercel Analytics (page views, etc.) and Speed Insights (Core Web Vitals) */}
+        <Analytics />
+        <SpeedInsights />
         {/* Hero overlay removed; the hero now embeds its own scene */}
       </body>
     </html>
