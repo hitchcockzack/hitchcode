@@ -139,18 +139,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Tablet Navigation (md to lg) */}
-        <nav className="hidden md:flex lg:hidden items-center justify-center space-x-6 py-3 border-t border-zinc-800/70">
-          {NAV_LINKS.slice(0, 4).map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-900/40 px-3 py-2 rounded-lg transition-colors duration-200"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        {/* Keep navigation single-row below lg; drawer already covers smaller screens. */}
       </div>
 
       {/* Mobile Drawer */}

@@ -59,25 +59,29 @@ const useScrollReveal = () => {
 
 const achievements = [
   {
+    year: '2025',
+    title: 'Launched Age Verified Lax',
+    description: 'Sports organizers needed a fair way to verify player age and run operations in one place.',
+    icon: Lightbulb,
+    gradient: 'from-orange-500 to-red-500'
+  },
+  {
     year: '2024',
     title: 'Full-Stack Mastery',
     description: 'Completed advanced certification in modern web development, specializing in React ecosystem and cloud architecture.',
     icon: Award,
     gradient: 'from-blue-500 to-cyan-500'
   },
-  {
-    year: '2023',
-    title: 'Client Success Rate',
-    description: '100% client satisfaction with on-time delivery across 50+ projects, ranging from startups to enterprise solutions.',
-    icon: Target,
-    gradient: 'from-purple-500 to-pink-500'
-  },
+
   {
     year: '2022',
-    title: 'Innovation Award',
-    description: 'Recognized for developing cutting-edge automation solutions that increased internal productivity by 300%.',
-    icon: Lightbulb,
-    gradient: 'from-orange-500 to-red-500'
+    title: 'Innovation Award & Client Success Rate',
+    description: [
+      'Recognized for developing cutting-edge management solutions that increased internal productivity by over 300%.',
+      'Achieved 100% client satisfaction with on-time delivery across 50+ projects.'
+    ],
+    icon: Lightbulb, // Use a single representative icon (or Target) per the surrounding conventions
+    gradient: 'from-orange-500 to-red-500',
   },
   {
     year: '2021',

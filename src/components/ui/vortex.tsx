@@ -192,10 +192,12 @@ export const Vortex = (props: VortexProps) => {
     canvas: HTMLCanvasElement,
     ctx?: CanvasRenderingContext2D,
   ) => {
-    const { innerWidth, innerHeight } = window;
+    const container = containerRef.current;
+    const nextWidth = Math.max(1, Math.floor(container?.clientWidth ?? window.innerWidth));
+    const nextHeight = Math.max(1, Math.floor(container?.clientHeight ?? window.innerHeight));
 
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+    canvas.width = nextWidth;
+    canvas.height = nextHeight;
 
     center[0] = 0.5 * canvas.width;
     center[1] = 0.5 * canvas.height;
@@ -252,14 +254,14 @@ export const Vortex = (props: VortexProps) => {
 
 
   return (
-    <div className={cn("relative h-full w-full", props.containerClassName)}>
+    <div className={cn("relative h-full w-full overflow-hidden", props.containerClassName)}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         ref={containerRef}
         className="absolute inset-0 z-0 flex h-full w-full items-center justify-center bg-transparent"
       >
-        <canvas ref={canvasRef}></canvas>
+        <canvas ref={canvasRef} className="block h-full w-full"></canvas>
       </motion.div>
 
       <div className={cn("relative z-10", props.className)}>
