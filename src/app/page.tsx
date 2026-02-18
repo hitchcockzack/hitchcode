@@ -1,424 +1,497 @@
 'use client'
+
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-import { useEffect, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import { ArrowRight, Zap, GitBranch, Cpu, Check, CalendarCheck2 } from 'lucide-react'
-// Removed Proven Impact ribbon in favor of immersive scroll section
-import { StickyScroll } from '@/components/ui/sticky-scroll-reveal'
-import NeuralIntro from './components/NeuralIntro'
-import MirrorRubiksCube from './components/MirrorRubiksCube'
-import { Vortex } from '@/components/ui/vortex'
+import { useMemo, useState } from 'react'
+import {
+  ArrowRight,
+  CalendarCheck2,
+  ChartNoAxesCombined,
+  Cpu,
+  GitBranch,
+  Handshake,
+  MessagesSquare,
+  ShieldCheck,
+  Wrench,
+  Zap,
+} from 'lucide-react'
+
+import { BentoCard, BentoGrid } from '@/components/magicui/bento-grid'
+import { BlurFade } from '@/components/magicui/blur-fade'
+import { MagicCard } from '@/components/magicui/magic-card'
 import Steps from '@/components/magicui/steps'
-
-
-const FutureHero = dynamic(() => import('./components/FutureHero'), { ssr: false })
+import { Vortex } from '@/components/ui/vortex'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const useScrollReveal = (enabled: boolean) => {
-  useEffect(() => {
-    if (!enabled) return;
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1,
-    }
-
-    const handleIntersect = (
-      entries: IntersectionObserverEntry[],
-      observer: IntersectionObserver
-    ) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
-          observer.unobserve(entry.target)
-        }
-      })
-    }
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions)
-    document.querySelectorAll('.reveal-on-scroll').forEach(item => {
-      observer.observe(item)
-    })
-
-    return () => observer.disconnect()
-  }, [])
+type ExplorerOption = {
+  id: string
+  label: string
+  question: string
+  likelyBuild: string[]
+  outcome: string
+  fitNote: string
 }
 
-const ServiceCard = ({ icon: Icon, title, description, delay = 0 }: any) => (
-  <div
-    className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out p-8 bg-zinc-900/50 rounded-2xl border border-zinc-800"
-    style={{ transitionDelay: `${delay}ms` }}
-  >
-    <div className="flex items-center justify-center h-12 w-12 bg-blue-600/10 border border-blue-500/20 rounded-lg mb-6">
-      <Icon className="h-6 w-6 text-blue-400" />
-    </div>
-    <h3 className="text-xl font-bold text-zinc-100 mb-3">{title}</h3>
-    <p className="text-zinc-400 leading-relaxed">{description}</p>
-  </div>
-)
+const explorerOptions: ExplorerOption[] = [
+  {
+    id: 'client-ops',
+    label: 'Client work and admin',
+    question: 'Every week we repeat the same tasks. Can you automate this for us?',
+    likelyBuild: [
+      'Auto-generated docs, updates, and checklists',
+      'Automated workflows for scheduling, handoffs, and recurring tasks',
+      'A clean board that shows what is done and what is behind',
+      'Client updates sent automatically at the right time',
+    ],
+    outcome: 'Your team spends less time on admin and more time doing the work that matters.',
+    fitNote: 'Great for service teams buried in repetitive work.',
+  },
+  {
+    id: 'internal-tools',
+    label: 'Custom internal tools',
+    question: 'We like our current software, but we need one custom feature it does not have. Can you build it?',
+    likelyBuild: [
+      'A custom feature or app built around your workflow',
+      'Connections to the tools you already use',
+      'Tools that process and display information exactly how your team needs it',
+    ],
+    outcome: 'You get software that fits your business instead of forcing your business to fit software.',
+    fitNote: 'Great when off-the-shelf tools are close, but not enough.',
+  },
+  {
+    id: 'ai-systems',
+    label: 'Bespoke AI agents',
+    question: 'Everyone talks about AI. Can you build agents that are actually useful for my business?',
+    likelyBuild: [
+      'Small AI agents built for one real job',
+      'Multiple agents working together for bigger workflows',
+      'A dashboard so you can see what they did',
+      'They can run automatically or ask for approval every step of the way',
+    ],
+    outcome: 'You get AI that feels like magic when done right, and usually costs less than people expect.',
+    fitNote: 'Great for teams that want practical AI, not hype.',
+  },
+]
 
-const ProjectShowcase = ({
+const proofSnapshots = [
+  {
+    client: 'Audio monitoring platform',
+    pain: 'Audio control was spread across tools, making monitoring messy and hard to trust.',
+    result:
+      'I built a software audio controller and multiplexer with deduplication and remote control built in.',
+    impact: 'Cleaner monitoring, fewer duplicate signals, and way less operator friction.',
+  },
+  {
+    client: 'Age Verified Lax app',
+    pain: 'Sports organizers needed a fair way to verify player age and run operations in one place.',
+    result:
+      'I built ageverifiedlax.com/info using proprietary machine learning for age checks, plus CRM workflows, email automation, in-app payments, and customer communications.',
+    impact: 'More trusted competition, less manual admin, and smoother league operations.',
+  },
+  {
+    client: 'Bespoke AI agent implementations',
+    pain: 'Teams wanted AI help but did not want a fragile, expensive mess.',
+    result: 'I built focused agents for specific tasks, connected to existing tools and rules.',
+    impact: 'High leverage for low cost when scoped correctly.',
+  },
+]
+
+const capabilityPillars = [
+  {
+    title: 'I figure out what is actually broken first',
+    description:
+      'Before writing code, I find the real pain point and pick the simplest fix that works.',
+    icon: ChartNoAxesCombined,
+    bullets: ['Clear plan', 'Right order of work', 'No fluff features'],
+    className: 'md:col-span-3',
+  },
+  {
+    title: 'Then I build it myself',
+    description:
+      'I build custom software, automations, and integrations with your team involved the whole way.',
+    icon: Wrench,
+    bullets: ['Custom app', 'Automation setup', 'Tool connections'],
+    className: 'md:col-span-3',
+  },
+  {
+    title: 'I build bespoke AI agents',
+    description:
+      'When done right, these feel like magic. They can also be surprisingly cheap to run.',
+    icon: ShieldCheck,
+    bullets: ['Bespoke agents', 'Safe limits', 'Low run cost'],
+    className: 'md:col-span-4',
+  },
+  {
+    title: 'You work with me directly',
+    description:
+      'No handoffs, no account manager, no agency layers. Just me and your team.',
+    icon: Handshake,
+    bullets: ['Direct access', 'Fast communication', 'Ongoing support'],
+    className: 'md:col-span-2',
+  },
+]
+
+const processSteps = [
+  {
+    title: 'You show me the pain',
+    description:
+      'In one call, you show me what is frustrating and what a win looks like.',
+  },
+  {
+    title: 'I map the fix',
+    description:
+      'I send a simple plan: what we automate, what stays manual, and what we build first.',
+  },
+  {
+    title: 'We build in small steps',
+    description:
+      'You see progress often, we adjust quickly, and keep it tied to real business needs.',
+  },
+  {
+    title: 'We launch and clean up',
+    description:
+      'We test it, fix rough edges, and make sure your team knows how to use it.',
+  },
+  {
+    title: 'Then we improve it',
+    description:
+      'Once the first version works, we improve it step by step.',
+  },
+]
+
+function trackHomepageEvent(eventName: string, payload: Record<string, string> = {}) {
+  if (typeof window === 'undefined') return
+  const eventDetail = { eventName, ...payload }
+
+  // Keep analytics vendor-neutral; this supports current and future tracking setups.
+  window.dispatchEvent(new CustomEvent('homepage-analytics', { detail: eventDetail }))
+
+  const tracker = (window as { gtag?: (...args: unknown[]) => void }).gtag
+  if (typeof tracker === 'function') {
+    tracker('event', eventName, payload)
+  }
+}
+
+function SectionHeading({
+  eyebrow,
   title,
-  subtitle,
   description,
-  tags,
-  delay = 0,
-}: any) => (
-  <div
-    className="reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out py-12 border-b border-zinc-800 last:border-b-0"
-    style={{ transitionDelay: `${delay}ms` }}
-  >
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-      <div className="md:col-span-1">
-        <div className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-2">
-          {subtitle}
-        </div>
-        <h3 className="text-2xl font-bold text-zinc-100">{title}</h3>
-      </div>
-      <div className="md:col-span-2">
-        <p className="text-zinc-400 leading-relaxed mb-6">{description}</p>
-        <div className="flex flex-wrap gap-3">
-          {tags.map((tag: string, i: number) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 px-3 py-1 bg-zinc-800/50 border border-zinc-700 rounded-full"
-            >
-              <Check className="h-4 w-4 text-green-500" />
-              <span className="text-sm text-zinc-300 font-medium">{tag}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
-function CubeMedia() {
+}: {
+  eyebrow: string
+  title: string
+  description: string
+}) {
   return (
-    <div className="w-full h-full relative">
-      <Canvas
-        className="pointer-events-none block w-full h-full z-0 bg-transparent"
-        camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 1.5]}
-      >
-        {/* Balanced lighting; leave reflections to Environment HDRI */}
-        <ambientLight intensity={0.5} />
-        <hemisphereLight args={[0xffffff, 0x222222, 0.3]} position={[0, 1, 0]} />
-        <directionalLight position={[5, 5, 5]} intensity={0.9} />
-        <directionalLight position={[-4, 3, 4]} intensity={0.6} />
-        {/* Render cube directly; its internal environment now loads in its own Suspense */}
-        <MirrorRubiksCube position={[0, 0.35, 0]} scaleFactor={1.9} />
-        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} enabled={false} />
-      </Canvas>
+    <div className="max-w-3xl text-center mx-auto">
+      <p className="text-xs tracking-[0.18em] uppercase text-zinc-400">{eyebrow}</p>
+      <h2 className="mt-3 text-[clamp(1.7rem,5.8vw,3.25rem)] font-semibold text-zinc-100 leading-[1.08] tracking-tight">
+        {title}
+      </h2>
+      <p className="mt-4 text-zinc-400 leading-relaxed text-[clamp(1rem,2.6vw,1.2rem)]">{description}</p>
     </div>
   )
 }
 
 export default function HomePage() {
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768)
-    onResize()
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-  useScrollReveal(!isMobile)
-  const revealY = isMobile ? '' : 'reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out'
-  const revealX = isMobile ? '' : 'reveal-on-scroll opacity-0 -translate-x-8 transition-all duration-700 ease-out'
+  const [selectedExplorer, setSelectedExplorer] = useState(explorerOptions[0].id)
+
+  const activeExplorer = useMemo(
+    () => explorerOptions.find((item) => item.id === selectedExplorer) ?? explorerOptions[0],
+    [selectedExplorer],
+  )
 
   return (
-    <main
-      className={`min-h-screen bg-black text-zinc-300 ${inter.className}`}
-    >
-      {/* Hero aligned exactly to services page structure */}
+    <main className={`min-h-screen overflow-x-hidden bg-black text-zinc-200 ${inter.className}`}>
       <Vortex
         backgroundColor="black"
-        particleCount={isMobile ? 300 : 800}
-        rangeY={isMobile ? 120 : 220}
+        particleCount={480}
+        rangeY={170}
         baseHue={220}
-        baseSpeed={isMobile ? 0.05 : 0.15}
-        rangeSpeed={isMobile ? 0.5 : 0.9}
-        baseRadius={isMobile ? 0.4 : 0.5}
-        rangeRadius={isMobile ? 0.9 : 1.25}
-        className="flex items-center flex-col justify-center px-4 md:px-10 py-16 md:py-24 w-full min-h-[46vh] md:min-h-[50vh]"
+        baseSpeed={0.11}
+        rangeSpeed={0.7}
+        baseRadius={0.45}
+        rangeRadius={1.1}
+        className="relative flex items-start px-4 sm:px-6 md:px-10 pt-10 md:pt-14 pb-3 md:pb-4 w-full"
       >
-        <div className="pointer-events-auto text-center max-w-5xl mx-auto relative z-20">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.07] bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 drop-shadow-[0_0_18px_rgba(0,0,0,0.6)] mb-4">
-            Your One‑Person Systems Team
-          </h1>
-          <p className="text-lg md:text-2xl text-zinc-300 leading-relaxed max-w-3xl mx-auto">
-            I’m Zack — a full‑stack software developer and systems architect who designs AI agents, automations, and custom software.
-          </p>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/contact" className="relative inline-flex items-center justify-center p-[3px] rounded-full group">
-              <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
-              <span className="px-6 md:px-7 py-3 md:py-4 bg-black rounded-full text-white text-sm md:text-base font-semibold relative transition-colors duration-200 group-hover:bg-transparent">
-                Start the Conversation
-              </span>
-            </Link>
-          </div>
+        <div className="pointer-events-auto max-w-5xl mx-auto text-center relative z-20">
+          <BlurFade inView>
+            <p className="inline-flex items-center gap-2 rounded-full border border-zinc-700/80 bg-zinc-900/80 px-4 py-2 text-xs md:text-sm text-zinc-300">
+              <Zap className="h-4 w-4 text-blue-400" />
+              Talk to Zack for free
+            </p>
+          </BlurFade>
+
+          <BlurFade inView delay={0.08}>
+            <h1 className="mt-6 text-[clamp(2.1rem,8.4vw,5.5rem)] font-semibold leading-[1.08] pb-[0.08em] -mb-[0.08em] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-500 overflow-visible">
+              Need software, systems, or AI?
+            </h1>
+          </BlurFade>
+
+          <BlurFade inView delay={0.14}>
+            <p className="mt-6 max-w-3xl mx-auto text-[clamp(1.02rem,2.7vw,1.4rem)] text-zinc-300 leading-relaxed">
+              I am Zack Hitchcock. Tell me what is slowing your business down, and I will build a clean software system
+              to handle it. Whether you need a website, full application, internal tool, or bespoke AI agent, I build it to fit
+              your real workflow.
+            </p>
+          </BlurFade>
+
+          <BlurFade inView delay={0.2}>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/contact"
+                onClick={() => trackHomepageEvent('hero_primary_cta_click', { cta: 'book_consultation' })}
+                className="relative inline-flex items-center justify-center p-[3px] rounded-full group"
+              >
+                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#2563eb] to-[#a21caf]" />
+                <span className="px-6 md:px-8 py-3.5 bg-black rounded-full text-white text-sm md:text-base font-semibold relative transition-colors duration-200 group-hover:bg-transparent">
+                  Book a free consultation
+                </span>
+              </Link>
+              <a
+                href="#proof"
+                onClick={() => trackHomepageEvent('hero_secondary_cta_click', { cta: 'view_proof' })}
+                className="inline-flex items-center justify-center rounded-full border border-zinc-700 bg-zinc-950/80 px-6 md:px-8 py-3.5 text-sm md:text-base font-semibold text-zinc-200 hover:border-zinc-500 transition-colors"
+              >
+                View case snapshots
+              </a>
+            </div>
+          </BlurFade>
         </div>
       </Vortex>
-      {/* Full-width sticky scroll reveal – Proven Impact case studies */}
-      <section className="w-full">
-        {/* Section header */}
-        <div className="px-6 md:px-10 pt-8 md:pt-12 text-center relative z-30">
-          <h2 className="text-3xl md:text-5xl font-bold text-zinc-100 tracking-tight">
-            What I Can Do For You
-          </h2>
-          <p className="text-zinc-400 mt-3 max-w-2xl mx-auto">
-            Practical systems that save time, scale operations, and create real leverage—built with today’s best AI and automation tools.
+
+      <section className="bg-black px-4 sm:px-6 md:px-10">
+        <div className="max-w-5xl mx-auto pt-3 md:pt-4 pb-4 md:pb-5 text-center">
+          <p className="max-w-3xl mx-auto text-sm md:text-base text-zinc-400 leading-relaxed">
+            Looking for a long-term technical expert who can advise what is possible and implement the right systems as
+            your business grows? <span className="text-zinc-200 font-medium">Accepting select engagements in 2026.</span>{' '}
+            <Link
+              href="/contact"
+              onClick={() => trackHomepageEvent('hero_cto_hook_click', { cta: 'lets_talk' })}
+              className="text-blue-300 hover:text-blue-200 underline underline-offset-4"
+            >
+              Let&apos;s talk.
+            </Link>
           </p>
         </div>
-        {!isMobile ? (
-        <StickyScroll
-          content={[
-            {
-              title: 'Workflow Automation with Make, n8n, Zapier — or Fully Custom',
-              description:
-              'I audit your workflows and connect the dots between tools so work moves automatically. Whether it’s Make.com, n8n, Zapier, or custom code, I’ll design robust, scalable automations—hosted on-prem, on-site, or in the cloud. Instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Custom Software',
-              description:
-              'Off-the-shelf tools don’t always cut it. I’ll design software that’s built around how you work, not the other way around. Simple landing pages to enterprise-level SaaS.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'MCP Agents & Connectors',
-              description:
-              "MCP is like a universal adapter that lets AI safely use your systems. I build custom MCP connectors and guardrails so your AI can fetch the right data, take the right actions, and stay within your rules—securely and predictably.",
-              content: <CubeMedia />,
-            },
-            {
-              title: 'One-Click Documents',
-              description:
-              'Need invoices, contracts, proposals, or reports? I set you up to generate them instantly, perfectly formatted, every single time.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Lead Generation',
-              description:
-              'I build targeted, automated lead generation systems that fill your inbox with qualified prospects while you sleep.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Data Management',
-              description:
-              'I’ll pull, clean, and organize your data so you actually get answers you can use — no more spreadsheet chaos.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Strategic Tech Partnership',
-              description:
-              'Need a second brain for your tech decisions? I help you choose the right tools, integrations, and strategies to grow faster.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'AI Agents That Never Sleep',
-              description:
-              'I build AI agents that instantly reply to your DMs, reach out to new leads, send welcome emails, and handle the busywork you hate—freeing you to grow your business.',
-              content: <CubeMedia/>,
-            },
-            {
-              title: 'Integrations',
-              description:
-                'Your systems will talk to each other — CRM, email, scheduling, invoicing — no more manual copying and pasting.',
-              content: <CubeMedia />,
-            },
-            {
-              title: 'Always in Your Corner',
-              description:
-                'I don’t just “deliver a project” — I stick around to make sure it’s running smoothly and keep improving it as your needs grow.',
-              content: <CubeMedia />,
-            },
-          ]}
-        />) : (
-          <div className="px-6 pt-6 grid grid-cols-1 gap-4 max-w-2xl mx-auto">
-            {[
-              'Custom Software',
-              'Workflow Automation',
-              'Strategic Tech Partnership',
-              'One-Click Documents',
-              'Lead Generation',
-              'AI Agents',
-              'Data Management',
-              'MCP Agents & Connectors',
-              'Integrations',
-              'Always Reachable',
-            ].map((title, idx) => (
-              <div key={title + idx} className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/40">
-                <h3 className="text-zinc-100 font-semibold">{title}</h3>
-              </div>
-            ))}
+        <div className="h-px bg-zinc-900" />
+      </section>
+
+      <section className="px-4 sm:px-6 md:px-10 pt-8 md:pt-10 pb-16 md:pb-24 bg-gradient-to-b from-zinc-950 to-black">
+        <SectionHeading
+          eyebrow="Start Here"
+          title="Does any of this sound familiar?"
+          description="Pick one and I will show you what I would build to fix it."
+        />
+
+        <div className="mt-10 max-w-6xl mx-auto">
+          <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {explorerOptions.map((option) => {
+              const isActive = option.id === activeExplorer.id
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedExplorer(option.id)
+                    trackHomepageEvent('explorer_option_selected', { option: option.id })
+                  }}
+                  className={`whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium border transition-colors ${
+                    isActive
+                      ? 'bg-zinc-100 text-zinc-950 border-zinc-100'
+                      : 'bg-zinc-900/60 text-zinc-300 border-zinc-700 hover:border-zinc-500'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              )
+            })}
           </div>
-        )}
-        {/* Section CTA */}
-        <div className="px-6 md:px-10 pb-10 md:pb-14 text-center">
-          <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
-            One of these catch your eye? Click the button below to reach out for a quick demo or to talk through your use case.
-          </p>
+
+          <MagicCard className="mt-5 rounded-3xl border border-zinc-800 bg-zinc-950/50" gradientOpacity={0.35}>
+            <div className="relative grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-9 p-5 sm:p-7 md:p-9">
+              <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_20%_10%,rgba(37,99,235,0.18),transparent_34%),radial-gradient(circle_at_80%_85%,rgba(168,85,247,0.15),transparent_35%)]" />
+              <div className="relative lg:col-span-3 space-y-5">
+                <p className="inline-flex items-center gap-2 rounded-full border border-zinc-700/80 bg-zinc-900/80 px-3 py-1 text-xs text-zinc-300">
+                  <MessagesSquare className="h-3.5 w-3.5 text-blue-400" />
+                  What you might be asking
+                </p>
+                <h3 className="text-[clamp(1.2rem,4vw,2rem)] font-semibold leading-tight text-zinc-100">
+                  {activeExplorer.question}
+                </h3>
+                <p className="text-zinc-300 leading-relaxed">{activeExplorer.outcome}</p>
+                <p className="text-sm text-zinc-400">{activeExplorer.fitNote}</p>
+              </div>
+
+              {/* This emphasis block creates depth without relying on static image assets. */}
+              <div className="relative lg:col-span-2 rounded-2xl border border-zinc-800 bg-zinc-950/80 p-4 sm:p-5 overflow-hidden">
+                <div className="absolute inset-0 opacity-80 bg-[linear-gradient(120deg,rgba(37,99,235,0.18),transparent_50%),linear-gradient(320deg,rgba(168,85,247,0.2),transparent_50%)]" />
+                <div className="absolute inset-0 [background-size:22px_22px] [background-image:linear-gradient(to_right,rgba(113,113,122,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(113,113,122,0.14)_1px,transparent_1px)]" />
+                <div className="relative">
+                  <p className="text-zinc-100 font-medium">What I would build</p>
+                  <ul className="mt-3 space-y-2">
+                    {activeExplorer.likelyBuild.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-zinc-300">
+                        <GitBranch className="h-4 w-4 text-blue-400 mt-0.5 shrink-0" />
+                        <span className="break-words">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </MagicCard>
+        </div>
+      </section>
+
+      <section id="proof" className="px-4 sm:px-6 md:px-10 py-16 md:py-24">
+        <SectionHeading
+          eyebrow="Proof"
+          title="Real work I have already done"
+          description="Some names and details are hidden for privacy, but the work and results are real."
+        />
+
+        <div className="mt-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {proofSnapshots.map((snapshot, index) => (
+            <BlurFade key={snapshot.client} inView delay={0.04 * index}>
+              <MagicCard className="h-full rounded-2xl border border-zinc-800 bg-zinc-950/60" gradientOpacity={0.28}>
+                <article className="h-full p-5 md:p-6">
+                  <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">{snapshot.client}</p>
+                  <p className="mt-4 text-zinc-300 text-sm leading-relaxed">{snapshot.pain}</p>
+                  <p className="mt-4 text-zinc-100 leading-relaxed">{snapshot.result}</p>
+                  <p className="mt-4 text-sm text-blue-300 leading-relaxed">{snapshot.impact}</p>
+                </article>
+              </MagicCard>
+            </BlurFade>
+          ))}
+        </div>
+
+        <div className="mt-8 text-center">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 group bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base md:text-lg px-6 md:px-8 py-3 md:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+            onClick={() => trackHomepageEvent('proof_cta_click', { cta: 'request_relevant_example' })}
+            className="inline-flex items-center gap-2 text-zinc-200 hover:text-white font-medium transition-colors"
           >
-            Get a Demo or Consultation
-            <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            Ask me for examples like your business
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
-      {/* Removed Autonomous Stability/NeuralIntro section per request */}
 
-      {/* INTRODUCTION */}
-      <section className="py-24 px-4 bg-zinc-950 border-y border-zinc-800">
-        <div className="container mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
-            <div
-              className={`md:col-span-1 ${revealX}`}
-              style={{ transitionDelay: '200ms' }}
-            >
-              <div className="p-1.5 bg-gradient-to-br from-zinc-700 via-zinc-900 to-zinc-950 rounded-full max-w-max mx-auto md:mx-0">
+      <section className="px-4 sm:px-6 md:px-10 py-16 md:py-24 border-t border-zinc-900 bg-zinc-950/50">
+        <SectionHeading
+          eyebrow="Capabilities"
+          title="What I can build for you"
+          description="Simple version: I listen, I design, and I build the system myself."
+        />
+
+        <div className="max-w-6xl mx-auto mt-10">
+          <BentoGrid className="auto-rows-[minmax(14rem,auto)]">
+            {capabilityPillars.map((pillar) => {
+              const Icon = pillar.icon
+              return (
+                <BentoCard key={pillar.title} className={pillar.className}>
+                  <article className="h-full rounded-[inherit]">
+                    <div className="inline-flex items-center justify-center h-10 w-10 rounded-xl border border-zinc-700 bg-zinc-900/80">
+                      <Icon className="h-5 w-5 text-blue-400" />
+                    </div>
+                    <h3 className="mt-5 text-zinc-100 text-xl font-semibold leading-tight">{pillar.title}</h3>
+                    <p className="mt-3 text-zinc-400 leading-relaxed">{pillar.description}</p>
+                    <ul className="mt-5 flex flex-wrap gap-2">
+                      {pillar.bullets.map((bullet) => (
+                        <li
+                          key={bullet}
+                          className="rounded-full border border-zinc-700 bg-zinc-900/70 px-3 py-1 text-xs text-zinc-300"
+                        >
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </BentoCard>
+              )
+            })}
+          </BentoGrid>
+        </div>
+      </section>
+
+      <section className="px-4 sm:px-6 md:px-10 py-16 md:py-20 bg-black">
+        <div className="max-w-5xl mx-auto rounded-3xl border border-zinc-800 bg-zinc-950/70 p-6 md:p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-7 md:gap-10 items-center">
+            <div className="lg:col-span-1 flex justify-center lg:justify-start">
+              <div className="relative p-1.5 rounded-full bg-gradient-to-br from-zinc-700 via-zinc-900 to-zinc-950">
                 <img
                   src="/optimized/zack.webp"
                   alt="Zack Hitchcock"
-                  className="w-48 h-48 rounded-full object-cover border-4 border-zinc-950"
+                  className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full object-cover border-2 border-zinc-900"
                 />
               </div>
             </div>
-            <div
-              className={`md:col-span-2 text-center md:text-left ${revealY}`}
-              style={{ transitionDelay: '400ms' }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-6">
-                Hi, I'm Zack Hitchcock.
-                <br />A Partner, Not a Programmer.
+            <div className="lg:col-span-2 text-center lg:text-left">
+              <h2 className="text-[clamp(1.55rem,4.4vw,2.55rem)] text-zinc-100 font-semibold tracking-tight">
+                Hi, I am Zack.
               </h2>
-              <div className="text-lg text-zinc-400 space-y-6 leading-relaxed">
-                <p>
-                  I don't just write code. I architect end-to-end systems that
-                  solve core business problems. My expertise lies in translating
-                  complex operational challenges into streamlined, automated,
-                  and intelligent platforms.
-                </p>
-                <p>
-                  Think of me as a technical co-founder for hire—deeply invested
-                  in your success, relentlessly focused on results, and committed
-                  to building technology that creates lasting value.
-                </p>
-              </div>
+              <p className="mt-4 text-zinc-300 leading-relaxed">
+                If you hire me, you work with me directly. No agency layers, no handoffs.
+              </p>
+              <p className="mt-4 text-zinc-400 leading-relaxed">
+                I care about one thing: your business should run smoother after we ship than before.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative py-16 md:py-24 border-t border-zinc-800">
-        <div className="container mx-auto px-4 max-w-5xl">
+      <section className="relative px-4 sm:px-6 md:px-10 py-16 md:py-24 border-t border-zinc-900">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/60 border border-zinc-800 text-sm text-zinc-300">
-              <CalendarCheck2 className="h-4 w-4 text-blue-400" aria-hidden /> How we’ll work
+              <CalendarCheck2 className="h-4 w-4 text-blue-400" aria-hidden />
+              How it works
             </div>
-            <h2 className="mt-4 text-3xl md:text-5xl font-bold text-zinc-100 tracking-tight">A simple, effective process</h2>
-            <p className="mt-3 text-zinc-400 max-w-2xl mx-auto leading-relaxed">From idea to shipped system—focused on speed, clarity, and measurable outcomes.</p>
-          </div>
-          <Steps
-            steps={[
-              { title: 'Discovery & Direction', description: 'Short call to define goals, constraints, and what success looks like. You’ll get an actionable plan within 24–48 hours.' },
-              { title: 'Design & Architecture', description: 'We align on scope and choose the simplest robust approach. Wireframes and systems diagram as needed.' },
-              { title: 'Build & Integrate', description: 'Implement features in tight iterations. Frequent demos keep everything visible and adjustable.' },
-              { title: 'Refine & Launch', description: 'Polish UX, performance, and reliability. Ship with a minimal, maintainable stack.' },
-              { title: 'Evolve & Scale', description: 'Monitor results, add capabilities, and keep compounding value through ongoing partnership.' },
-            ]}
-          />
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className="py-32 px-4 text-center relative z-10">
-        <div className="container mx-auto max-w-3xl">
-          <div
-            className={revealY}
-            style={{ transitionDelay: '100ms' }}
-          >
-            <h2 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 mb-8 leading-[1.07] tracking-tighter pb-[10px] -mb-[10px] relative z-20 overflow-visible">
-              Ready to Build Your Advantage?
+            <h2 className="mt-4 text-[clamp(1.7rem,5.8vw,3.2rem)] font-semibold text-zinc-100 tracking-tight">
+              Clear process, no guesswork
             </h2>
-            <p className="text-xl text-zinc-400 mb-12 leading-relaxed overflow-visible relative z-10">
-              Let's discuss how a thoughtfully architected system can transform
-              your business. I partner with a select group of clients to ensure
-              maximum focus and impact.
+            <p className="mt-3 text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+              You will always know what I am building, what is next, and why it matters.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 group bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
-              >
-                Book a Consultation
-                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 group text-zinc-300 hover:text-white font-semibold text-lg px-8 py-4 rounded-lg transition-colors duration-300"
-              >
-                Learn More About Me
-              </Link>
-            </div>
           </div>
+          <Steps steps={processSteps} />
         </div>
       </section>
 
-      <style jsx>{`
-        .bg-grid-zinc-800\\/20 {
-          background-image: linear-gradient(
-              to right,
-              rgba(63, 63, 70, 0.2) 1px,
-              transparent 1px
-            ),
-            linear-gradient(to bottom, rgba(63, 63, 70, 0.2) 1px, transparent 1px);
-          background-size: 40px 40px;
-        }
-
-        .animate-in {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-          transform: translateX(0) !important;
-        }
-
-        /* Smooth scrolling */
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .text-7xl {
-            font-size: 3.5rem;
-          }
-          .text-5xl {
-            font-size: 2.75rem;
-          }
-          .text-4xl {
-            font-size: 2.25rem;
-          }
-          .py-24 {
-            padding-top: 4rem;
-            padding-bottom: 4rem;
-          }
-          .py-32 {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-          }
-          .min-h-screen {
-            min-height: auto;
-            padding-top: 0rem;
-            padding-bottom: 3.5rem;
-          }
-        }
-      `}</style>
+      <section className="px-4 sm:px-6 md:px-10 py-16 md:py-24 text-center relative">
+        <div className="max-w-3xl mx-auto rounded-3xl border border-zinc-800 bg-zinc-950/60 p-7 md:p-12">
+          <p className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/70 px-4 py-2 text-xs uppercase tracking-[0.14em] text-zinc-300">
+            <Cpu className="h-4 w-4 text-blue-400" />
+            Built by Zack
+          </p>
+          <h2 className="mt-6 text-[clamp(1.8rem,6.2vw,3.9rem)] font-semibold leading-[1.05] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400">
+            If your work feels messy, I can help you clean it up with software.
+          </h2>
+          <p className="mt-6 text-zinc-300 leading-relaxed text-[clamp(1rem,2.5vw,1.2rem)]">
+            The call is free. Bring your problem. I will tell you what I would build and if I am the right person to do it.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/contact"
+              onClick={() => trackHomepageEvent('final_primary_cta_click', { cta: 'book_consultation' })}
+              className="inline-flex items-center gap-2 group bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base md:text-lg px-7 py-3.5 rounded-full transition-colors duration-300 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+            >
+              Book a free consultation
+              <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => trackHomepageEvent('final_secondary_cta_click', { cta: 'about_zack' })}
+              className="inline-flex items-center gap-2 group text-zinc-300 hover:text-white font-semibold text-base md:text-lg px-6 py-3.5 rounded-full border border-zinc-700 hover:border-zinc-500 transition-colors duration-300"
+            >
+              Learn about my background
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   )
 }

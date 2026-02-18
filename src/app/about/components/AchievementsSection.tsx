@@ -3,7 +3,7 @@ import React from 'react';
 interface Achievement {
   year: string;
   title: string;
-  description: string;
+  description: string | string[];
   icon: React.ComponentType<{ className?: string }>;
   gradient: string;
 }
@@ -60,7 +60,15 @@ const AchievementsSection: React.FC<AchievementsSectionProps> = ({ achievements,
                           <div className={`flex-grow h-px bg-gradient-to-r ${colors.rule} to-transparent`} />
                       </div>
                         <h3 className={`text-xl font-semibold mb-2 ${colors.title}`}>{achievement.title}</h3>
-                        <p className={`${colors.desc} leading-relaxed`}>{achievement.description}</p>
+                        {Array.isArray(achievement.description) ? (
+                          <ul className={`${colors.desc} leading-relaxed list-disc pl-5 space-y-1`}>
+                            {achievement.description.map((line, lineIndex) => (
+                              <li key={`${achievement.year}-${lineIndex}`}>{line}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className={`${colors.desc} leading-relaxed`}>{achievement.description}</p>
+                        )}
                     </div>
                   </div>
                 </div>
