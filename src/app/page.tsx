@@ -35,6 +35,18 @@ type ExplorerOption = {
 
 const explorerOptions: ExplorerOption[] = [
   {
+    id: 'internal-tools',
+    label: 'Custom internal tools',
+    question: 'We like our current software, but we need one custom feature it does not have. Can you build it?',
+    likelyBuild: [
+      'A custom feature or app built around your workflow',
+      'Connections to the tools you already use',
+      'Tools that process and display information exactly how your team needs it',
+    ],
+    outcome: 'You get software that fits your business instead of forcing your business to fit software.',
+    fitNote: 'Great when off-the-shelf tools are close, but not enough.',
+  },
+  {
     id: 'client-ops',
     label: 'Client work and admin',
     question: 'Every week we repeat the same tasks. Can you automate this for us?',
@@ -46,18 +58,6 @@ const explorerOptions: ExplorerOption[] = [
     ],
     outcome: 'Your team spends less time on admin and more time doing the work that matters.',
     fitNote: 'Great for service teams buried in repetitive work.',
-  },
-  {
-    id: 'internal-tools',
-    label: 'Custom internal tools',
-    question: 'We like our current software, but we need one custom feature it does not have. Can you build it?',
-    likelyBuild: [
-      'A custom feature or app built around your workflow',
-      'Connections to the tools you already use',
-      'Tools that process and display information exactly how your team needs it',
-    ],
-    outcome: 'You get software that fits your business instead of forcing your business to fit software.',
-    fitNote: 'Great when off-the-shelf tools are close, but not enough.',
   },
   {
     id: 'ai-systems',
