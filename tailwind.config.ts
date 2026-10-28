@@ -55,6 +55,9 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		transitionTimingFunction: {
+  			'out-expo': 'cubic-bezier(0.32, 0.72, 0, 1)',
   		}
   	}
   },

@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-// import { GeistSans } from 'geist/font/sans';
-// import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import ConditionalHeader from "./components/ConditionalHeader";
-// const geistSans = GeistSans;
-// const geistMono = GeistMono;
 
 const faviconSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
@@ -137,7 +134,7 @@ export default function RootLayout({
         {/* Resource hints for performance */}
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="antialiased">
+      <body className={`${GeistSans.className} antialiased`}>
         <ConditionalHeader />
         {children}
         {/* Vercel Analytics (page views, etc.) and Speed Insights (Core Web Vitals) */}

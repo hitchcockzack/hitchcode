@@ -101,10 +101,13 @@ export const Vortex = (props: VortexProps) => {
   const draw = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     tick++;
 
+    // Keep the canvas transparent and let the solid backgroundColor live on the
+    // container behind it (inline style below). Filling an opaque background
+    // here and then self-compositing the canvas with "lighter" + brightness(200%)
+    // in renderGlow/renderToScreen brightens a non-black background into a pale
+    // tint (e.g. #0C0A09 washes out to ~#D8B4A2). Drawing particles on a
+    // transparent canvas keeps the glow on the particles only.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     drawParticles(ctx);
     renderGlow(canvas, ctx);
@@ -254,7 +257,10 @@ export const Vortex = (props: VortexProps) => {
 
 
   return (
-    <div className={cn("relative h-full w-full overflow-hidden", props.containerClassName)}>
+    <div
+      className={cn("relative h-full w-full overflow-hidden", props.containerClassName)}
+      style={{ backgroundColor }}
+    >
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

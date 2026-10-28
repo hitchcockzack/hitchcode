@@ -2,12 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+html {
+  scroll-behavior: smooth;
+}
 
+:root {
   /* Animation Configuration */
   --reveal-duration: 0.8s;
   --reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
   --stagger-delay: 0.1s;
+
+  /* Brand accent (copper) */
+  --accent: #D4A574;
+  --accent-hover: #E0B68A;
 }
 
 /* Animation Keyframes */
@@ -215,7 +222,6 @@
     @apply border-border;
   }
   body {
-    /* Force a black page background so translucent header always sits on dark */
-    @apply bg-black text-foreground;
+    @apply bg-stone-950 text-foreground;
   }
 }

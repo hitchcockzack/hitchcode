@@ -52,8 +52,8 @@ export function BentoCard({
         "--y": `${coords.y}px`,
       }}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/60",
-        "transition-colors duration-300 hover:border-zinc-700",
+        "group relative overflow-hidden rounded-2xl border border-stone-800/30 bg-stone-950/50",
+        "transition-all duration-500 ease-out-expo hover:border-stone-700/40",
         className,
       )}
     >
@@ -63,7 +63,7 @@ export function BentoCard({
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
           background:
-            "radial-gradient(500px circle at var(--x,50%) var(--y,50%), rgba(59,130,246,0.12), transparent 40%)",
+            "radial-gradient(500px circle at var(--x,50%) var(--y,50%), rgba(212,165,116,0.08), transparent 40%)",
         }}
       />
 

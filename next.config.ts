@@ -15,7 +15,10 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react'],
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Keep console.error/warn in production so API route failures still reach
+    // the Vercel runtime logs; all other console calls are stripped.
+    removeConsole:
+      process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
 };
 
