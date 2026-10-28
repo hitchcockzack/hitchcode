@@ -1,0 +1,213 @@
+/* 02 — Recognition: the transition from the dark room onto paper. */
+
+.section {
+  padding: var(--section-quiet) var(--page-pad) var(--section-standard);
+  background: var(--sheet);
+  color: var(--ink);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.kicker,
+.caption,
+.slipHead,
+.driftNote,
+.delta {
+  font-family: var(--font-annotation);
+  font-weight: 500;
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.kicker {
+  margin: 0;
+  font-size: var(--type-annotation);
+  color: var(--slate-text);
+}
+
+.lead {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: 40px 72px;
+  margin-top: 24px;
+}
+
+.statement {
+  max-width: 13ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-l);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.observations {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.observations li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  font-size: var(--type-body-l);
+  line-height: 1.45;
+}
+
+.delta {
+  padding-top: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--signal-text);
+}
+
+/* ── One job, six copies ─────────────────────────────────── */
+
+.copies {
+  margin: var(--space-9) 0 0;
+}
+
+.caption {
+  margin: 0 0 20px;
+  font-size: var(--type-annotation-s);
+  color: var(--slate-text);
+}
+
+.slips {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The baseline the job travels along; each slip is a retyped copy hanging from it. */
+.slips::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top: 1.5px solid var(--ink);
+}
+
+.slip {
+  position: relative;
+  margin: 18px 10px 0 0;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--rule-light);
+  background: var(--vellum);
+  box-shadow: 0 1px 0 rgba(16, 20, 19, 0.06);
+  transform: rotate(calc((var(--i) - 2.5) * 0.35deg));
+}
+
+/* Tick from the baseline down to the slip. */
+.slip::before {
+  content: '';
+  position: absolute;
+  top: -19px;
+  left: 18px;
+  height: 18px;
+  border-left: 1px dashed var(--slate);
+}
+
+.slipHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--rule-light);
+  font-size: 9.5px;
+  color: var(--slate-text);
+}
+
+.slipHead span:first-child {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.slipLine {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 6px;
+  font-size: 14.5px;
+  line-height: 1.35;
+}
+
+.slipLine[data-drift] span:first-child {
+  text-decoration: underline;
+  text-decoration-color: var(--signal);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.driftNote {
+  font-size: 9.5px;
+  color: var(--signal-text);
+}
+
+@media (max-width: 1099px) {
+  .slips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 32px;
+  }
+
+  .slips::before {
+    display: none;
+  }
+
+  .slip::before {
+    display: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: the job runs top to bottom, one copy under the next. */
+@media (max-width: 639px) {
+  .slips {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+    padding-left: 18px;
+  }
+
+  .slips::before {
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    border-top: 0;
+    border-left: 1.5px solid var(--ink);
+  }
+
+  .slip {
+    margin: 0 0 14px;
+    transform: none;
+  }
+
+  .slip::before {
+    display: block;
+    top: 18px;
+    left: -19px;
+    width: 18px;
+    height: 0;
+    border-left: 0;
+    border-top: 1px dashed var(--slate);
+  }
+}

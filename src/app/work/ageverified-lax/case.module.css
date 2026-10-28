@@ -1,0 +1,98 @@
+.back {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.inline {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.inlineDark {
+  color: var(--paper);
+  font-weight: 600;
+  text-underline-offset: 5px;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px 72px;
+  align-items: start;
+}
+
+/* The role flow, drawn as a connected schedule: one line runs through every role. */
+.roles {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--ink);
+}
+
+.roles li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 18px 20px 0 0;
+}
+
+.roles li::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.roles li:first-child::before {
+  border-color: var(--signal);
+  background: var(--signal);
+}
+
+.roleNo {
+  font: 600 10px/1 var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  color: var(--signal-text);
+}
+
+.roleName {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.roleDoes {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(16, 20, 19, 0.82);
+}
+
+@media (max-width: 899px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .roles {
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 0;
+    border-left: 2px solid var(--ink);
+    padding-left: 22px;
+  }
+
+  .roles li {
+    padding: 0 0 24px;
+  }
+
+  .roles li::before {
+    top: 2px;
+    left: -30px;
+  }
+}

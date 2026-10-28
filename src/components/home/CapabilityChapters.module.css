@@ -1,0 +1,461 @@
+/* 04 — Capability chapters. Four compositions, four materials. */
+
+.section {
+  color: var(--ink);
+}
+
+.kicker,
+.no,
+.example span,
+.toolList button,
+.wiringReadout b,
+.revisions caption,
+.revisions th {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.head {
+  padding: var(--section-standard) max(var(--page-pad), calc((100vw - 1320px) / 2)) var(--space-8);
+  background: var(--sheet);
+  border-top: 1px solid var(--rule-light);
+}
+
+.kicker {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.title {
+  max-width: 16ch;
+  margin-top: 18px;
+  margin-bottom: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-l);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.intro {
+  max-width: var(--measure);
+  margin-top: 22px;
+  margin-bottom: 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: rgba(16, 20, 19, 0.8);
+}
+
+/* ── Shared chapter typography ───────────────────────────── */
+
+.chapter {
+  display: grid;
+  gap: 48px 72px;
+  padding: var(--section-standard) max(var(--page-pad), calc((100vw - 1320px) / 2));
+}
+
+.no {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--signal-text);
+}
+
+.chTitle {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-m);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.sub {
+  margin: 14px 0 0;
+  font-size: var(--type-title);
+  font-weight: 600;
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-title);
+}
+
+.body {
+  max-width: var(--measure);
+  margin: 14px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  opacity: 0.86;
+}
+
+.example {
+  max-width: var(--measure);
+  margin: 20px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--signal);
+  font-size: var(--type-body);
+  line-height: 1.5;
+}
+
+.example span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.more span {
+  transition: transform var(--dur-quick) var(--ease-settle);
+}
+
+.more:hover span {
+  transform: translateX(4px);
+}
+
+/* ── 01 · Paper, wired ───────────────────────────────────── */
+
+.ch01 {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  background: var(--sheet);
+}
+
+.wiring {
+  display: grid;
+  gap: 18px;
+}
+
+.wiringSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bus {
+  fill: var(--ink);
+}
+
+.busLabel {
+  font: 600 10px/1 var(--font-annotation);
+  letter-spacing: 0.14em;
+  fill: var(--paper);
+}
+
+.screw {
+  fill: var(--vellum);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.block {
+  fill: var(--vellum);
+  stroke: var(--ink);
+  stroke-width: 1.25;
+}
+
+.blockLabel {
+  font: 600 13px/1 var(--font-text);
+  fill: var(--ink);
+}
+
+.wire {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+  transition: stroke var(--dur-inspect), stroke-width var(--dur-inspect);
+}
+
+.lug {
+  fill: var(--ink);
+}
+
+.circuit {
+  transition: opacity var(--dur-inspect) var(--ease-settle);
+}
+
+.wiring[data-active] .circuit:not([data-on]) {
+  opacity: 0.25;
+}
+
+.circuit[data-on] .wire {
+  stroke: var(--signal);
+  stroke-width: 2.5;
+}
+
+.circuit[data-on] .block {
+  stroke: var(--signal);
+}
+
+.toolList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toolList button {
+  padding: 9px 12px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--dur-quick), color var(--dur-quick);
+}
+
+.toolList button[aria-pressed='true'],
+.toolList button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.wiringReadout {
+  min-height: 3em;
+  margin: 0;
+  font-size: var(--type-body);
+  line-height: 1.5;
+}
+
+.wiringReadout b {
+  font-size: 11px;
+  color: var(--signal-text);
+}
+
+/* ── 02 · Blueprint band ─────────────────────────────────── */
+
+.ch02 {
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  align-items: center;
+  color: var(--paper);
+  background-color: var(--blueprint);
+  background-image:
+    radial-gradient(ellipse 80% 80% at 35% 50%, transparent 50%, rgba(9, 27, 44, 0.4) 100%),
+    linear-gradient(rgba(126, 197, 231, 0.17) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 197, 231, 0.17) 1px, transparent 1px),
+    linear-gradient(rgba(126, 197, 231, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 197, 231, 0.07) 1px, transparent 1px);
+  background-size: 100% 100%, 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+}
+
+.ch02 .no {
+  color: var(--draft-line);
+}
+
+.ch02 .example {
+  border-left-color: var(--draft-line);
+}
+
+.drawing {
+  display: flex;
+  justify-content: center;
+}
+
+.appSvg {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  overflow: visible;
+}
+
+.bpLine,
+.bpFaint,
+.bpDim,
+.bpCheck {
+  fill: none;
+  stroke: var(--draft-line);
+}
+
+.bpLine {
+  stroke-width: 1.5;
+}
+
+.bpFaint {
+  stroke-width: 1;
+  stroke-opacity: 0.55;
+}
+
+.bpDim {
+  stroke-width: 1;
+  stroke-opacity: 0.8;
+}
+
+.bpCheck {
+  stroke-width: 2;
+  stroke: var(--paper);
+}
+
+.bpHatch {
+  fill: none;
+  stroke: var(--draft-line);
+  stroke-dasharray: 3 3;
+}
+
+.bpButton {
+  fill: rgba(239, 135, 92, 0.16);
+  stroke: var(--signal);
+  stroke-width: 1.5;
+  animation: bp-pulse 3.2s var(--ease-settle) infinite;
+}
+
+.bpLabel,
+.bpText,
+.bpNote,
+.bpDimText,
+.bpButtonText {
+  font-family: var(--font-annotation);
+  fill: var(--draft-line);
+}
+
+.bpLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.bpText {
+  font-size: 11px;
+  fill: var(--paper);
+}
+
+.bpNote,
+.bpDimText {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+}
+
+.bpButtonText {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  fill: var(--paper);
+}
+
+@keyframes bp-pulse {
+  0%,
+  100% {
+    stroke-opacity: 1;
+  }
+  50% {
+    stroke-opacity: 0.35;
+  }
+}
+
+/* ── 03 · Paper, decision record ─────────────────────────── */
+
+.ch03 {
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--paper);
+}
+
+.copyWide {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 24px 72px;
+  align-items: end;
+}
+
+.copyWide .sub {
+  margin-top: 0;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+/* A drawing's revision block: borders carry meaning here. */
+.revisions {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  border: 1.5px solid var(--ink);
+  background: var(--vellum);
+  font-size: 15px;
+}
+
+.revisions caption {
+  padding-bottom: 10px;
+  font-size: 10.5px;
+  font-weight: 500;
+  text-align: left;
+  color: var(--slate-text);
+}
+
+.revisions th,
+.revisions td {
+  padding: 13px 16px;
+  border: 1px solid var(--ink);
+  text-align: left;
+  vertical-align: top;
+}
+
+.revisions th {
+  font-size: 10.5px;
+  font-weight: 600;
+  background: var(--plate);
+}
+
+.rev {
+  width: 70px;
+  font: 600 14px/1.2 var(--font-annotation);
+  white-space: nowrap;
+}
+
+.rev span {
+  margin-right: 4px;
+  color: var(--signal-text);
+}
+
+.decision {
+  font-weight: 600;
+}
+
+/* ── 04 · Ink band, the printout ─────────────────────────── */
+
+.ch04 {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.ch04 .no {
+  color: var(--signal);
+}
+
+.slip {
+  justify-self: center;
+}
+
+@media (max-width: 1023px) {
+  .ch01,
+  .ch02,
+  .ch04,
+  .copyWide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ch02 .drawing {
+    order: 2;
+  }
+}

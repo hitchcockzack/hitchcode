@@ -1,18 +1,18 @@
 'use client'
 
-import { usePathname } from 'next/navigation';
-import Header from './Header';
+import { usePathname } from 'next/navigation'
+
+import SiteHeader from '@/components/site/SiteHeader'
+
+// Business cards, the Sanity studio and design-lab studies render their own chrome.
+export const BARE_ROUTES = ['/greeting', '/design-lab', '/studio']
 
 export default function ConditionalHeader() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
-  // Greeting pages and design-lab studies render their own art-directed headers.
-  const hidesGlobalHeader =
-    pathname.startsWith('/greeting') || pathname.startsWith('/design-lab');
-
-  if (hidesGlobalHeader) {
-    return null;
+  if (BARE_ROUTES.some((route) => pathname.startsWith(route))) {
+    return null
   }
 
-  return <Header />;
+  return <SiteHeader />
 }

@@ -1,0 +1,232 @@
+.header {
+  --header-h: 72px;
+  position: sticky;
+  z-index: var(--z-header);
+  top: 0;
+  color: var(--paper);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur-inspect) var(--ease-settle), box-shadow var(--dur-inspect) var(--ease-settle);
+}
+
+.header[data-scrolled] {
+  background: rgba(16, 20, 19, 0.97);
+  box-shadow: 0 1px 0 var(--hairline-dark);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: var(--header-h);
+  padding: 0 var(--page-pad);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-right: auto;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.brandNote,
+.menuButton,
+.sheetNo,
+.sheetContact {
+  font-family: var(--font-annotation);
+  font-weight: 500;
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.brandNote {
+  font-size: 11px;
+  color: rgba(237, 236, 229, 0.56);
+}
+
+.nav {
+  display: flex;
+  gap: 30px;
+}
+
+.navLink {
+  position: relative;
+  padding: 6px 0;
+  color: rgba(237, 236, 229, 0.76);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color var(--dur-quick);
+}
+
+.navLink:hover,
+.navLink[aria-current='page'] {
+  color: var(--paper);
+}
+
+.navLink[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--signal);
+}
+
+.cta {
+  padding: 10px 15px;
+  border: 1px solid rgba(237, 236, 229, 0.45);
+  color: var(--paper);
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--dur-quick), color var(--dur-quick), border-color var(--dur-quick);
+}
+
+.cta:hover,
+.cta[aria-current='page'] {
+  border-color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.menuButton {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 10px 12px;
+  border: 0;
+  background: none;
+  color: var(--paper);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.menuGlyph {
+  position: relative;
+  width: 18px;
+  height: 10px;
+  border-top: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transition: transform var(--dur-quick) var(--ease-settle);
+}
+
+.header[data-open] .menuGlyph {
+  height: 0;
+  border-bottom: 0;
+  transform: rotate(45deg);
+}
+
+.header[data-open] .menuGlyph::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1.5px;
+  border-top: 1.5px solid currentColor;
+  transform: rotate(-90deg);
+}
+
+/* ── Phone sheet ─────────────────────────────────────────── */
+
+.sheet {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 28px var(--page-pad) 40px;
+  overflow-y: auto;
+  background: var(--ink);
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.sheet[hidden] {
+  display: none;
+}
+
+.sheetNav {
+  display: grid;
+}
+
+.sheetLink {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline-dark);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.sheetLink[aria-current='page'] {
+  color: var(--signal);
+}
+
+.sheetNo {
+  font-size: 11px;
+  color: rgba(237, 236, 229, 0.5);
+}
+
+.sheetCta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sheetContact {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.sheetContact a {
+  color: rgba(237, 236, 229, 0.75);
+  text-decoration: none;
+}
+
+@media (max-width: 1099px) {
+  .brandNote {
+    display: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .nav,
+  .cta {
+    display: none;
+  }
+
+  .menuButton {
+    display: flex;
+  }
+}
+
+@media (max-width: 639px) {
+  .header {
+    --header-h: 60px;
+  }
+
+  .wordmark {
+    font-size: 24px;
+  }
+}

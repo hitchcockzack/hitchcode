@@ -419,6 +419,52 @@
   white-space: nowrap;
 }
 
+/* ── Blueprint material (capabilities hero, study C) ──────── */
+
+.console[data-material='blueprint'][data-mode='live'] {
+  --node-bg: var(--paper);
+  background: var(--paper);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 32px 64px rgba(8, 22, 36, 0.5),
+    0 6px 14px rgba(8, 22, 36, 0.35);
+}
+
+.console[data-material='blueprint'][data-mode='draft'] {
+  --rule: rgba(126, 197, 231, 0.55);
+  --muted: rgba(126, 197, 231, 0.8);
+  --node-bg: var(--blueprint);
+  background: rgba(30, 66, 98, 0.55);
+  color: var(--draft-line);
+}
+
+.console[data-material='blueprint'][data-mode='draft']::before,
+.console[data-material='blueprint'][data-mode='draft']::after {
+  border-color: rgba(126, 197, 231, 0.4);
+}
+
+.console[data-material='blueprint'][data-mode='draft'] .v {
+  background-image: repeating-linear-gradient(-45deg, rgba(126, 197, 231, 0.6) 0 1px, transparent 1px 4px);
+}
+
+.console[data-material='blueprint'] .dimension {
+  border-top-color: rgba(126, 197, 231, 0.45);
+}
+
+.console[data-material='blueprint'] .dimension::before,
+.console[data-material='blueprint'] .dimension::after {
+  border-left-color: rgba(126, 197, 231, 0.85);
+}
+
+.console[data-material='blueprint'] .dimension span {
+  background: #214768;
+  color: var(--draft-line);
+}
+
+.console[data-material='blueprint'] .note {
+  color: var(--draft-line);
+}
+
 /* ── Phones: stacked console ─────────────────────────────── */
 
 @media (max-width: 767px) {

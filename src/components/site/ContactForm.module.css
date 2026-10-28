@@ -1,0 +1,156 @@
+.form {
+  display: grid;
+  gap: 22px;
+  padding: 28px;
+  background: var(--vellum);
+  color: var(--ink);
+  box-shadow: var(--shadow-cast);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.field {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label,
+.error {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 8px 0 9px;
+  border: 0;
+  border-bottom: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 17px/1.4 var(--font-text);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.field textarea::placeholder {
+  color: rgba(16, 20, 19, 0.4);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--signal);
+  box-shadow: 0 1.5px 0 var(--signal);
+}
+
+.field [aria-invalid='true'] {
+  border-bottom-color: #b42318;
+}
+
+.error {
+  font-size: 10px;
+  font-weight: 600;
+  color: #b42318;
+}
+
+.failed {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid #b42318;
+  background: rgba(180, 35, 24, 0.07);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.failed a {
+  color: inherit;
+  font-weight: 600;
+}
+
+.submit {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 22px;
+  border: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 16px/1 var(--font-text);
+  cursor: pointer;
+}
+
+.submit:hover {
+  background: #26302e;
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.sent {
+  display: grid;
+  gap: 12px;
+  padding: 32px 28px;
+  background: var(--vellum);
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.55;
+  box-shadow: var(--shadow-cast);
+}
+
+.sent p {
+  margin: 0;
+}
+
+.sentTitle {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.05;
+}
+
+.again {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 500 15px/1.4 var(--font-text);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 559px) {
+  .form {
+    padding: 22px 18px;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .submit {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

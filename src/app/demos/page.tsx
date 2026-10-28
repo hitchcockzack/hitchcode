@@ -241,16 +241,8 @@ export default function DemosPage() {
                   {demo.title}
                 </h3>
                 <p className="text-lg text-zinc-300/90 mb-6 leading-relaxed">{demo.solution}</p>
-
-                {/* Stats */}
-                <div className={`grid grid-cols-2 gap-6 max-w-2xl mx-auto ${demo.stats.length === 4 ? 'md:grid-cols-4' : 'md:grid-cols-3'}`}>
-                  {demo.stats.map((stat, statIndex) => (
-                    <div key={statIndex} className="text-center">
-                      <div className="text-2xl md:text-3xl font-bold text-zinc-100 mb-1">{stat.value}</div>
-                      <div className="text-zinc-400 text-sm">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
+                {/* Result figures were illustrative, not measured; they stay out until a client result backs them. */}
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Interactive prototype · sample data</p>
               </div>
             </div>
 

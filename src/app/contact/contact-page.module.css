@@ -1,0 +1,65 @@
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 48px 72px;
+  align-items: start;
+}
+
+.direct {
+  display: grid;
+  gap: 0;
+  margin: var(--space-7) 0 0;
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.direct > div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline-dark);
+}
+
+.direct dt,
+.expectHead {
+  font: 500 10px/1.6 var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+  color: rgba(237, 236, 229, 0.55);
+}
+
+.direct dd {
+  margin: 0;
+  font-size: 16px;
+}
+
+.direct a {
+  color: var(--paper);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+
+.expect {
+  margin-top: var(--space-6);
+}
+
+.expectHead {
+  margin: 0 0 10px;
+}
+
+.expect ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  list-style: decimal;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--paper-muted);
+}
+
+@media (max-width: 1023px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

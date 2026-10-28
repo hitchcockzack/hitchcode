@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
     removeConsole:
       process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
+  // The services pages were folded into /capabilities in the 2026 redesign. Temporary (307)
+  // so the old pages can return without fighting cached permanent redirects.
+  async redirects() {
+    return [
+      { source: '/services', destination: '/capabilities', permanent: false },
+      { source: '/services/:slug*', destination: '/capabilities', permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

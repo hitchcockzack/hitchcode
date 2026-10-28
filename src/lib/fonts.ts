@@ -23,20 +23,22 @@ export const fontAnnotation = IBM_Plex_Mono({
   display: 'swap',
 })
 
-/** Dot-matrix printing: work orders and tickets only. */
+/** Dot-matrix printing: work orders and tickets only. Not preloaded; it is never above the fold's text. */
 export const fontPrinted = Doto({
   subsets: ['latin'],
   axes: ['ROND'],
   variable: '--font-doto',
   display: 'swap',
+  preload: false,
 })
 
-/** Phosphor terminal: the managed-outputs screen only. */
+/** Phosphor terminal: the managed-outputs screens only. */
 export const fontTerminal = VT323({
   subsets: ['latin'],
   weight: '400',
   variable: '--font-vt323',
   display: 'swap',
+  preload: false,
 })
 
 // .hc-type re-declares the family tokens on the same element as the font variables
@@ -44,4 +46,10 @@ export const fontTerminal = VT323({
 export const systemFontVariables = [
   'hc-type',
   ...[fontDisplay, fontText, fontAnnotation, fontPrinted].map((font) => font.variable),
+].join(' ')
+
+/** Applied to <html> by the root layout, so the tokens resolve at :root for every page. */
+export const siteFontVariables = [
+  'hc-type',
+  ...[fontDisplay, fontText, fontAnnotation, fontPrinted, fontTerminal].map((font) => font.variable),
 ].join(' ')

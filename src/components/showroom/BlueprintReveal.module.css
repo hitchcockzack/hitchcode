@@ -205,6 +205,52 @@
   color: var(--slate-text);
 }
 
+/* ── Blueprint tone: controls drawn in paper on blue ─────── */
+
+.reveal[data-tone='blueprint'] .toggle,
+.reveal[data-tone='blueprint'] .toggle button + button {
+  border-color: rgba(237, 236, 229, 0.6);
+}
+
+.reveal[data-tone='blueprint'] .toggle button {
+  color: var(--paper);
+}
+
+.reveal[data-tone='blueprint'] .toggle button:hover {
+  background: rgba(237, 236, 229, 0.1);
+}
+
+.reveal[data-tone='blueprint'] .toggle button[aria-pressed='true'] {
+  background: var(--paper);
+  color: #13283b;
+}
+
+.reveal[data-tone='blueprint'] .sample {
+  color: var(--draft-line);
+}
+
+.reveal[data-tone='blueprint'] .caption,
+.reveal[data-tone='blueprint'] .caption button {
+  color: rgba(237, 236, 229, 0.75);
+}
+
+.reveal[data-tone='blueprint'] .handleLabel {
+  color: var(--signal);
+}
+
+.reveal[data-tone='blueprint'] .handle::before {
+  box-shadow: 0 0 14px rgba(239, 135, 92, 0.6);
+}
+
+.reveal[data-tone='blueprint'] .handle:focus-visible .grip {
+  outline-color: var(--paper);
+}
+
+.reveal[data-tone='blueprint'] .hint span {
+  background: var(--paper);
+  color: var(--ink);
+}
+
 @media (max-width: 767px) {
   .controls {
     flex-direction: column;

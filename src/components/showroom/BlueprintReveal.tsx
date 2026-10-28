@@ -19,6 +19,8 @@ type Props = {
   sampleLabel: string
   caption?: ReactNode
   id?: string
+  /** Paper sections or blueprint-blue sections. */
+  tone?: 'paper' | 'blueprint'
 }
 
 const SNAP = 3
@@ -30,7 +32,16 @@ const VERTICAL_QUERY = '(max-width: 767px)'
   divided by a build line the visitor controls. The engine owns input and timing;
   the scene owns what changes when the system goes live.
 */
-export default function BlueprintReveal({ draft, live, initial = 46, onSettle, sampleLabel, caption, id }: Props) {
+export default function BlueprintReveal({
+  draft,
+  live,
+  initial = 46,
+  onSettle,
+  sampleLabel,
+  caption,
+  id,
+  tone = 'paper',
+}: Props) {
   const [pos, setPos] = useState(initial)
   const [animating, setAnimating] = useState(false)
   const [touched, setTouched] = useState(false)
@@ -96,7 +107,7 @@ export default function BlueprintReveal({ draft, live, initial = 46, onSettle, s
   const valueText = pos >= 100 ? 'Live system' : pos <= 0 ? 'Blueprint' : `${Math.round(pos)}% built`
 
   return (
-    <figure className={styles.reveal} id={id} data-touched={touched ? '' : undefined}>
+    <figure className={styles.reveal} id={id} data-tone={tone} data-touched={touched ? '' : undefined}>
       <div className={styles.controls}>
         <div className={styles.toggle} role="group" aria-label="View">
           <button type="button" aria-pressed={pos <= 0} onClick={toBlueprint}>

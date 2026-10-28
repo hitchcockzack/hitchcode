@@ -1,0 +1,897 @@
+/* Homepage hero — direction A (Technical Atelier), ported from /design-lab/a. */
+
+.room {
+  /* One type scale drives the headline and the sheet position, so the crossing stays aligned. */
+  --t: clamp(44px, 7vw, 110px);
+  --pad: clamp(20px, 3.4vw, 48px);
+  /* Sheet edge measured in headline ems, so it always falls between "engineer" and "what". */
+  --sheet-left: calc(var(--pad) + var(--t) * 6.23);
+  --bar: 72px;
+  --sheet: #efede6;
+  --plate: #e2e0d5;
+  --paper-sheet: #f7f6f1;
+  --mono: var(--font-plex-mono), ui-monospace, monospace;
+  --focus: var(--signal);
+
+  position: relative;
+  overflow-x: clip;
+  isolation: isolate;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Annotation voice */
+.kicker,
+.noteNo,
+.strip,
+.planeLabel,
+.deltaText {
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
+
+/* ── Hero composition ────────────────────────────────────── */
+
+/* The floor height keeps the pinned work order clear of the CTAs on short laptop screens. */
+.hero {
+  position: relative;
+  min-height: max(calc(100svh - var(--bar)), 790px);
+  padding: 0 var(--pad) 72px;
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0;
+  padding-top: 44px;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  color: rgba(237, 236, 229, 0.6);
+}
+
+/* The headline inverts where it crosses onto the sheet: paper on ink, ink on paper. */
+.title {
+  position: relative;
+  z-index: 3;
+  margin: 18px 0 0;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--t);
+  line-height: 0.98;
+  letter-spacing: -0.032em;
+  color: var(--paper);
+  mix-blend-mode: difference;
+}
+
+.titleLine {
+  display: block;
+  white-space: nowrap;
+}
+
+.titleIndent {
+  padding-left: 1.04em;
+}
+
+.lede {
+  position: relative;
+  z-index: 3;
+  max-width: min(31rem, calc(var(--sheet-left) - var(--pad) - 40px));
+  margin: 44px 0 0;
+  font-size: 19px;
+  line-height: 1.55;
+  color: rgba(237, 236, 229, 0.8);
+  text-wrap: pretty;
+}
+
+/* Fit-content so this raised row never covers the sheet's notes column. */
+.actions {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 30px;
+  width: fit-content;
+  margin-top: 34px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 22px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 180ms;
+}
+
+.primary:hover {
+  background: #fbfaf6;
+}
+
+.primary:active {
+  transform: translateY(1px);
+}
+
+.arrow {
+  transition: transform 240ms var(--ease-settle);
+}
+
+.primary:hover .arrow {
+  transform: translateX(4px);
+}
+
+.secondary {
+  color: var(--paper);
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(237, 236, 229, 0.42);
+  text-underline-offset: 7px;
+  transition: text-decoration-color 160ms;
+}
+
+.secondary:hover {
+  text-decoration-color: var(--paper);
+}
+
+/* ── The drawing sheet ───────────────────────────────────── */
+
+.stage {
+  display: contents;
+}
+
+/* The sheet enters at the middle of headline line two and bleeds off right and bottom. */
+.sheet {
+  position: absolute;
+  z-index: 1;
+  top: calc(44px + 16px + 18px + var(--t) * 1.02);
+  right: 0;
+  bottom: 0;
+  left: var(--sheet-left);
+  /* Row 1 is clean paper for the inverted headline; the drawing frame starts below it. */
+  --title-space: calc(var(--t) * 1.02 + 10px);
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  grid-template-rows: var(--title-space) minmax(0, 1fr) 24px auto;
+  margin: 0;
+  background: var(--sheet);
+  color: var(--ink);
+  scroll-margin-top: 24px;
+}
+
+.zonesBottom,
+.zonesLeft {
+  display: flex;
+  font: 500 10px/1 var(--mono);
+  color: var(--slate);
+}
+
+.zonesBottom {
+  grid-column: 2;
+  grid-row: 3;
+  border-top: 1px solid var(--ink);
+}
+
+.zonesLeft {
+  grid-column: 1;
+  grid-row: 2;
+  flex-direction: column;
+}
+
+.zonesBottom span,
+.zonesLeft span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.zonesBottom span + span {
+  border-left: 1px solid rgba(16, 20, 19, 0.35);
+}
+
+.zonesLeft span + span {
+  border-top: 1px solid rgba(16, 20, 19, 0.35);
+}
+
+.field {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+  padding: 18px 0 16px;
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
+}
+
+/* The right margin reserves the notes column so drawing + notes center as one group. */
+.drawing {
+  position: relative;
+  flex: none;
+  height: 100%;
+  aspect-ratio: 394 / 594;
+  margin-right: 248px;
+}
+
+.axo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Drawing pens. Non-scaling strokes keep the line weights honest at every size. */
+.axo * {
+  vector-effect: non-scaling-stroke;
+}
+
+.layer {
+  transition: opacity 240ms var(--ease-settle);
+}
+
+.drawing[data-active] .layer:not([data-on]) {
+  opacity: 0.2;
+}
+
+.plate {
+  fill: var(--plate);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.sideLight {
+  fill: #48504e;
+}
+
+.sideDark {
+  fill: var(--ink);
+}
+
+.paper {
+  fill: var(--paper-sheet);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.shape {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.heavy {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+}
+
+.dashedShape {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.hatched {
+  fill: url(#atelier-hatch);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.hatchLine {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.inkFill {
+  fill: var(--ink);
+}
+
+.signalFill {
+  fill: var(--signal);
+}
+
+.route {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.nodeRing {
+  fill: var(--paper-sheet);
+  stroke: var(--signal);
+  stroke-width: 1.75;
+}
+
+.nodeDot {
+  fill: var(--signal);
+}
+
+.planeLabel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  fill: var(--ink);
+}
+
+.plannedPlate {
+  fill: none;
+  stroke: var(--slate);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.plannedShape {
+  fill: none;
+  stroke: var(--slate);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.plannedNode {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 1.25;
+  stroke-dasharray: 2 2;
+}
+
+.construction {
+  stroke: rgba(112, 124, 121, 0.55);
+  stroke-width: 0.75;
+}
+
+.cloud {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 1.4;
+  animation: cloud 8s var(--ease-draft) -3.2s infinite;
+}
+
+.delta {
+  fill: var(--sheet);
+  stroke: var(--signal);
+  stroke-width: 1.2;
+}
+
+.deltaText {
+  font-size: 9px;
+  font-weight: 600;
+  fill: var(--signal);
+}
+
+.thread {
+  stroke: var(--signal);
+  stroke-width: 2;
+}
+
+.threadPlanned {
+  stroke: var(--signal);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+.hiddenLine {
+  stroke: rgba(16, 20, 19, 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.leader {
+  fill: var(--ink);
+  stroke: var(--ink);
+  stroke-width: 0.75;
+}
+
+/* Signal pulse: the job moves down through the built connections, then stops where
+   the connection is only planned. Each segment owns one window of the 8s loop. */
+.pulse {
+  stroke: #ffd1bd;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 16 400;
+  stroke-dashoffset: 16;
+  vector-effect: none;
+}
+
+/* All loop members start 3.2s into the cycle, so the first frame already shows the landed stamp. */
+.pulse1 {
+  animation: pulse-s1 8s linear -3.2s infinite;
+}
+
+.pulse2 {
+  animation: pulse-s2 8s linear -3.2s infinite;
+}
+
+@keyframes pulse-s1 {
+  0% {
+    stroke-dashoffset: 16;
+  }
+  13%,
+  100% {
+    stroke-dashoffset: -124;
+  }
+}
+
+@keyframes pulse-s2 {
+  0%,
+  13% {
+    stroke-dashoffset: 16;
+  }
+  26%,
+  100% {
+    stroke-dashoffset: -124;
+  }
+}
+
+@keyframes cloud {
+  0%,
+  28% {
+    stroke-width: 1.4;
+    opacity: 0.7;
+  }
+  34% {
+    stroke-width: 2.4;
+    opacity: 1;
+  }
+  60%,
+  100% {
+    stroke-width: 1.4;
+    opacity: 0.85;
+  }
+}
+
+/* ── Drawing notes (the sheet's notes column) ────────────── */
+
+.notes {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 248px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  right: 0;
+  transform: translateY(-8px);
+}
+
+.note button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0 0 0 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.note button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 9px;
+  height: 1px;
+  background: var(--ink);
+}
+
+.noteNo {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.09em;
+}
+
+.note[data-planned] .noteNo {
+  color: #b9542b;
+}
+
+.noteLine {
+  display: block;
+  max-width: 218px;
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.36;
+  color: rgba(16, 20, 19, 0.8);
+}
+
+.noteDetail {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.note[data-on] .noteLine {
+  display: none;
+}
+
+.note[data-on] .noteDetail {
+  position: static;
+  display: grid;
+  gap: 3px;
+  width: auto;
+  height: auto;
+  max-width: 232px;
+  margin-top: 5px;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.noteDetail b {
+  display: inline-block;
+  min-width: 36px;
+  font: 600 10px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+/* ── Title strip (drawing title block, run horizontally) ── */
+
+/* Two-row title block: identity on top, honesty label and motion control below. */
+.strip {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  border-top: 1px solid var(--ink);
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.07em;
+  color: rgba(16, 20, 19, 0.86);
+}
+
+.strip > * {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-right: 1px solid rgba(16, 20, 19, 0.3);
+}
+
+.stripStudy {
+  min-width: 0;
+}
+
+.sampleCell,
+.motionToggle {
+  border-top: 1px solid rgba(16, 20, 19, 0.3);
+}
+
+.sampleCell {
+  grid-column: 1 / 3;
+}
+
+.stripBrand b {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.legend i {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+  border-top: 1.5px solid var(--ink);
+}
+
+.legend .legendPlanned {
+  margin-left: 6px;
+  border-top: 1.5px dashed var(--slate);
+}
+
+.sampleCell {
+  color: #b9542b;
+}
+
+.motionToggle {
+  justify-content: center;
+  border-top: 1px solid rgba(16, 20, 19, 0.3);
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.motionToggle:hover {
+  background: rgba(16, 20, 19, 0.06);
+}
+
+/* ── Printed work order: the study's single retro object ── */
+
+/* Pinned across the room/sheet boundary, above the title strip. */
+.ticketWrap {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--sheet-left) - 254px);
+  bottom: 104px;
+  width: 330px;
+  margin: 0;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.42)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+  transform: rotate(-1.4deg);
+}
+
+/* Tractor-feed holes are cut with a mask so the table or sheet shows through. */
+.ticket {
+  position: relative;
+  margin: 0;
+  padding: 16px 36px 40px;
+  background: #f5f3eb;
+  color: #283034;
+  -webkit-mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+  mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+}
+
+.ticket::before,
+.ticket::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed rgba(40, 48, 52, 0.28);
+}
+
+.ticket::before {
+  left: 22px;
+}
+
+.ticket::after {
+  right: 22px;
+}
+
+.dotLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-doto), var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  font-variation-settings: 'ROND' 100;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.5px rgba(40, 48, 52, 0.7);
+}
+
+.dotLine:first-child {
+  margin-bottom: 4px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed rgba(40, 48, 52, 0.35);
+}
+
+/* The rubber stamp lands when the signal reaches the unconnected books plate. */
+.stamp {
+  position: absolute;
+  right: 34px;
+  bottom: 14px;
+  margin: 0;
+  padding: 6px 9px 5px;
+  border: 2px solid var(--signal);
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+  color: #d9673c;
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
+  animation: stamp 8s var(--ease-settle) -3.2s infinite;
+}
+
+@keyframes stamp {
+  0%,
+  31% {
+    opacity: 0;
+    transform: rotate(-7deg) scale(1.35);
+  }
+  35% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
+  }
+  92% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: rotate(-7deg) scale(1);
+  }
+}
+
+[data-motion='off'] .pulse,
+[data-motion='off'] .cloud,
+[data-motion='off'] .stamp {
+  animation: none;
+}
+
+/* Small laptops: the room side is narrow, so the work order steps left and shrinks. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .ticketWrap {
+    left: calc(var(--sheet-left) - 300px);
+    transform: rotate(-1.4deg) scale(0.88);
+    transform-origin: left bottom;
+  }
+}
+
+/* ── Medium widths: stacked composition, notes beside the drawing ── */
+
+@media (max-width: 1023px) {
+  .hero {
+    padding-bottom: 0;
+  }
+
+  .title {
+    mix-blend-mode: normal;
+  }
+
+  .titleLine {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .titleIndent {
+    padding-left: 0;
+  }
+
+  .lede {
+    max-width: 34rem;
+  }
+
+  .sheet {
+    --title-space: 0px;
+    position: relative;
+    inset: auto;
+    margin: 0 calc(var(--pad) * -1);
+  }
+
+  .field {
+    justify-content: flex-start;
+    padding: 32px 0 36px 28px;
+  }
+
+  .drawing {
+    width: min(52%, 330px);
+    height: auto;
+  }
+
+  .hero {
+    min-height: 0;
+  }
+
+  .ticketWrap {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    margin: 56px 8px -48px auto;
+  }
+}
+
+/* ── Small screens: notes become a list under the drawing ── */
+
+@media (max-width: 639px) {
+  .room {
+    --bar: 60px;
+  }
+
+  .kicker {
+    padding-top: 36px;
+  }
+
+  .lede {
+    margin-top: 28px;
+    font-size: 17px;
+  }
+
+  .actions {
+    width: auto;
+    margin-top: 28px;
+  }
+
+  .primary {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .field {
+    flex-direction: column;
+    padding: 28px 20px 32px;
+  }
+
+  .drawing {
+    width: 100%;
+    aspect-ratio: auto;
+    margin-right: 0;
+  }
+
+  .axo {
+    width: min(100%, 290px);
+    height: auto;
+    aspect-ratio: 394 / 594;
+    margin: 0 auto;
+  }
+
+  .notes {
+    position: static;
+    width: auto;
+    margin-top: 28px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .note {
+    position: static;
+    transform: none;
+  }
+
+  .noteLine,
+  .note[data-on] .noteDetail {
+    max-width: none;
+  }
+
+  /* Notes stack under the drawing here, so the leaders would point at nothing. */
+  .leader {
+    display: none;
+  }
+
+  .strip {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .stripBrand,
+  .stripStudy,
+  .sampleCell {
+    grid-column: 1 / -1;
+  }
+
+  .stripStudy,
+  .legend {
+    border-top: 1px solid rgba(16, 20, 19, 0.3);
+  }
+
+  .ticketWrap {
+    width: min(330px, 100%);
+    margin: 48px auto -44px;
+  }
+}

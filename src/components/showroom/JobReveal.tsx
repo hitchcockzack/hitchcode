@@ -13,7 +13,13 @@ import styles from './JobConsole.module.css'
   Going live starts the data: crew checks in, the job closes, the invoice drafts
   for review, and is sent (or the visitor approves it first).
 */
-export default function JobReveal({ id = 'system' }: { id?: string }) {
+type Props = {
+  id?: string
+  material?: 'paper' | 'blueprint'
+  initial?: number
+}
+
+export default function JobReveal({ id = 'system', material = 'paper', initial }: Props) {
   const motionAllowed = useMotionAllowed()
   const [phaseIdx, setPhaseIdx] = useState(0)
   const timers = useRef<number[]>([])
@@ -61,10 +67,12 @@ export default function JobReveal({ id = 'system' }: { id?: string }) {
     <>
       <BlueprintReveal
         id={id}
+        tone={material}
+        initial={initial}
         sampleLabel={SAMPLE_LABEL}
         onSettle={onSettle}
-        draft={<JobConsole mode="draft" phase={phase} />}
-        live={<JobConsole mode="live" phase={phase} onApprove={approve} />}
+        draft={<JobConsole mode="draft" phase={phase} material={material} />}
+        live={<JobConsole mode="live" phase={phase} onApprove={approve} material={material} />}
         caption={
           <>
             <span>

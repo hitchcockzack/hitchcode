@@ -1,0 +1,84 @@
+.wrap {
+  width: min(380px, 100%);
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.42)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+  transform: rotate(1.2deg);
+}
+
+/* Tractor-feed holes are cut with a mask so the dark sheet shows through. */
+.paper {
+  position: relative;
+  padding: 18px 38px 48px;
+  background: #f5f3eb;
+  color: #283034;
+  -webkit-mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+  mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+}
+
+.paper::before,
+.paper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed rgba(40, 48, 52, 0.28);
+}
+
+.paper::before {
+  left: 22px;
+}
+
+.paper::after {
+  right: 22px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-family: var(--font-printed);
+  font-size: 13px;
+  font-weight: 700;
+  font-variation-settings: 'ROND' 100;
+  line-height: 1.65;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.5px rgba(40, 48, 52, 0.7);
+}
+
+.line:first-child {
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(40, 48, 52, 0.35);
+}
+
+.key {
+  flex: none;
+  color: rgba(40, 48, 52, 0.62);
+}
+
+.line span:last-child {
+  text-align: right;
+}
+
+.stamp {
+  position: absolute;
+  right: 34px;
+  bottom: 12px;
+  margin: 0;
+  padding: 6px 9px 5px;
+  border: 2px solid #33403e;
+  outline: 1px solid #33403e;
+  outline-offset: 2px;
+  color: #33403e;
+  font: 600 11px/1 var(--font-annotation);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  mix-blend-mode: multiply;
+}

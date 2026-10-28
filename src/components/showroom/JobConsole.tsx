@@ -14,6 +14,8 @@ type Props = {
   mode: 'draft' | 'live'
   phase: JobPhase
   onApprove?: () => void
+  /** Paper (pencil drawing, printed software) or blueprint (cyan drawing on blue). */
+  material?: 'paper' | 'blueprint'
 }
 
 /*
@@ -21,13 +23,13 @@ type Props = {
   once as working software. Draft-only annotations are absolutely positioned, so
   both layers keep exactly the same geometry at every width.
 */
-export default function JobConsole({ mode, phase, onApprove }: Props) {
+export default function JobConsole({ mode, phase, onApprove, material = 'paper' }: Props) {
   const draft = mode === 'draft'
   const activeIdx = phase.active === 'complete' ? STAGES.length : stageIndex(phase.active)
   const progress = Math.min(activeIdx, STAGES.length - 1) / (STAGES.length - 1)
 
   return (
-    <div className={styles.console} data-mode={mode}>
+    <div className={styles.console} data-mode={mode} data-material={material}>
       <div className={styles.head}>
         <div>
           <p className={styles.id}>

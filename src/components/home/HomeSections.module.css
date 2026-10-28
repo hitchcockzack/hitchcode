@@ -1,0 +1,595 @@
+/* Homepage sections 06–09. */
+
+.kicker,
+.kickerDark,
+.exhibitKicker,
+.flowCaption,
+.flowNo,
+.flowWho,
+.offer dd span,
+.status,
+.sheetNo,
+.portrait figcaption,
+.direct span,
+.loop {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.kicker,
+.kickerDark {
+  margin: 0;
+  font-size: var(--type-annotation);
+  font-weight: 500;
+}
+
+.kicker {
+  color: var(--slate-text);
+}
+
+.kickerDark {
+  color: rgba(237, 236, 229, 0.6);
+}
+
+.h2Dark {
+  max-width: 18ch;
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-l);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.more,
+.moreDark,
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.more span,
+.moreDark span,
+.links a span {
+  transition: transform var(--dur-quick) var(--ease-settle);
+}
+
+.more:hover span,
+.moreDark:hover span,
+.links a:hover span {
+  transform: translateX(3px);
+}
+
+/* ── 06 · Selected work: exhibits on the dark table ──────── */
+
+.work {
+  padding: var(--section-quiet) var(--page-pad) var(--section-standard);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.exhibit {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 40px 64px;
+  align-items: center;
+  margin-top: var(--space-8);
+}
+
+.exhibitKicker {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--signal);
+}
+
+.exhibitTitle {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-m);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.exhibitBody {
+  max-width: var(--measure);
+  margin: 14px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: var(--paper-muted);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 22px 0 0;
+}
+
+/* The role flow is drawn on a sheet laid on the table, like the hero drawing. */
+.flowSheet {
+  margin: 0;
+  padding: 26px 26px 28px;
+  background: var(--sheet);
+  color: var(--ink);
+  box-shadow: var(--shadow-cast);
+}
+
+.flowCaption {
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-light);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flowStep {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 14px 12px 4px 0;
+  border-top: 2px solid var(--ink);
+}
+
+/* Arrowhead where each step hands to the next. */
+.flowStep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 6px;
+  border-left: 8px solid var(--ink);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.flowStep:first-child {
+  border-top-color: var(--signal);
+}
+
+.flowNo {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--signal-text);
+}
+
+.flowWho {
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.flowDoes {
+  font-size: 14.5px;
+  line-height: 1.35;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 64px;
+  margin-top: var(--space-9);
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.minorTitle {
+  margin: 10px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* ── 07 · Managed operations: the control room ───────────── */
+
+.managed {
+  padding: var(--section-standard) var(--page-pad);
+  background:
+    radial-gradient(ellipse 40% 55% at 78% 45%, rgba(126, 197, 231, 0.08), transparent 70%),
+    #0c0f0e;
+  color: var(--paper);
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.managedInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 56px 64px;
+  align-items: start;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.managedCopy .h2Dark {
+  max-width: 16ch;
+}
+
+.managedLede {
+  max-width: var(--measure);
+  margin: 22px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: var(--paper-muted);
+}
+
+.offers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 32px 0 0;
+}
+
+.offer {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline-dark);
+}
+
+.offer dt {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.offer dd {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--paper-muted);
+}
+
+.offer dd span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--signal);
+}
+
+.status {
+  max-width: 34rem;
+  margin: 28px 0 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: rgba(237, 236, 229, 0.58);
+}
+
+.moreDark {
+  margin-top: 22px;
+}
+
+.terminal {
+  --terminal-w: clamp(360px, 38vw, 540px);
+  margin-top: 8px;
+}
+
+/* ── 08 · Principle on paper ─────────────────────────────── */
+
+.principle {
+  padding: var(--section-quiet) var(--page-pad);
+  background: var(--sheet);
+  color: var(--ink);
+}
+
+.principleInner {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 48px 64px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.portrait {
+  margin: 0;
+}
+
+.portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ink);
+  filter: grayscale(1) contrast(1.05);
+}
+
+.portrait figcaption {
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.statement {
+  max-width: 15ch;
+  margin: 16px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-l);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.principleBody {
+  max-width: 40rem;
+  margin: 24px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: rgba(16, 20, 19, 0.84);
+}
+
+.principleCopy .more {
+  margin-top: 22px;
+}
+
+/* Engagement as a drawing-set index: five sheets, read left to right. */
+.sheetIndex {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--ink);
+  border-left: 1px solid var(--rule-light);
+}
+
+.sheetIndex li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 16px 16px 18px;
+  border-right: 1px solid var(--rule-light);
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.sheetNo {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--signal-text);
+}
+
+.sheetName {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.sheetLine {
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: rgba(16, 20, 19, 0.8);
+}
+
+/* ── 09 · Contact and the concierge ──────────────────────── */
+
+.close {
+  padding: var(--section-quiet) var(--page-pad) var(--space-8);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.closeInner {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 56px 72px;
+  align-items: start;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.closeTitle {
+  max-width: 12ch;
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-xl);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.closeBody {
+  max-width: 30rem;
+  margin: 28px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: var(--paper-muted);
+}
+
+.closeCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 17px 22px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--dur-quick);
+}
+
+.closeCta:hover {
+  background: #fbfaf6;
+}
+
+.direct {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 28px 0 0;
+  font-size: 15px;
+}
+
+.direct span {
+  width: 100%;
+  font-size: 10px;
+  color: rgba(237, 236, 229, 0.55);
+}
+
+.direct a {
+  color: var(--paper);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline-dark);
+}
+
+.direct a:hover {
+  border-bottom-color: var(--paper);
+}
+
+.conciergeIntro {
+  max-width: 36rem;
+  margin: 0 0 22px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--paper-muted);
+}
+
+.conciergeIntro b {
+  color: var(--paper);
+}
+
+/* The job thread closes the loop back to the first sheet. */
+.loop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1320px;
+  margin: var(--space-9) auto 0;
+  color: rgba(237, 236, 229, 0.62);
+  font-size: 10.5px;
+  text-decoration: none;
+}
+
+.loop:hover {
+  color: var(--paper);
+}
+
+.loopLine {
+  position: relative;
+  flex: 1;
+  height: 0;
+  border-top: 1.5px dashed rgba(239, 135, 92, 0.6);
+}
+
+/* The signal dot travels the thread by background position: paint only, no layout. */
+.loopLine::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: radial-gradient(circle, var(--signal) 3.5px, transparent 4px) 0 50% / 8px 8px no-repeat;
+  animation: loop-run 6s linear infinite;
+}
+
+@keyframes loop-run {
+  from {
+    background-position-x: 0%;
+  }
+  to {
+    background-position-x: 100%;
+  }
+}
+
+@media (max-width: 1099px) {
+  .exhibit,
+  .managedInner,
+  .closeInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .terminal {
+    --terminal-w: min(calc(100vw - 2 * var(--page-pad)), 560px);
+    justify-self: center;
+  }
+
+  .sheetIndex {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 899px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .flowStep {
+    grid-template-columns: 34px minmax(0, 1fr);
+    padding: 12px 0 12px;
+    border-top: 0;
+    border-left: 2px solid var(--ink);
+    padding-left: 14px;
+  }
+
+  .flowStep:first-child {
+    border-left-color: var(--signal);
+  }
+
+  .flowStep:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -6px;
+    left: -7px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid var(--ink);
+    border-bottom: 0;
+  }
+
+  .flowNo {
+    grid-row: span 2;
+  }
+
+  .pair,
+  .offers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .principleInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portrait {
+    width: 160px;
+  }
+}
+
+@media (max-width: 559px) {
+  .sheetIndex {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .closeCta {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
