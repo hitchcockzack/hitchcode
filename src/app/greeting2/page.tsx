@@ -25,7 +25,7 @@ const PROFILE_DATA = {
   contact: {
     phone: '+1 (707) 656-4252',
     email: 'zackhitchcock@gmail.com',
-    website: 'https://www.hitchcode.com',
+    website: 'https://www.hitchcode.net',
     linkedin: 'https://www.linkedin.com/in/zack-hitchcock',
   },
   payment: {

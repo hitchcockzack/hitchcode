@@ -34,8 +34,8 @@ export default async function DebugMeta({ params }: PageProps) {
 
   const title = `${post.title} - Zack Hitchcock`
   const description = post.excerpt || `Read "${post.title}" by Zack Hitchcock - Full-Stack Developer & Digital Architect`
-  const url = `https://hitchcode.com/blog/${post.slug.current}`
-  const imageUrl = `https://hitchcode.com/og-blog-default.png`
+  const url = `https://www.hitchcode.net/blog/${post.slug.current}`
+  const imageUrl = `https://www.hitchcode.net/og-blog-default.png`
 
   const metaTags = [
     { property: 'og:title', content: title },

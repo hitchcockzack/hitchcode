@@ -3,13 +3,13 @@ import BlogPageClient from './BlogPageClient'
 
 // For dev environment, use localhost for Open Graph images to work
 const baseUrl = process.env.NODE_ENV === 'production'
-  ? 'https://hitchcode.com'
+  ? 'https://www.hitchcode.net'
   : 'http://localhost:3000'
 
 export const metadata: Metadata = {
   title: 'Blog - Zack Hitchcock | Full-Stack Developer',
   description: 'Thoughts, insights, and stories from the intersection of technology and creativity. Regular articles on web development, automation, and digital innovation.',
-  authors: [{ name: 'Zack Hitchcock', url: 'https://hitchcode.com' }],
+  authors: [{ name: 'Zack Hitchcock', url: 'https://www.hitchcode.net' }],
   creator: 'Zack Hitchcock',
   publisher: 'Zack Hitchcock',
   category: 'Technology',

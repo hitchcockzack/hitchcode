@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   // For dev environment, use localhost for Open Graph images to work
   const baseUrl = process.env.NODE_ENV === 'production'
-    ? 'https://hitchcode.com'
+    ? 'https://www.hitchcode.net'
     : 'http://localhost:3000'
 
   const url = `${baseUrl}/blog/${post.slug.current}`
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description,
-    authors: [{ name: 'Zack Hitchcock', url: 'https://hitchcode.com' }],
+    authors: [{ name: 'Zack Hitchcock', url: 'https://www.hitchcode.net' }],
     creator: 'Zack Hitchcock',
     publisher: 'Zack Hitchcock',
     category: 'Technology',

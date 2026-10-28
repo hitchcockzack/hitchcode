@@ -64,7 +64,7 @@ N:Hitchcock;Zack;;;
 TITLE:Software Engineer${photoString}
 TEL:+16175865962
 EMAIL:hitchcockzack@gmail.com
-URL:https://hitchcode.com
+URL:https://www.hitchcode.net
 URL;type=LinkedIn:www.linkedin.com/in/zack-hitchcock-17841a219/
 END:VCARD`;
 
