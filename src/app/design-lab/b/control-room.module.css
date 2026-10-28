@@ -1,0 +1,818 @@
+/* Study B — The Control Room */
+
+.room {
+  --t: clamp(44px, 6.3vw, 96px);
+  --pad: clamp(20px, 3.4vw, 48px);
+  --bar: 68px;
+  /* The terminal's width drives its type, the diorama, and the copy column together. */
+  --mon-w: clamp(360px, 39vw, 580px);
+  --mono: var(--font-plex-mono), ui-monospace, monospace;
+  --phosphor: #cfeff7;
+  --focus: var(--signal);
+
+  position: relative;
+  min-height: 100svh;
+  overflow-x: clip;
+  isolation: isolate;
+  /* A faint wash of screen light on the wall behind the terminal. */
+  background:
+    radial-gradient(ellipse 44% 50% at 76% 40%, rgba(126, 197, 231, 0.08), transparent 70%),
+    var(--ink);
+  color: var(--paper);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+
+.bar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: var(--bar);
+  padding: 0 var(--pad);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-right: auto;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+/* Equipment nameplate: expanded, heavy, boxed. */
+.nameplate {
+  padding: 6px 9px 5px;
+  border: 1.5px solid var(--paper);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variation-settings: 'wdth' 125;
+}
+
+.brandNote,
+.feed,
+.kicker,
+.sampleTag,
+.menu summary {
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.brandNote {
+  font-size: 11px;
+  color: rgba(237, 236, 229, 0.56);
+}
+
+.nav {
+  display: flex;
+  gap: 26px;
+}
+
+.nav a {
+  font-size: 14px;
+  color: rgba(237, 236, 229, 0.74);
+  text-decoration: none;
+  transition: color 160ms;
+}
+
+.nav a:hover {
+  color: var(--paper);
+}
+
+.feed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 11px;
+  color: rgba(237, 236, 229, 0.62);
+}
+
+.feedLed {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 8px 1px rgba(239, 135, 92, 0.7);
+  animation: blink 2.4s steps(1) infinite;
+}
+
+.barCta {
+  padding: 10px 14px 9px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 0 #9b968a;
+  transition: transform 90ms, box-shadow 90ms;
+}
+
+.barCta:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #9b968a;
+}
+
+.menu {
+  display: none;
+  position: relative;
+}
+
+.menu summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 0 10px 16px;
+  font-size: 12px;
+}
+
+.menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.menuPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  padding: 8px 0;
+  border: 1px solid var(--hairline);
+  background: #151a19;
+}
+
+.menuPanel a {
+  padding: 12px 18px;
+  color: var(--paper);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.menuPanel a:last-child {
+  margin-top: 6px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ── Copy column ─────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  min-height: max(calc(100svh - var(--bar)), 760px);
+  padding: 0 var(--pad) 56px;
+}
+
+.copy {
+  position: relative;
+  z-index: 3;
+  max-width: min(42rem, calc(100% - var(--mon-w) - 72px));
+  padding-top: 52px;
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 16px;
+  color: rgba(237, 236, 229, 0.6);
+}
+
+/* Semi-condensed and heavy, like a stamped equipment plate. The acknowledgment
+   sits back; the claim comes forward. */
+.title {
+  margin: 22px 0 0;
+  font-size: var(--t);
+  font-weight: 700;
+  line-height: 0.93;
+  letter-spacing: -0.022em;
+  font-variation-settings: 'wdth' 78;
+  color: rgba(237, 236, 229, 0.52);
+  text-wrap: balance;
+}
+
+.titleSecond {
+  display: block;
+  color: var(--paper);
+}
+
+.lede {
+  max-width: 30rem;
+  margin: 30px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(237, 236, 229, 0.8);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 32px;
+}
+
+/* Primary CTA has key travel: it presses down 3px like the console keys. */
+.primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 15px 22px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 650;
+  text-decoration: none;
+  box-shadow: 0 3px 0 #a19c8f, 0 10px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 100ms, box-shadow 100ms, background-color 160ms;
+}
+
+.primary:hover {
+  background: #f7f6f1;
+}
+
+.primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #a19c8f, 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--paper);
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(237, 236, 229, 0.42);
+  text-underline-offset: 7px;
+}
+
+.secondary:hover {
+  text-decoration-color: var(--paper);
+}
+
+/* ── Terminal ────────────────────────────────────────────── */
+
+.console {
+  position: absolute;
+  z-index: 2;
+  top: 36px;
+  right: var(--pad);
+  width: var(--mon-w);
+  scroll-margin-top: 24px;
+}
+
+.monitor {
+  position: relative;
+}
+
+.housing {
+  position: relative;
+  padding: 28px 20px 0;
+  border-radius: 22px 22px 12px 12px;
+  background: linear-gradient(180deg, #dcd8cb 0%, #cfcabc 48%, #bfbaac 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.12),
+    0 40px 70px rgba(0, 0, 0, 0.5),
+    0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.powerLed {
+  position: absolute;
+  top: 11px;
+  left: 22px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #bfe6f2;
+  box-shadow: 0 0 6px 1px rgba(126, 197, 231, 0.9);
+}
+
+.housingLabel {
+  position: absolute;
+  top: 9px;
+  right: 24px;
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(70, 66, 58, 0.78);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.bezel {
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #a8a395, #b8b3a5 60%, #c2bdaf);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.screen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 26px / 22px;
+  background: radial-gradient(ellipse at 50% 42%, #142321 0%, #0b1312 62%, #050908 100%);
+  box-shadow: inset 0 0 0 2px #050807, inset 0 0 48px rgba(0, 0, 0, 0.85);
+}
+
+.crt {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 6% 6.5% 5.5%;
+  font-family: var(--font-vt323), ui-monospace, monospace;
+  font-size: calc(var(--mon-w) * 0.0305);
+  line-height: 1.17;
+  color: var(--phosphor);
+  text-shadow: 0 0 5px rgba(126, 197, 231, 0.55), 0 0 1px rgba(207, 239, 247, 0.85);
+}
+
+.crtHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 2ch;
+  margin: 0 0 0.45em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px dashed rgba(207, 239, 247, 0.35);
+}
+
+.reverse {
+  padding: 0 0.5ch;
+  background: var(--phosphor);
+  color: #0b1312;
+  text-shadow: none;
+}
+
+/* Prints from the top; on small screens it anchors to the newest line instead. */
+.log {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.log li {
+  display: grid;
+  grid-template-columns: 3ch 5ch 3ch minmax(0, 1fr) 6ch;
+  column-gap: 1.1ch;
+  white-space: nowrap;
+}
+
+.time,
+.day,
+.sys {
+  opacity: 0.72;
+}
+
+.msg {
+  overflow: hidden;
+}
+
+.status,
+.statusReview {
+  text-align: right;
+}
+
+.statusReview {
+  color: #ffb08f;
+  text-shadow: 0 0 6px rgba(239, 135, 92, 0.8);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+/* New lines arrive in three frames, not a smooth fade: it is a 1990s screen. */
+.fresh {
+  animation: print 240ms steps(3) both;
+}
+
+.prompt {
+  margin: 0.45em 0 0;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.95em;
+  margin-left: 0.4ch;
+  vertical-align: -0.12em;
+  background: var(--phosphor);
+  box-shadow: 0 0 6px rgba(126, 197, 231, 0.7);
+  animation: blink 1.05s steps(1) infinite;
+}
+
+.scanlines,
+.sweep,
+.glare {
+  position: absolute;
+  pointer-events: none;
+}
+
+.scanlines {
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.26) 0 1px, transparent 1px 3px);
+}
+
+/* One deliberate scan sweep, slow enough to read as the screen refreshing. */
+.sweep {
+  left: 0;
+  right: 0;
+  top: -24%;
+  height: 24%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(207, 239, 247, 0.05) 70%,
+    rgba(207, 239, 247, 0.1) 96%,
+    transparent
+  );
+  animation: sweep 7.5s linear infinite;
+}
+
+.glare {
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 60% 45% at 28% 12%, rgba(255, 255, 255, 0.07), transparent 70%);
+}
+
+/* ── Chin: lamps and keys ────────────────────────────────── */
+
+.chin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 14px;
+  padding: 14px 2px 16px;
+}
+
+.lamps {
+  display: flex;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 44px;
+}
+
+.lens {
+  width: 24px;
+  height: 9px;
+  border-radius: 2px;
+  background: #3a3f3d;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: background-color 200ms, box-shadow 200ms;
+}
+
+.lamp[data-state='done'] .lens {
+  background: #c3e8f4;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 0 7px rgba(126, 197, 231, 0.7), 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.lamp[data-state='active'] .lens,
+.lamp[data-state='review'] .lens {
+  background: var(--signal);
+  box-shadow: inset 0 1px 1px rgba(255, 220, 200, 0.7), 0 0 10px 2px rgba(239, 135, 92, 0.7), 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.lamp[data-state='review'] .lens {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+.lampLabel {
+  font: 600 9px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: rgba(48, 45, 40, 0.86);
+}
+
+.keys {
+  display: flex;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.key {
+  min-width: 52px;
+  padding: 9px 9px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #e8e4d8, #d3cec0);
+  color: #2f2c27;
+  font: 600 10px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 3px 0 #8f8a7d, 0 5px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: transform 90ms, box-shadow 90ms;
+}
+
+.key:active,
+.key[aria-pressed='true'] {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #8f8a7d, 0 2px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.neck {
+  width: 34%;
+  height: 24px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #8f8a7c, #b2ad9f);
+  clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%);
+}
+
+.foot {
+  width: 56%;
+  height: 12px;
+  margin: 0 auto;
+  border-radius: 3px 3px 6px 6px;
+  background: linear-gradient(180deg, #d0cbbd, #b1ac9e);
+  box-shadow: 0 18px 26px rgba(0, 0, 0, 0.55);
+}
+
+/* ── Diorama: sits on the desk in front of the terminal ──── */
+
+.dioramaWrap {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--mon-w) * 0.86);
+  left: calc(var(--mon-w) * -0.52);
+  width: calc(var(--mon-w) * 0.68);
+  pointer-events: none;
+}
+
+.diorama {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.plateShadow {
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.5));
+}
+
+.roadLine {
+  fill: none;
+  stroke: #e4dfd1;
+  stroke-width: 1.4;
+  stroke-dasharray: 6 5;
+}
+
+.lotLine {
+  fill: none;
+  stroke: #f2efe6;
+  stroke-width: 1.4;
+}
+
+.slats {
+  fill: none;
+  stroke: #4a5150;
+  stroke-width: 1;
+}
+
+.windowDark {
+  fill: #2c3231;
+  transition: fill 200ms;
+}
+
+.windowLit {
+  fill: #ffd8a6;
+  filter: drop-shadow(0 0 4px rgba(255, 196, 130, 0.9));
+}
+
+.pin line {
+  stroke: var(--phosphor);
+  stroke-width: 1.2;
+}
+
+.pin rect {
+  fill: #0d1514;
+  stroke: var(--phosphor);
+  stroke-width: 1;
+}
+
+.pin text {
+  font: 400 12px/1 var(--font-vt323), monospace;
+  letter-spacing: 0.08em;
+  fill: var(--phosphor);
+}
+
+.pinReview line,
+.pinReview rect {
+  stroke: var(--signal);
+}
+
+.pinReview text {
+  fill: #ffb08f;
+}
+
+/* Printed on the desk under the terminal foot, clear of the diorama. */
+.sampleTag {
+  margin: 18px 0 0;
+  text-align: right;
+  font-size: 10.5px;
+  color: rgba(237, 236, 229, 0.6);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes blink {
+  0%,
+  64% {
+    opacity: 1;
+  }
+  65%,
+  100% {
+    opacity: 0.28;
+  }
+}
+
+@keyframes print {
+  0% {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sweep {
+  to {
+    transform: translateY(520%);
+  }
+}
+
+/* ── Stacked layout: tablets and phones ──────────────────── */
+
+@media (max-width: 899px) {
+  .room {
+    --mon-w: min(calc(100vw - 2 * var(--pad)), 540px);
+  }
+
+  .nav,
+  .feed,
+  .barCta {
+    display: none;
+  }
+
+  .menu {
+    display: block;
+  }
+
+  .hero {
+    min-height: 0;
+    padding-bottom: 32px;
+  }
+
+  .copy {
+    max-width: 40rem;
+  }
+
+  .console {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 56px auto 0;
+  }
+
+  .dioramaWrap {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 92%;
+    margin: -18px auto 0;
+  }
+
+  .sampleTag {
+    margin-top: 14px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 639px) {
+  .room {
+    --bar: 60px;
+  }
+
+  .brandNote {
+    display: none;
+  }
+
+  .copy {
+    padding-top: 36px;
+  }
+
+  .lede {
+    margin-top: 24px;
+    font-size: 17px;
+  }
+
+  .primary {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .housing {
+    padding: 24px 12px 0;
+  }
+
+  .housingLabel {
+    right: 14px;
+  }
+
+  .powerLed {
+    left: 14px;
+  }
+
+  .bezel {
+    padding: 10px;
+  }
+
+  /* Phone screens drop the day and system columns so each line stays readable. */
+  .crt {
+    font-size: max(13px, calc(var(--mon-w) * 0.042));
+    padding: 6% 5.5% 5%;
+  }
+
+  .log {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 1.4em);
+    mask-image: linear-gradient(180deg, transparent, #000 1.4em);
+  }
+
+  .log li {
+    grid-template-columns: 5ch minmax(0, 1fr) 6ch;
+    column-gap: 1ch;
+  }
+
+  .day,
+  .sys {
+    display: none;
+  }
+
+  .chin {
+    justify-content: center;
+  }
+
+  .lamps {
+    gap: 4px;
+  }
+
+  .lamp {
+    min-width: 0;
+    width: calc((var(--mon-w) - 52px) / 6);
+  }
+
+  .lampLabel {
+    font-size: 8.5px;
+    letter-spacing: 0.02em;
+  }
+
+  .keys {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .key {
+    flex: 1;
+    max-width: 96px;
+  }
+}

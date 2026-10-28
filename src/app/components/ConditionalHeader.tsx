@@ -6,10 +6,11 @@ import Header from './Header';
 export default function ConditionalHeader() {
   const pathname = usePathname();
 
-  // Hide header on greeting pages
-  const isGreetingPage = pathname.startsWith('/greeting');
+  // Greeting pages and design-lab studies render their own art-directed headers.
+  const hidesGlobalHeader =
+    pathname.startsWith('/greeting') || pathname.startsWith('/design-lab');
 
-  if (isGreetingPage) {
+  if (hidesGlobalHeader) {
     return null;
   }
 
