@@ -1,0 +1,96 @@
+.wrap {
+  width: min(330px, 100%);
+  filter: drop-shadow(0 14px 18px rgba(16, 20, 19, 0.22)) drop-shadow(0 2px 3px rgba(16, 20, 19, 0.18));
+  transform: rotate(-1.4deg);
+}
+
+/* Tractor-feed holes are cut with a mask so whatever is underneath shows through. */
+.ticket {
+  position: relative;
+  margin: 0;
+  padding: 16px 36px 42px;
+  background: #f5f3eb;
+  color: #283034;
+  -webkit-mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+  mask:
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) left top / 22px 18px repeat-y,
+    radial-gradient(circle at 11px 9px, transparent 3.3px, #000 3.8px) right top / 22px 18px repeat-y,
+    linear-gradient(#000 0 0) center / calc(100% - 44px) 100% no-repeat;
+}
+
+.ticket::before,
+.ticket::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed rgba(40, 48, 52, 0.28);
+}
+
+.ticket::before {
+  left: 22px;
+}
+
+.ticket::after {
+  right: 22px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-printed);
+  font-size: 13px;
+  font-weight: 700;
+  font-variation-settings: 'ROND' 100;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.5px rgba(40, 48, 52, 0.7);
+}
+
+.line:first-child {
+  margin-bottom: 4px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed rgba(40, 48, 52, 0.35);
+}
+
+.stamp {
+  position: absolute;
+  right: 32px;
+  bottom: 10px;
+  margin: 0;
+  padding: 6px 9px 5px;
+  border: 2px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  font: 600 11px/1 var(--font-annotation);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
+  animation: stamp-land var(--dur-reveal) var(--ease-settle) both;
+}
+
+.stamp[data-tone='alert'] {
+  color: #d9673c;
+}
+
+.stamp[data-tone='settled'] {
+  color: #33403e;
+}
+
+@keyframes stamp-land {
+  0% {
+    opacity: 0;
+    transform: rotate(-7deg) scale(1.35);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(1);
+  }
+}

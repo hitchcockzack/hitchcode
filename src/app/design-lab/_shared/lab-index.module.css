@@ -40,8 +40,28 @@
   color: rgba(237, 236, 229, 0.75);
 }
 
+.current {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 32px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 56px;
+  padding: 26px 24px;
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.current .idea {
+  color: rgba(16, 20, 19, 0.8);
+}
+
+.current .key {
+  color: #a9481f;
+}
+
 .list {
-  margin: 64px 0 0;
+  margin: 48px 0 0;
   padding: 0;
   list-style: none;
   border-top: 1px solid var(--hairline);

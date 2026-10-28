@@ -48,6 +48,20 @@ export default function DesignLabIndex() {
         </p>
       </header>
 
+      <Link href="/design-lab/system" className={styles.current}>
+        <span className={styles.key}>Gate 3</span>
+        <span className={styles.body}>
+          <span className={styles.name}>System sheet: direction A as tokens and working components</span>
+          <span className={styles.idea}>
+            Approved direction A, with the connected operation exhibit and the plan-to-live reveal built as reusable,
+            accessible components.
+          </span>
+        </span>
+        <span className={styles.arrow} aria-hidden="true">
+          →
+        </span>
+      </Link>
+
       <ol className={styles.list}>
         {STUDIES.map((study) => (
           <li key={study.key} className={styles.item}>

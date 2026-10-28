@@ -1,0 +1,356 @@
+/* Gate 3 review sheet. Composition only; every value comes from design-tokens.css. */
+
+/* Drafting overshoots may extend past a sheet edge; they must never create sideways scroll. */
+.page {
+  min-height: 100svh;
+  overflow-x: clip;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 72px;
+  padding: 0 var(--page-pad);
+  border-bottom: 1px solid var(--hairline-dark);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 27px;
+  letter-spacing: -0.015em;
+}
+
+.brandNote,
+.sheetNo,
+.kicker,
+.kickerDark,
+.jump a,
+.specRole,
+.specMeta,
+.penHex,
+.motion th,
+.footer {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.brandNote,
+.sheetNo {
+  margin: 0;
+  font-size: var(--type-annotation);
+  color: rgba(237, 236, 229, 0.58);
+}
+
+/* ── Intro on ink ────────────────────────────────────────── */
+
+.intro {
+  padding: var(--section-tight) var(--page-pad) var(--section-standard);
+}
+
+.kicker {
+  margin: 0;
+  font-size: var(--type-annotation);
+  color: rgba(237, 236, 229, 0.62);
+}
+
+.title {
+  max-width: 14ch;
+  margin: 20px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-l);
+  font-weight: 400;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.lede {
+  max-width: var(--measure);
+  margin: 28px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: var(--paper-muted);
+}
+
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 36px;
+}
+
+.jump a {
+  font-size: var(--type-annotation);
+  color: var(--paper);
+  text-decoration: underline;
+  text-decoration-color: rgba(237, 236, 229, 0.4);
+  text-underline-offset: 6px;
+}
+
+.jump a:hover {
+  text-decoration-color: var(--paper);
+}
+
+/* ── Paper sheets ────────────────────────────────────────── */
+
+.sheet {
+  padding: var(--section-standard) var(--page-pad);
+  background: var(--sheet);
+  color: var(--ink);
+  scroll-margin-top: 0;
+}
+
+.sheet + .sheet {
+  border-top: 1px solid var(--rule-light);
+}
+
+.frame {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sheetHead {
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.kickerDark {
+  margin: 0;
+  font-size: var(--type-annotation);
+  color: var(--slate-text);
+}
+
+.h2 {
+  max-width: 20ch;
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-m);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* Type specimen: a schedule, so rules separate rows. */
+.specimens {
+  margin-top: 8px;
+}
+
+.specimen {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 280px;
+  align-items: baseline;
+  gap: 8px 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.specRole {
+  margin: 0;
+  font-size: var(--type-annotation);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.specSample {
+  margin: 0;
+  min-width: 0;
+}
+
+.specMeta {
+  margin: 0;
+  font-size: var(--type-annotation-s);
+  line-height: 1.5;
+  color: var(--slate-text);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4.4vw, 64px);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+
+.text {
+  max-width: 34rem;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+}
+
+.annotation {
+  font-family: var(--font-annotation);
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.printed {
+  font-family: var(--font-printed);
+  font-size: 18px;
+  font-weight: 700;
+  font-variation-settings: 'ROND' 100;
+  text-transform: uppercase;
+}
+
+/* Pens: color tokens with their one rule each. */
+.pens {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 24px;
+  margin: 44px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pen {
+  display: grid;
+  gap: 5px;
+}
+
+.chip {
+  height: 52px;
+  margin-bottom: 6px;
+  border: 1px solid var(--rule-light);
+}
+
+.penName {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.penHex {
+  font-size: var(--type-annotation-s);
+  color: var(--slate-text);
+}
+
+.penUse {
+  font-size: var(--type-small);
+  line-height: 1.4;
+  color: rgba(16, 20, 19, 0.8);
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 32px 64px;
+  margin-top: 52px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-light);
+}
+
+.space {
+  display: grid;
+  gap: 7px;
+  margin: 16px 0 14px;
+  padding: 0;
+  list-style: none;
+  font: 500 var(--type-annotation-s) / 1 var(--font-annotation);
+  color: var(--slate-text);
+}
+
+.space li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.space span {
+  display: inline-block;
+  height: 8px;
+  background: var(--ink);
+}
+
+.motion {
+  width: 100%;
+  margin: 14px 0 14px;
+  border-collapse: collapse;
+  font-size: var(--type-small);
+}
+
+.motion th,
+.motion td {
+  padding: 9px 10px 9px 0;
+  border-bottom: 1px solid var(--rule-light);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.motion th {
+  font-size: var(--type-annotation-s);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.motion td:nth-child(2) {
+  font-family: var(--font-annotation);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.revealHead {
+  margin-bottom: 44px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.revealLede {
+  max-width: var(--measure);
+  margin: 16px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: rgba(16, 20, 19, 0.82);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 28px var(--page-pad) 72px;
+  font-size: var(--type-annotation-s);
+  color: rgba(237, 236, 229, 0.6);
+}
+
+@media (max-width: 899px) {
+  .specimen {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pens {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .bar {
+    height: 60px;
+  }
+
+  .brandNote,
+  .sheetNo {
+    display: none;
+  }
+
+  .motion td:last-child {
+    display: none;
+  }
+}

@@ -9,6 +9,7 @@ const STUDIES = [
   { href: '/design-lab/a', key: 'A', name: 'Technical Atelier' },
   { href: '/design-lab/b', key: 'B', name: 'The Control Room' },
   { href: '/design-lab/c', key: 'C', name: 'The Living Blueprint' },
+  { href: '/design-lab/system', key: 'G3', name: 'Gate 3 system sheet' },
 ]
 
 // Review-only switcher. Screenshot runs hide it via [data-lab-nav].

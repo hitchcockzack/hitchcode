@@ -1,0 +1,264 @@
+/* BlueprintReveal engine: controls, aligned layers, build line. Scene styling lives with the scene. */
+
+.reveal {
+  position: relative;
+  margin: 0;
+  scroll-margin-top: 24px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  margin-bottom: 32px;
+}
+
+.toggle button,
+.sample,
+.handleLabel,
+.hint span,
+.caption {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+}
+
+.toggle button {
+  padding: 11px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--dur-quick), color var(--dur-quick);
+}
+
+.toggle button + button {
+  border-left: 1px solid var(--ink);
+}
+
+.toggle button:hover {
+  background: rgba(16, 20, 19, 0.06);
+}
+
+.toggle button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.sample {
+  margin: 0;
+  font-size: var(--type-annotation-s);
+  font-weight: 500;
+  color: var(--signal-text);
+}
+
+.stage {
+  position: relative;
+}
+
+/* Built on the near side of the line, drawn on the far side. Negative insets leave
+   room for shadows and annotations that sit outside the scene box. */
+.layerDraft {
+  position: relative;
+  clip-path: inset(-48px -48px -64px var(--pos));
+}
+
+.layerLive {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(-48px calc(100% - var(--pos)) -64px -48px);
+}
+
+.stage[data-animating] .layerDraft,
+.stage[data-animating] .layerLive {
+  transition: clip-path var(--dur-reveal) var(--ease-draft);
+}
+
+.stage[data-end='live'] .layerDraft,
+.stage[data-end='blueprint'] .layerLive {
+  visibility: hidden;
+}
+
+/* ── Build line ──────────────────────────────────────────── */
+
+.handle {
+  position: absolute;
+  z-index: var(--z-control);
+  top: -16px;
+  bottom: -16px;
+  left: var(--pos);
+  width: 44px;
+  margin-left: -22px;
+  cursor: ew-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.stage[data-animating] .handle {
+  transition: left var(--dur-reveal) var(--ease-draft);
+}
+
+.handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--signal);
+}
+
+.grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-1);
+  background: var(--signal);
+  color: var(--ink);
+  box-shadow: 0 6px 14px rgba(16, 20, 19, 0.22);
+  transform: translate(-50%, -50%);
+  transition: transform var(--dur-quick) var(--ease-settle);
+}
+
+.handle:hover .grip {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.handle:focus-visible .grip {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.handleLabel {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--signal-text);
+}
+
+.hint {
+  position: absolute;
+  top: calc(50% + 22px);
+  left: calc(50% + 8px);
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  pointer-events: none;
+  animation: nudge 4.8s steps(4) infinite;
+}
+
+.hint span {
+  margin-top: 14px;
+  padding: 3px 5px 2px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+@keyframes nudge {
+  0%,
+  58%,
+  100% {
+    transform: translateX(0);
+  }
+  68% {
+    transform: translateX(14px);
+  }
+  78% {
+    transform: translateX(0);
+  }
+  88% {
+    transform: translateX(14px);
+  }
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: 32px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  color: var(--slate-text);
+}
+
+@media (max-width: 767px) {
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+
+  .layerDraft {
+    clip-path: inset(var(--pos) -48px -64px -48px);
+  }
+
+  .layerLive {
+    clip-path: inset(-48px -48px calc(100% - var(--pos)) -48px);
+  }
+
+  .handle {
+    top: var(--pos);
+    bottom: auto;
+    left: -10px;
+    right: -10px;
+    width: auto;
+    height: 44px;
+    margin: -22px 0 0;
+    cursor: ns-resize;
+  }
+
+  .stage[data-animating] .handle {
+    transition: top var(--dur-reveal) var(--ease-draft);
+  }
+
+  .handle::before {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 2px;
+    margin: -1px 0 0;
+  }
+
+  .grip svg {
+    transform: rotate(90deg);
+  }
+
+  .handleLabel {
+    top: 50%;
+    left: auto;
+    right: 54px;
+    transform: translateY(-140%);
+  }
+
+  .hint {
+    top: calc(50% + 10px);
+    left: auto;
+    right: 18px;
+  }
+}

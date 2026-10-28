@@ -1,0 +1,496 @@
+/* Job console scene: one geometry, two materials (pencil on paper / printed software). */
+
+.console {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  padding: 22px 24px 18px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-3);
+  font-family: var(--font-text);
+}
+
+.console[data-mode='live'] {
+  --rule: rgba(16, 20, 19, 0.14);
+  --muted: #5b6765;
+  --node-bg: #fbfaf6;
+  background: #fbfaf6;
+  color: var(--ink);
+  box-shadow: var(--shadow-built);
+}
+
+.console[data-mode='draft'] {
+  --rule: rgba(86, 97, 95, 0.7);
+  --muted: rgba(86, 97, 95, 0.95);
+  --node-bg: var(--sheet);
+  border-style: dashed;
+  background: transparent;
+  color: #4d5856;
+}
+
+/* Construction lines overshoot the frame, as on a hand drawing. */
+.console[data-mode='draft']::before,
+.console[data-mode='draft']::after {
+  content: '';
+  position: absolute;
+  border: 0 solid rgba(112, 124, 121, 0.45);
+  pointer-events: none;
+}
+
+.console[data-mode='draft']::before {
+  top: -1px;
+  left: -20px;
+  right: -20px;
+  border-top-width: 1px;
+}
+
+.console[data-mode='draft']::after {
+  top: -20px;
+  bottom: -20px;
+  left: -1px;
+  border-left-width: 1px;
+}
+
+/* Values the live system fills in are hatched placeholders in the drawing. */
+.console[data-mode='draft'] .v {
+  color: transparent;
+  background-image: repeating-linear-gradient(-45deg, rgba(86, 97, 95, 0.55) 0 1px, transparent 1px 4px);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.head p {
+  margin: 0;
+}
+
+.id,
+.nodeMeta,
+.panel h3,
+.ticker,
+.note,
+.dimension span {
+  font-family: var(--font-annotation);
+}
+
+.id {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.head .scope {
+  margin-top: 9px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+}
+
+.head .site {
+  margin-top: 5px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-1);
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.console[data-mode='draft'] .statusDot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.console[data-mode='live'] .status[data-review] {
+  border-color: var(--signal);
+}
+
+.console[data-mode='live'] .status[data-review] .statusDot {
+  background: var(--signal);
+}
+
+/* ── Stage rail ──────────────────────────────────────────── */
+
+.railWrap {
+  position: relative;
+  padding-top: 6px;
+}
+
+.rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  text-align: center;
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: var(--node-bg);
+  transition: background-color 300ms, border-color 300ms;
+}
+
+.nodeLabel {
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.nodeMeta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.railTrack {
+  position: absolute;
+  top: 12px;
+  left: calc(100% / 12);
+  right: calc(100% / 12);
+  height: 2px;
+  background: var(--rule);
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transform: scaleX(var(--p));
+  transform-origin: left center;
+  transition: transform var(--dur-route) var(--ease-settle);
+}
+
+.railPulse {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--p) * 100%);
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 4px rgba(239, 135, 92, 0.22);
+  transition: left var(--dur-route) var(--ease-settle), top var(--dur-route) var(--ease-settle);
+}
+
+.console[data-mode='live'] .stage[data-state='done'] .node {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.console[data-mode='live'] .stage[data-state='active'] .node {
+  border-color: var(--signal);
+  background: var(--signal);
+}
+
+.console[data-mode='live'] .stage[data-state='next'] {
+  color: #6c7775;
+}
+
+.console[data-mode='live'] .stage[data-state='next'] .node {
+  border-color: rgba(16, 20, 19, 0.3);
+}
+
+.console[data-mode='draft'] .stage[data-state='next'] .node {
+  border-style: dashed;
+}
+
+.console[data-mode='draft'] .railTrack {
+  height: 0;
+  border-top: 1px dashed var(--rule);
+  background: none;
+}
+
+.console[data-mode='draft'] .railFill {
+  display: none;
+}
+
+.dimension {
+  position: absolute;
+  top: -12px;
+  left: calc(100% / 12);
+  right: calc(100% / 12);
+  border-top: 1px solid rgba(86, 97, 95, 0.55);
+}
+
+.dimension::before,
+.dimension::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  height: 9px;
+  border-left: 1px solid rgba(86, 97, 95, 0.8);
+}
+
+.dimension::before {
+  left: 0;
+}
+
+.dimension::after {
+  right: 0;
+}
+
+/* Label sits toward the drawn side so it reads in the first frame. */
+.dimension span {
+  position: absolute;
+  left: 76%;
+  top: 0;
+  padding: 0 8px;
+  background: var(--sheet);
+  transform: translate(-50%, -55%);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Panels and ticker ───────────────────────────────────── */
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.panel {
+  position: relative;
+  min-width: 0;
+  padding: 14px 14px 13px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-2);
+  transition: border-color 300ms, box-shadow 300ms;
+}
+
+.console[data-mode='draft'] .panel {
+  border-style: dashed;
+}
+
+.panel h3 {
+  margin: 0 0 9px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.panel .main {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel .meta {
+  margin-top: 9px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.console[data-mode='live'] .panel[data-review] {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px rgba(239, 135, 92, 0.16);
+}
+
+.approve {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--radius-1);
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 12px/1.25 var(--font-text);
+  cursor: pointer;
+}
+
+.approve:hover {
+  background: #26302e;
+}
+
+.console[data-mode='draft'] .approve {
+  background: transparent;
+  color: transparent;
+  outline: 1px dashed currentColor;
+}
+
+.ticker {
+  margin: 0;
+  padding-top: 12px;
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.note {
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-text);
+}
+
+.note::before {
+  content: '↳ ';
+}
+
+.panel .note {
+  left: 13px;
+  bottom: -18px;
+}
+
+.noteStatus {
+  top: 46px;
+  right: 0;
+}
+
+.replay {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Phones: stacked console ─────────────────────────────── */
+
+@media (max-width: 767px) {
+  .console {
+    padding: 18px 16px 16px;
+  }
+
+  .head {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .head .scope {
+    font-size: 18px;
+  }
+
+  .noteStatus {
+    display: none;
+  }
+
+  .rail {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .stage {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    min-height: 22px;
+    text-align: left;
+  }
+
+  .nodeMeta {
+    margin-left: auto;
+  }
+
+  .railTrack {
+    top: 17px;
+    bottom: 11px;
+    left: 6px;
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+
+  .console[data-mode='draft'] .railTrack {
+    width: 0;
+    border-top: 0;
+    border-left: 1px dashed var(--rule);
+  }
+
+  .railFill {
+    transform: scaleY(var(--p));
+    transform-origin: center top;
+  }
+
+  .railPulse {
+    top: calc(var(--p) * 100%);
+    left: 50%;
+  }
+
+  .dimension {
+    display: none;
+  }
+
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .ticker {
+    white-space: normal;
+  }
+}

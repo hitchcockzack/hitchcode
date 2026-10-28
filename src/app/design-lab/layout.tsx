@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import '@/styles/design-tokens.css'
 import './lab.css'
 import LabNav from './_shared/LabNav'
 

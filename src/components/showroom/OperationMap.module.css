@@ -1,0 +1,654 @@
+/* OperationMap — direction A materials: drafted on paper, built in ink. */
+
+.exhibit {
+  position: relative;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-text);
+  container-type: inline-size;
+}
+
+/* ── Header row ──────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 48px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.kicker,
+.sample,
+.toggle button,
+.dept,
+.status,
+.inline,
+.inspectHead span,
+.table dt,
+.hint,
+.strip {
+  font-family: var(--font-annotation);
+  letter-spacing: var(--tracking-annotation);
+  text-transform: uppercase;
+}
+
+.kicker {
+  margin: 0;
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.title {
+  max-width: 17ch;
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--type-display-m);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+}
+
+.toggle button {
+  padding: 11px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--dur-quick), color var(--dur-quick);
+}
+
+.toggle button + button {
+  border-left: 1px solid var(--ink);
+}
+
+.toggle button:hover {
+  background: rgba(16, 20, 19, 0.06);
+}
+
+.toggle button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.sample {
+  margin: 0;
+  font-size: var(--type-annotation-s);
+  font-weight: 500;
+  color: var(--signal-text);
+}
+
+/* ── Schematic ───────────────────────────────────────────── */
+
+.schematic {
+  position: relative;
+  aspect-ratio: 1200 / 420;
+  margin-top: 44px;
+}
+
+.routes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Today: manual handoffs drawn with the drafting break-line convention. */
+.handoff {
+  fill: none;
+  stroke: var(--slate);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
+}
+
+.breakGap {
+  fill: var(--sheet);
+}
+
+.breakLine {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+.method {
+  font: 500 10.5px/1 var(--font-annotation);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--slate-text);
+}
+
+.cloud {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 1.4;
+}
+
+.issueNote {
+  font: 500 10.5px/1 var(--font-annotation);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  fill: var(--signal-text);
+}
+
+.delta {
+  font-weight: 600;
+}
+
+.handoff,
+.breakGap,
+.breakLine,
+.method,
+.cloud,
+.issueNote {
+  transition: opacity var(--dur-inspect) var(--ease-settle);
+}
+
+/* Connected: routes draw in along the job's path, then arrowheads land. */
+.route {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  opacity: 0;
+  transition: opacity var(--dur-quick), stroke-dashoffset 0s linear var(--dur-quick);
+}
+
+.arrow {
+  fill: var(--ink);
+  opacity: 0;
+  transition: opacity var(--dur-quick);
+}
+
+[data-mode='connected'] .handoff,
+[data-mode='connected'] .breakGap,
+[data-mode='connected'] .breakLine,
+[data-mode='connected'] .method,
+[data-mode='connected'] .cloud,
+[data-mode='connected'] .issueNote {
+  opacity: 0;
+}
+
+[data-mode='connected'] .route {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition:
+    opacity 1ms linear calc(var(--i) * var(--stagger-route) + 160ms),
+    stroke-dashoffset var(--dur-route) var(--ease-draft) calc(var(--i) * var(--stagger-route) + 160ms);
+}
+
+[data-mode='connected'] .arrow {
+  opacity: 1;
+  transition: opacity var(--dur-quick) linear
+    calc(var(--i) * var(--stagger-route) + 160ms + var(--dur-route) - 80ms);
+}
+
+/* ── Department nodes ────────────────────────────────────── */
+
+.nodes {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nodeItem {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--w);
+  height: var(--h);
+}
+
+.inline {
+  display: none;
+}
+
+.node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 10px 12px 9px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-1);
+  background: var(--vellum);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur-inspect) var(--ease-settle),
+    transform var(--dur-inspect) var(--ease-settle),
+    background-color var(--dur-inspect);
+}
+
+.node:hover {
+  background: #fbfaf6;
+}
+
+.node:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 5px;
+}
+
+/* Built nodes gain plate thickness, the same convention as the hero drawing. */
+.node[data-live] {
+  box-shadow: 0 4px 0 var(--ink);
+  transform: translateY(-2px);
+}
+
+/* Selected: drafting corner marks in signal. */
+.node[aria-pressed='true']::before,
+.node[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--signal);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.node[aria-pressed='true']::before {
+  top: -6px;
+  left: -6px;
+  border-width: 2px 0 0 2px;
+}
+
+.node[aria-pressed='true']::after {
+  right: -6px;
+  bottom: -6px;
+  border-width: 0 2px 2px 0;
+}
+
+.dept {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.nodeLabel {
+  font-size: clamp(13px, 1.32cqw, 16px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--slate-text);
+  white-space: nowrap;
+}
+
+.statusMark {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.node[data-issue] .status {
+  color: var(--signal-text);
+}
+
+.node[data-issue] .statusMark {
+  border: 0;
+  border-radius: 0;
+  background: currentColor;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.node[data-live] .status {
+  color: var(--ink);
+}
+
+.node[data-live] .statusMark {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+/* Today the lead exists twice; connecting merges the duplicate into one record. */
+.ghost {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed var(--slate);
+  border-radius: var(--radius-1);
+  background: var(--sheet);
+  transform: translate(10px, -10px);
+  transition:
+    transform var(--dur-route) var(--ease-draft) 160ms,
+    opacity var(--dur-route) var(--ease-draft) 160ms;
+}
+
+.ghost::after {
+  content: '×2';
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font: 600 10px/1 var(--font-annotation);
+  color: var(--signal-text);
+}
+
+[data-mode='connected'] .ghost {
+  opacity: 0;
+  transform: translate(0, 0);
+}
+
+.workOrder {
+  position: absolute;
+  left: 1.5%;
+  bottom: 0;
+  width: min(29%, 330px);
+}
+
+/* ── Copy and inspector ──────────────────────────────────── */
+
+.foot {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px 56px;
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-light);
+}
+
+.copyTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.copyBody {
+  max-width: var(--measure);
+  margin: 14px 0 0;
+  font-size: var(--type-body-l);
+  line-height: var(--leading-body);
+  color: rgba(16, 20, 19, 0.82);
+}
+
+.outcomes {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.outcomes li {
+  position: relative;
+  padding-left: 22px;
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+.outcomes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 12px;
+  border-top: 1.5px solid var(--ink);
+}
+
+.inspectHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin: 0 0 14px;
+}
+
+.inspectHead span {
+  font-size: var(--type-annotation);
+  font-weight: 500;
+  color: var(--slate-text);
+}
+
+.inspectHead strong {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.inspectHead .inspectMode {
+  margin-left: auto;
+  padding: 4px 7px;
+  border: 1px solid currentColor;
+}
+
+/* A drafting table: borders here carry meaning (it is a schedule of facts). */
+.table {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--ink);
+}
+
+.table > div {
+  padding: 12px 14px 13px;
+  border-right: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.table > div[data-emphasis] {
+  background: rgba(239, 135, 92, 0.08);
+}
+
+.table dt {
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--slate-text);
+}
+
+.table dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.hint {
+  margin: 12px 0 0;
+  font-size: var(--type-annotation-s);
+  color: var(--slate-text);
+}
+
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: 36px;
+  padding-top: 11px;
+  border-top: 1px solid var(--ink);
+  font-size: var(--type-annotation-s);
+  color: rgba(16, 20, 19, 0.82);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend i {
+  display: inline-block;
+  width: 18px;
+}
+
+.legend i + i,
+.legend i:not(:first-child) {
+  margin-left: 10px;
+}
+
+.legendBroken {
+  border-top: 1.5px dashed var(--slate);
+}
+
+.legendRoute {
+  border-top: 1.75px solid var(--ink);
+}
+
+.legendIssue {
+  height: 10px;
+  border: 1.4px solid var(--signal);
+  border-radius: 50%;
+}
+
+/* ── Narrow containers: the schematic becomes a list ────────
+   Container-based, so the switch happens wherever the drawing would scale its
+   annotations below a legible ~9px, whatever the page layout around it. */
+
+@container (max-width: 1040px) {
+  .controls {
+    align-items: flex-start;
+  }
+
+  .schematic {
+    aspect-ratio: auto;
+    margin-top: 32px;
+  }
+
+  .routes {
+    display: none;
+  }
+
+  .nodes {
+    position: static;
+    display: grid;
+  }
+
+  .nodeItem {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+  }
+
+  .nodeItem[data-branch] {
+    margin-left: 28px;
+  }
+
+  /* The handoff into each department, written out where the line would be. */
+  .inline {
+    display: grid;
+    gap: 4px;
+    margin: 0 0 0 14px;
+    padding: 10px 0 12px 16px;
+    border-left: 1.5px dashed var(--slate);
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--slate-text);
+  }
+
+  .inline [data-issue] {
+    color: var(--signal-text);
+  }
+
+  [data-mode='connected'] .inline {
+    border-left: 1.75px solid var(--ink);
+  }
+
+  .node {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'dept status'
+      'label status';
+    align-items: center;
+    gap: 2px 12px;
+    height: auto;
+    min-height: 62px;
+    padding: 11px 14px;
+  }
+
+  .dept {
+    grid-area: dept;
+  }
+
+  .nodeLabel {
+    grid-area: label;
+    font-size: 17px;
+  }
+
+  .status {
+    grid-area: status;
+  }
+
+  .ghost {
+    transform: translate(6px, -6px);
+  }
+
+  .workOrder {
+    position: static;
+    width: min(330px, 100%);
+    margin: 36px auto 0;
+  }
+
+  .foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .table {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Tablet-width containers: the list sits beside the work order instead of stretching. */
+@container (min-width: 700px) and (max-width: 1040px) {
+  .schematic {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 48px;
+  }
+
+  .workOrder {
+    justify-self: center;
+    margin: 28px 0 0;
+  }
+
+  .foot {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .table {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

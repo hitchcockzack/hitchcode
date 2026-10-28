@@ -1,0 +1,127 @@
+/*
+  Hitchcode design tokens — direction A, Technical Atelier (approved at Gate 2).
+  The single source for color, type, space, grid, line, elevation, motion and layering.
+  Custom properties only: importing this file changes nothing until a component uses it.
+*/
+
+:root {
+  /* ── Color ───────────────────────────────────────────────
+     80–90% neutral. Signal marks the active job, attention and the build line only.
+     Blueprint and draft-line are materials for drawn scenes, never button colors. */
+  --ink: #101413;
+  --ink-raised: #181d1c;
+  --paper: #edece5;
+  --sheet: #efede6;
+  --vellum: #f7f6f1;
+  --plate: #e2e0d5;
+  --slate: #707c79;
+  /* Text-safe neutrals: slate fails 4.5:1 on paper at small sizes, these pass. */
+  --slate-text: #56615f;
+  --paper-muted: rgba(237, 236, 229, 0.78);
+  --signal: #ef875c;
+  --signal-text: #a9481f;
+  --blueprint: #244d70;
+  --draft-line: #7ec5e7;
+  --hairline-dark: rgba(237, 236, 229, 0.22);
+  --hairline-light: rgba(16, 20, 19, 0.16);
+  --rule-light: rgba(16, 20, 19, 0.32);
+
+  /* ── Type scale ──────────────────────────────────────────
+     Display sizes are fluid; body and annotation sizes are fixed for legibility. */
+  --type-display-xl: clamp(44px, 7vw, 110px);
+  --type-display-l: clamp(36px, 5.2vw, 76px);
+  --type-display-m: clamp(28px, 3.4vw, 48px);
+  --type-title: clamp(19px, 1.5vw, 23px);
+  --type-body-l: clamp(17px, 1.3vw, 19px);
+  --type-body: 16px;
+  --type-small: 14px;
+  --type-annotation: 11px;
+  --type-annotation-s: 10px;
+
+  --leading-display: 0.98;
+  --leading-title: 1.2;
+  --leading-body: 1.55;
+  --tracking-display: -0.032em;
+  --tracking-title: -0.012em;
+  --tracking-annotation: 0.1em;
+  --measure: 34rem;
+
+  /* ── Space: 4/8 primitives ──────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Section rhythm varies on purpose: quiet statements breathe, exhibits tighten. */
+  --section-quiet: clamp(96px, 12vw, 180px);
+  --section-standard: clamp(72px, 8.5vw, 128px);
+  --section-tight: clamp(48px, 6vw, 80px);
+
+  /* ── Grid ────────────────────────────────────────────────── */
+  --grid-columns: 12;
+  --grid-gutter: clamp(16px, 1.7vw, 24px);
+  --page-pad: clamp(20px, 3.4vw, 48px);
+  --page-max: 1440px;
+
+  /* ── Line, radius, elevation ─────────────────────────────── */
+  --radius-0: 0;
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  /* Objects lying on the dark table (work orders, printed sheets). */
+  --shadow-cast: 0 18px 22px rgba(0, 0, 0, 0.42), 0 2px 3px rgba(0, 0, 0, 0.3);
+  /* Built software sitting on a paper drawing. */
+  --shadow-built: 0 22px 44px rgba(16, 20, 19, 0.16), 0 4px 10px rgba(16, 20, 19, 0.1);
+
+  /* ── Motion ──────────────────────────────────────────────
+     Drafting ease for things being drawn or revealed, settle ease for UI response.
+     Nothing bounces. */
+  --ease-draft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-press: 120ms;
+  --dur-quick: 180ms;
+  --dur-inspect: 240ms;
+  --dur-route: 700ms;
+  --dur-reveal: 900ms;
+  --dur-loop: 8s;
+  --stagger-route: 110ms;
+  --stagger-status: 320ms;
+
+  /* ── Layers ──────────────────────────────────────────────── */
+  --z-sheet: 1;
+  --z-artifact: 2;
+  --z-type: 3;
+  --z-control: 4;
+  --z-header: 50;
+  --z-overlay: 60;
+}
+
+/*
+  Type families. Custom properties resolve where they are declared, so these must be
+  declared on the same element that carries the next/font variables (src/lib/fonts.ts):
+  <html> once the site adopts the system, or any element with .hc-type until then.
+*/
+:root,
+.hc-type {
+  --font-display: var(--font-newsreader), Georgia, 'Times New Roman', serif;
+  --font-text: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-annotation: var(--font-plex-mono), ui-monospace, 'SFMono-Regular', monospace;
+  --font-printed: var(--font-doto), var(--font-plex-mono), ui-monospace, monospace;
+  --font-terminal: var(--font-vt323), var(--font-plex-mono), ui-monospace, monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-inspect: 1ms;
+    --dur-route: 1ms;
+    --dur-reveal: 1ms;
+    --stagger-route: 0ms;
+    --stagger-status: 0ms;
+  }
+}
